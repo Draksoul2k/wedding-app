@@ -13,7 +13,7 @@ export const NAVIGATION_ANIMATIONS = {
     initial: { scale: 0, opacity: 0 },
     animate: { scale: 1, opacity: 1 },
     exit: { scale: 0, opacity: 0 },
-    transition: { duration: 0.3, type: 'spring', stiffness: 300 },
+    transition: { duration: 0.3, type: 'spring' as const, stiffness: 300 },
   },
   icon: {
     active: {
@@ -25,7 +25,7 @@ export const NAVIGATION_ANIMATIONS = {
   },
   pulse: {
     animate: { scale: [1, 1.5, 1] },
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
   },
 };
 

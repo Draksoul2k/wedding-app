@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
-import { LangProvider, LocalizationProvider } from '@/locales';
 import { Toaster } from 'sonner';
 
 const poppins = Poppins({
@@ -11,9 +10,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'The Wedding of Fiqri & Beloved',
+  title: 'Chung Đôi | Nền Tảng Làm Thiệp Cưới Online Thông Minh',
   description:
-    'Join us in celebrating the union of Fiqri and his beloved. Discover our love story, wedding details, and more.',
+    'Làm thiệp cưới online sang trọng, tinh tế trong 5 phút. Tích hợp hiệu ứng mở phong bì 3D, mã mừng cưới VietQR tự động và quản lý khách mời.',
 };
 
 export default function RootLayout({
@@ -22,14 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body className={`${poppins.variable} antialiased`}>
-        <LangProvider>
-          <LocalizationProvider>
-            {children}
-            <Toaster />
-          </LocalizationProvider>
-        </LangProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

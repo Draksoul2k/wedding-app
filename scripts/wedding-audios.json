@@ -1,0 +1,79 @@
+[
+  {
+    "repo": "vinitshahdeo/Wedding-Invitation",
+    "branch": "master",
+    "path": "assets/mp3/song.mp3",
+    "url": "https://raw.githubusercontent.com/vinitshahdeo/Wedding-Invitation/master/assets/mp3/song.mp3",
+    "size": 3355095
+  },
+  {
+    "repo": "zouyaoji/wedding-invitation",
+    "branch": "master",
+    "path": "data/存储/music/gbqq.mp3",
+    "url": "https://raw.githubusercontent.com/zouyaoji/wedding-invitation/master/data/存储/music/gbqq.mp3",
+    "size": 6799378
+  },
+  {
+    "repo": "zouyaoji/wedding-invitation",
+    "branch": "master",
+    "path": "data/存储/music/marryu.m4a",
+    "url": "https://raw.githubusercontent.com/zouyaoji/wedding-invitation/master/data/存储/music/marryu.m4a",
+    "size": 2371021
+  },
+  {
+    "repo": "zouyaoji/wedding-invitation",
+    "branch": "master",
+    "path": "data/存储/music/ttd.m4a",
+    "url": "https://raw.githubusercontent.com/zouyaoji/wedding-invitation/master/data/存储/music/ttd.m4a",
+    "size": 2958197
+  },
+  {
+    "repo": "zouyaoji/wedding-invitation",
+    "branch": "master",
+    "path": "data/存储/music/zuimeihunli.m4a",
+    "url": "https://raw.githubusercontent.com/zouyaoji/wedding-invitation/master/data/存储/music/zuimeihunli.m4a",
+    "size": 1538636
+  },
+  {
+    "repo": "salmanagustian/wedding-digital-invitation",
+    "branch": "master",
+    "path": "public/assets/music/_music.mp3",
+    "url": "https://raw.githubusercontent.com/salmanagustian/wedding-digital-invitation/master/public/assets/music/_music.mp3",
+    "size": 1914872
+  },
+  {
+    "repo": "salmanagustian/wedding-digital-invitation",
+    "branch": "master",
+    "path": "public/assets/music/music.mp3",
+    "url": "https://raw.githubusercontent.com/salmanagustian/wedding-digital-invitation/master/public/assets/music/music.mp3",
+    "size": 2685536
+  },
+  {
+    "repo": "sdprdh/wedding-invitation",
+    "branch": "main",
+    "path": "src/assets/audio/wedding.mp3",
+    "url": "https://raw.githubusercontent.com/sdprdh/wedding-invitation/main/src/assets/audio/wedding.mp3",
+    "size": 1491362
+  },
+  {
+    "repo": "S-jooyoung/WEDDING_INVITATION",
+    "branch": "main",
+    "path": "src/assets/song.mp3",
+    "url": "https://raw.githubusercontent.com/S-jooyoung/WEDDING_INVITATION/main/src/assets/song.mp3",
+    "size": 1801218
+  },
+  {
+    "repo": "sakeenah-wedding/template",
+    "branch": "main",
+    "path": "public/audio/fulfilling-humming.mp3",
+    "url": "https://raw.githubusercontent.com/sakeenah-wedding/template/main/public/audio/fulfilling-humming.mp3",
+    "size": 6586755
+  },
+  {
+    "repo": "sakeenah-wedding/template",
+    "branch": "main",
+    "path": "public/audio/nature-sound.mp3",
+    "url": "https://raw.githubusercontent.com/sakeenah-wedding/template/main/public/audio/nature-sound.mp3",
+    "size": 2878032
+  }
+]
