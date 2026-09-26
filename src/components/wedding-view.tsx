@@ -345,6 +345,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
             newWishContent={newWishContent}
             setNewWishContent={setNewWishContent}
             onAddWish={handleAddWish}
+            onEditField={onEditField}
           />
         )}
 

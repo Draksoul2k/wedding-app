@@ -24,6 +24,7 @@ interface TraditionalLayoutProps {
   newWishContent: string;
   setNewWishContent: (s: string) => void;
   onAddWish: (e: React.FormEvent) => void;
+  onEditField?: (field: 'couple' | 'date') => void;
 }
 
 export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
@@ -44,6 +45,7 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   newWishContent,
   setNewWishContent,
   onAddWish,
+  onEditField,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayCardAsset = template.frameAsset;
@@ -67,7 +69,7 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
 
           {/* Top Double Happiness Badge */}
           <div
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5 z-10"
+            className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5 z-10"
             style={{ backgroundColor: activeColor, borderColor: activeAccent }}
           >
             <span>囍</span>
@@ -75,18 +77,26 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
             <span>囍</span>
           </div>
 
-          {/* Live Editable Couple Name Emblem inside the Traditional Circle (Covers any static mock text) */}
-          <div className="absolute top-[47%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-full bg-[#82131d] border border-amber-400/60 shadow-xl flex flex-col items-center justify-center p-3 text-center z-10">
-            <span className="text-amber-300 text-xs font-serif mb-0.5">囍</span>
-            <div className="font-cursive text-amber-100 text-2xl leading-tight select-none">
-              <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
-              <div className="text-xs text-amber-300/80 font-serif italic my-0.5">và</div>
-              <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
+          {/* Live Editable Couple Name (Updates in real time when user edits bride/groom name in editor!) */}
+          <div
+            onClick={() => onEditField?.('couple')}
+            className={`absolute top-[12%] sm:top-[12.5%] left-0 right-0 text-center px-4 z-20 ${
+              onEditField ? 'cursor-pointer' : ''
+            }`}
+            title={onEditField ? 'Nhấp để sửa tên và kiểu chữ' : undefined}
+          >
+            <div
+              className="inline-block px-3 py-0.5 rounded-lg transition-all font-bold tracking-wider uppercase select-none drop-shadow-sm hover:ring-2 hover:ring-sky-400"
+              style={{
+                fontFamily: data.typography?.fontFamily || 'var(--font-heading)',
+                color: data.typography?.color || '#b91c1c',
+                fontSize: `${Math.min(Math.max(data.typography?.fontSize || 22, 16), 28)}px`,
+                letterSpacing: `${data.typography?.letterSpacing || 1}px`,
+                textTransform: (data.typography?.textTransform || 'uppercase') as any
+              }}
+            >
+              {data.groom.shortName || data.groom.fullName || 'Chú Rể'} & {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
             </div>
-            <div className="w-16 h-[1px] bg-amber-400/40 my-1" />
-            <span className="text-[10px] font-mono text-amber-200/90 tracking-widest uppercase">
-              {data.ceremonies[0]?.dateSolar?.split('-').reverse().join(' . ')}
-            </span>
           </div>
         </div>
 
