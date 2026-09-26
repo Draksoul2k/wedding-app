@@ -84,6 +84,14 @@ export interface WeddingInvitationData {
     fontFamily?: string;
     fontSize?: number;
     color?: string;
+    fontWeight?: string;
+    fontStyle?: string;
+    textDecoration?: string;
+    textTransform?: string;
+    textAlign?: string;
+    opacity?: number;
+    letterSpacing?: number;
+    shadow?: string;
   };
 
   // Dress Code gợi ý trang phục

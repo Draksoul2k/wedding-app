@@ -19,6 +19,11 @@ function CreateInvitationContent() {
     : TEMPLATES[0];
 
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [activeDrawerTool, setActiveDrawerTool] = useState<string | null>('template');
+  const [canvasZoom, setCanvasZoom] = useState<number>(1);
+  const [isTypographyOpen, setIsTypographyOpen] = useState<boolean>(true);
+  const [activeSlide, setActiveSlide] = useState<number>(1);
+
   const [data, setData] = useState<WeddingInvitationData>(() => ({
     ...DEFAULT_WEDDING_DATA,
     templateId: initialTemplate.id,
@@ -28,6 +33,16 @@ function CreateInvitationContent() {
   }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+
+  const updateTypography = (field: string, value: any) => {
+    setData((prev) => ({
+      ...prev,
+      typography: {
+        ...prev.typography,
+        [field]: value
+      }
+    }));
+  };
 
   // Template search & filter state
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -297,34 +312,89 @@ function CreateInvitationContent() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col font-sans">
-      {/* Top Navigation */}
-      <header className="bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+    <div className="h-screen w-screen bg-[#eceef1] flex flex-col font-sans overflow-hidden">
+      {/* Cinelove Top Navigation Bar */}
+      <header className="h-14 bg-white border-b border-gray-200 px-4 flex items-center justify-between sticky top-0 z-40 shrink-0">
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-xl font-bold font-serif text-rose-700 hover:opacity-80">
-            Chung Đôi
+          <button
+            type="button"
+            className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-600 text-sm cursor-pointer"
+            title="Menu"
+          >
+            ☰
+          </button>
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90">
+            <span className="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              c
+            </span>
+            <span className="text-base font-bold text-gray-800 tracking-tight">
+              Cinelove
+            </span>
           </Link>
-          <span className="hidden sm:inline-block text-xs text-gray-400">|</span>
-          <span className="hidden sm:inline-block text-xs font-semibold text-gray-700">
-            Tạo Thiệp Cưới Online
-          </span>
+          <div className="h-4 w-px bg-gray-200 mx-1 hidden sm:block" />
+          <div className="hidden sm:flex items-center gap-1 text-gray-500">
+            <button
+              type="button"
+              className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-xs cursor-pointer"
+              title="Hoàn tác (Undo)"
+            >
+              ↶
+            </button>
+            <button
+              type="button"
+              className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-xs cursor-pointer"
+              title="Làm lại (Redo)"
+            >
+              ↷
+            </button>
+            <button
+              type="button"
+              className="w-7 h-7 rounded hover:bg-gray-100 flex items-center justify-center text-xs cursor-pointer"
+              title="Tìm kiếm / Phóng to"
+            >
+              🔍
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Mobile Preview Toggle */}
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-400 hidden md:inline">
+            Xuất bản để lưu thiết kế vào hệ thống
+          </span>
+
           <button
-            onClick={() => setShowMobilePreview(!showMobilePreview)}
-            className="lg:hidden px-3 py-1.5 text-xs font-bold rounded-lg border border-rose-300 text-rose-700 bg-rose-50"
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                try {
+                  localStorage.setItem(`wedding_${data.slug}`, JSON.stringify(data));
+                  alert('Đã lưu tạm thiết kế thành công vào trình duyệt!');
+                } catch (e) {
+                  alert('Đã lưu vào bộ nhớ tạm!');
+                }
+              }
+            }}
+            className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
-            {showMobilePreview ? '✏️ Quay lại sửa' : '👁️ Xem thử'}
+            <span>💾</span>
+            <span>Lưu tạm</span>
           </button>
 
           <button
+            type="button"
             onClick={handlePublish}
-            className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-red-600 to-rose-600 shadow-md hover:brightness-105 active:scale-95 transition-all"
+            className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-sky-500 hover:bg-sky-600 active:scale-95 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
-            Xuất Bản Thiệp 🚀
+            <span>Xuất bản</span>
+            <span>🚀</span>
           </button>
+
+          <div
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-rose-400 text-white flex items-center justify-center text-xs font-bold ring-2 ring-white shadow-xs cursor-pointer"
+            title="Tài khoản của bạn"
+          >
+            A
+          </div>
         </div>
       </header>
 
@@ -384,41 +454,78 @@ function CreateInvitationContent() {
         </div>
       )}
 
-      {/* Main Container: Split View */}
-      <div className="flex-1 flex max-w-7xl w-full mx-auto p-4 gap-6">
-        {/* Left Column: Form Builder Steps */}
-        <div
-          className={`flex-1 bg-white rounded-2xl shadow-sm border border-stone-200 flex flex-col overflow-hidden ${
-            showMobilePreview ? 'hidden lg:flex' : 'flex'
-          }`}
-        >
-          {/* Step Stepper Header (5 Steps) */}
-          <div className="border-b border-stone-200 p-4 bg-stone-50/70">
-            <div className="grid grid-cols-5 gap-1.5 text-center text-xs">
-              {[
-                { step: 1, label: '1. Mẫu & Nhạc' },
-                { step: 2, label: '2. Dâu & Rể' },
-                { step: 3, label: '3. Lịch Trình' },
-                { step: 4, label: '4. Ảnh Cưới 📸' },
-                { step: 5, label: '5. Mừng Cưới' }
-              ].map((s) => (
-                <button
-                  key={s.step}
-                  onClick={() => setActiveStep(s.step as any)}
-                  className={`py-2 rounded-xl font-bold transition-all ${
-                    activeStep === s.step
-                      ? 'bg-rose-600 text-white shadow-sm'
-                      : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
-                  }`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* Cinelove Studio 3-Column Workspace */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* 1. Left Tool Rail (64px) */}
+        <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-2.5 gap-1 shrink-0 z-30 select-none">
+          {[
+            { id: 'template', label: 'Mẫu thiệp', icon: '🎨', step: 1 },
+            { id: 'photos', label: 'Hình ảnh', icon: '🖼️', step: 4 },
+            { id: 'text', label: 'Văn bản', icon: 'T', step: 2 },
+            { id: 'schedule', label: 'Lịch trình', icon: '💒', step: 3 },
+            { id: 'music', label: 'Âm nhạc', icon: '🎵', step: 1 },
+            { id: 'gift', label: 'Mừng cưới', icon: '🧧', step: 5 },
+            { id: 'settings', label: 'Cài đặt', icon: '⚙️', step: 1 },
+          ].map((tool) => {
+            const isActive = activeDrawerTool === tool.id;
+            return (
+              <button
+                key={tool.id}
+                type="button"
+                onClick={() => {
+                  if (activeDrawerTool === tool.id) {
+                    setActiveDrawerTool(null);
+                  } else {
+                    setActiveDrawerTool(tool.id);
+                    setActiveStep(tool.step as any);
+                    if (tool.id === 'music') setStep1SubTab('music');
+                    if (tool.id === 'template') setStep1SubTab('template');
+                  }
+                }}
+                className={`w-13 py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-sky-50 text-sky-600 font-bold'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+                title={tool.label}
+              >
+                <span className="text-base leading-none">{tool.icon}</span>
+                <span className="text-[10px] leading-tight text-center truncate max-w-full">
+                  {tool.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Form Content */}
-          <div className="p-6 flex-1 overflow-y-auto space-y-6 max-h-[calc(100vh-180px)]">
+        {/* 2. Collapsible Tool Drawer (350px) */}
+        {activeDrawerTool && (
+          <div className="w-[340px] lg:w-[380px] bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 overflow-hidden animate-in slide-in-from-left-4 duration-200">
+            {/* Drawer Header */}
+            <div className="p-3.5 border-b border-gray-200 flex items-center justify-between bg-gray-50/70">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-xs text-gray-800 uppercase tracking-wider">
+                  {activeDrawerTool === 'template' && '🎨 Chọn Mẫu Thiệp'}
+                  {activeDrawerTool === 'photos' && '🖼️ Ảnh Bìa & Album Cưới'}
+                  {activeDrawerTool === 'text' && 'T Nội Dung & Dâu Rể'}
+                  {activeDrawerTool === 'schedule' && '💒 Lịch Trình Hôn Lễ'}
+                  {activeDrawerTool === 'music' && '🎵 Âm Nhạc Nền Thiệp'}
+                  {activeDrawerTool === 'gift' && '🧧 Hộp Mừng Cưới VietQR'}
+                  {activeDrawerTool === 'settings' && '⚙️ Cài Đặt Giao Diện'}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveDrawerTool(null)}
+                className="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-bold cursor-pointer"
+                title="Đóng thanh công cụ"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Drawer Content */}
+            <div className="p-4 flex-1 overflow-y-auto space-y-6 max-h-[calc(100vh-120px)]">
             {/* STEP 1: CHỌN MẪU THIỆP & CÀI ĐẶT NHẠC */}
             {activeStep === 1 && (
               <div className="space-y-5">
@@ -1800,233 +1907,378 @@ function CreateInvitationContent() {
             </button>
           </div>
         </div>
+      )}
 
-        {/* Right Column: Live Mockup Preview & Cinelove Visual Editor */}
-        <div
-          className={`flex-1 flex flex-col items-center justify-center ${
-            showMobilePreview ? 'flex' : 'hidden lg:flex'
-          }`}
-        >
-          {/* ZenLove & Cinelove Typography & Style Quick Toolbar */}
-          <div className="w-full max-w-[390px] mb-2.5 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-stone-200/90 shadow-md flex flex-col gap-2">
-            {/* Quick Presets matching ZenLove Reference Styles */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-              <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider shrink-0">Kiểu ZenLove:</span>
-              <button
-                type="button"
-                onClick={() =>
-                  setData({
-                    ...data,
-                    typography: {
-                      ...data.typography,
-                      fontFamily: 'Charmonman',
-                      fontSize: 44,
-                      color: data.typography?.color === '#ffffff' ? '#ffffff' : '#18181b'
-                    }
-                  })
-                }
-                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
-                  data.typography?.fontFamily === 'Charmonman'
-                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
-                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
-                }`}
-              >
-                ✨ Thư pháp Hoàng Gia
-              </button>
+        {/* 3. Center Studio Canvas */}
+        <div className="flex-1 bg-[#eceef1] relative flex flex-col items-center justify-between overflow-hidden">
+          {/* Floating Zoom Controls (top right of canvas) */}
+          <div className="absolute right-4 top-4 bg-white/95 backdrop-blur-md rounded-xl shadow-md border border-gray-200 p-1 flex flex-col items-center gap-1 z-20">
+            <button
+              type="button"
+              onClick={() => setCanvasZoom((z) => Math.min(1.2, z + 0.05))}
+              className="w-7 h-7 flex items-center justify-center text-xs font-bold text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+              title="Phóng to"
+            >
+              +
+            </button>
+            <span className="text-[10px] font-mono font-bold text-gray-600 px-1">
+              {Math.round(canvasZoom * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={() => setCanvasZoom((z) => Math.max(0.8, z - 0.05))}
+              className="w-7 h-7 flex items-center justify-center text-xs font-bold text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+              title="Thu nhỏ"
+            >
+              -
+            </button>
+            <div className="w-full h-px bg-gray-200" />
+            <button
+              type="button"
+              onClick={() => setCanvasZoom(1)}
+              className="w-7 h-7 flex items-center justify-center text-[11px] text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+              title="Kích thước 100%"
+            >
+              ⛶
+            </button>
+          </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setData({
-                    ...data,
-                    typography: {
-                      ...data.typography,
-                      fontFamily: 'Playfair Display',
-                      fontSize: 38,
-                      color: '#641b24'
-                    }
-                  })
-                }
-                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
-                  data.typography?.fontFamily === 'Playfair Display'
-                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
-                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
-                }`}
-              >
-                👑 Cổ Điển Rượu Vang
-              </button>
+          {/* Floating Chat Widget (bottom right of canvas) */}
+          <div
+            className="absolute right-4 bottom-16 w-10 h-10 rounded-full bg-rose-500 text-white shadow-lg flex items-center justify-center text-base hover:scale-105 transition-all cursor-pointer z-20"
+            title="Hỗ trợ trực tuyến"
+          >
+            💬
+          </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setData({
-                    ...data,
-                    typography: {
-                      ...data.typography,
-                      fontFamily: 'Dancing Script',
-                      fontSize: 44
-                    }
-                  })
-                }
-                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
-                  data.typography?.fontFamily === 'Dancing Script'
-                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
-                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
-                }`}
-              >
-                🖋️ Viết Tay
-              </button>
-            </div>
+          {/* Canvas Center Viewport */}
+          <div className="flex-1 w-full flex items-center justify-center p-4 overflow-hidden">
+            <div
+              className="transition-transform duration-200 origin-center"
+              style={{ transform: `scale(${canvasZoom})` }}
+            >
+              <div className="w-[375px] h-[670px] bg-black rounded-[42px] p-2.5 shadow-2xl ring-8 ring-stone-900/10 flex flex-col relative overflow-hidden">
+                {/* Dynamic Island Mockup */}
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-40 pointer-events-none" />
 
-            {/* Granular Font Controls & Color Swatches */}
-            <div className="flex items-center justify-between gap-1.5 pt-1 border-t border-stone-100">
-              <div className="flex items-center gap-1">
-                <select
-                  value={data.typography?.fontFamily || 'Charmonman'}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      typography: {
-                        ...data.typography,
-                        fontFamily: e.target.value
-                      }
-                    })
-                  }
-                  className="text-[11px] font-medium py-1 px-1.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-800 cursor-pointer max-w-[130px]"
+                {/* Mobile Screen Container */}
+                <div
+                  ref={phoneScrollRef}
+                  className="flex-1 bg-white rounded-[34px] overflow-y-auto relative no-scrollbar"
                 >
-                  <option value="Charmonman">Charmonman (Thư pháp)</option>
-                  <option value="Playfair Display">Playfair (Cổ điển)</option>
-                  <option value="Dancing Script">Dancing Script (Viết tay)</option>
-                  <option value="Lora">Lora (Tinh tế)</option>
-                  <option value="Charm">Charm (Quý phái)</option>
-                  <option value="Pattaya">Pattaya (Chữ ký)</option>
+                  <WeddingView
+                    data={data}
+                    isLivePreview={true}
+                    onEditField={(field) => {
+                      setIsTypographyOpen(true);
+                      if (field === 'couple') setActiveDrawerTool('text');
+                      if (field === 'date') setActiveDrawerTool('schedule');
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Slide Strip (Cinelove Slide Bar) */}
+          <div className="w-full bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-2 flex items-center gap-3 z-30 shrink-0">
+            {/* Quick Replace Photo Button */}
+            <button
+              type="button"
+              onClick={() => setActiveDrawerTool('photos')}
+              className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center gap-1.5 shadow-xs whitespace-nowrap cursor-pointer shrink-0"
+            >
+              <span>Thay ảnh nhanh</span>
+              <span className="text-[10px]">⌄</span>
+            </button>
+
+            {/* Slide Thumbnails List */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 flex-1">
+              {[
+                { id: 1, label: 'Bìa', icon: '📷', targetScroll: 0, img: data.heroPhoto || initialTemplate.frameAsset },
+                { id: 2, label: 'Dâu & Rể', icon: '💍', targetScroll: 750, img: data.galleryImages[0] || initialTemplate.frameAsset },
+                { id: 3, label: 'Lịch trình', icon: '💒', targetScroll: 1350, img: data.galleryImages[1] || initialTemplate.frameAsset },
+                { id: 4, label: 'Album', icon: '📸', targetScroll: 2100, img: data.galleryImages[2] || initialTemplate.frameAsset },
+                { id: 5, label: 'Mừng cưới', icon: '🧧', targetScroll: 2800, img: data.galleryImages[3] || initialTemplate.frameAsset },
+              ].map((slide) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveSlide(slide.id);
+                    if (phoneScrollRef.current) {
+                      phoneScrollRef.current.scrollTo({ top: slide.targetScroll, behavior: 'smooth' });
+                    }
+                  }}
+                  className={`rounded-lg overflow-hidden border-2 transition-all flex items-center gap-2 p-1 bg-gray-50 hover:bg-white shrink-0 cursor-pointer ${
+                    activeSlide === slide.id ? 'border-sky-500 ring-2 ring-sky-200 shadow-xs' : 'border-gray-200'
+                  }`}
+                >
+                  <div className="w-8 h-10 rounded bg-stone-200 overflow-hidden shrink-0">
+                    <img src={slide.img} alt={slide.label} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="text-left pr-2">
+                    <span className="text-[9px] font-bold text-gray-400 block uppercase">Slide {slide.id}</span>
+                    <span className="text-xs font-semibold text-gray-800">{slide.label}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Right Inspector Panel: "Kiểu chữ" (300px) */}
+        <div className="w-[300px] bg-white border-l border-gray-200 flex flex-col shrink-0 overflow-y-auto text-xs text-gray-800 select-none z-20">
+          {/* Accordion Header: Kiểu chữ */}
+          <div
+            className="p-3.5 border-b border-gray-200 flex items-center justify-between font-bold text-gray-900 cursor-pointer bg-gray-50/50"
+            onClick={() => setIsTypographyOpen(!isTypographyOpen)}
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-[10px] text-gray-400">{isTypographyOpen ? '⌵' : '❯'}</span>
+              <span className="text-sm">Kiểu chữ</span>
+            </span>
+            <span className="text-[10px] text-sky-600 font-normal">Căn chỉnh nhanh</span>
+          </div>
+
+          {isTypographyOpen && (
+            <div className="p-4 space-y-4 border-b border-gray-100">
+              {/* Formatting Toolbar */}
+              <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-200 justify-between">
+                <button
+                  type="button"
+                  onClick={() => updateTypography('fontWeight', data.typography?.fontWeight === 'normal' ? 'bold' : 'normal')}
+                  className={`w-8 h-7 rounded flex items-center justify-center font-bold text-xs transition-all cursor-pointer ${
+                    data.typography?.fontWeight !== 'normal' ? 'bg-sky-500 text-white shadow-xs' : 'text-gray-700 hover:bg-white'
+                  }`}
+                  title="In đậm (Bold)"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateTypography('fontStyle', data.typography?.fontStyle === 'italic' ? 'normal' : 'italic')}
+                  className={`w-8 h-7 rounded flex items-center justify-center italic font-serif text-xs transition-all cursor-pointer ${
+                    data.typography?.fontStyle === 'italic' ? 'bg-sky-500 text-white shadow-xs' : 'text-gray-700 hover:bg-white'
+                  }`}
+                  title="In nghiêng (Italic)"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateTypography('textDecoration', data.typography?.textDecoration === 'line-through' ? 'none' : 'line-through')}
+                  className={`w-8 h-7 rounded flex items-center justify-center line-through text-xs transition-all cursor-pointer ${
+                    data.typography?.textDecoration === 'line-through' ? 'bg-sky-500 text-white shadow-xs' : 'text-gray-700 hover:bg-white'
+                  }`}
+                  title="Gạch ngang (Strikethrough)"
+                >
+                  S
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateTypography('textDecoration', data.typography?.textDecoration === 'underline' ? 'none' : 'underline')}
+                  className={`w-8 h-7 rounded flex items-center justify-center underline text-xs transition-all cursor-pointer ${
+                    data.typography?.textDecoration === 'underline' ? 'bg-sky-500 text-white shadow-xs' : 'text-gray-700 hover:bg-white'
+                  }`}
+                  title="Gạch chân (Underline)"
+                >
+                  U
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateTypography('textTransform', data.typography?.textTransform === 'uppercase' ? 'none' : 'uppercase')}
+                  className={`w-8 h-7 rounded flex items-center justify-center text-xs font-semibold transition-all cursor-pointer ${
+                    data.typography?.textTransform === 'uppercase' ? 'bg-sky-500 text-white shadow-xs' : 'text-gray-700 hover:bg-white'
+                  }`}
+                  title="Chữ in hoa (Uppercase)"
+                >
+                  Aa
+                </button>
+                <button
+                  type="button"
+                  className="w-8 h-7 rounded flex items-center justify-center text-xs text-gray-700 hover:bg-white transition-all cursor-pointer"
+                  title="Danh sách"
+                >
+                  ≡
+                </button>
+              </div>
+
+              {/* Căn chỉnh */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 font-medium">Căn chỉnh</span>
+                <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-200">
+                  {(['left', 'center', 'right', 'justify'] as const).map((align) => (
+                    <button
+                      key={align}
+                      type="button"
+                      onClick={() => updateTypography('textAlign', align)}
+                      className={`w-7 h-6 rounded flex items-center justify-center text-xs transition-all cursor-pointer ${
+                        (data.typography?.textAlign || 'center') === align
+                          ? 'bg-sky-500 text-white shadow-xs'
+                          : 'text-gray-600 hover:bg-white'
+                      }`}
+                    >
+                      {align === 'left' ? '⬅' : align === 'center' ? '⬛' : align === 'right' ? '➡' : '≣'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Font size */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 font-medium">Font size</span>
+                <div className="flex items-center gap-1 bg-gray-50 p-0.5 rounded-lg border border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => updateTypography('fontSize', Math.max(20, (data.typography?.fontSize || 42) - 2))}
+                    className="w-7 h-7 flex items-center justify-center font-bold text-gray-600 hover:bg-white rounded cursor-pointer"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={data.typography?.fontSize || 42}
+                    onChange={(e) => updateTypography('fontSize', Number(e.target.value))}
+                    className="w-10 text-center font-mono font-bold text-xs bg-transparent focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => updateTypography('fontSize', Math.min(72, (data.typography?.fontSize || 42) + 2))}
+                    className="w-7 h-7 flex items-center justify-center font-bold text-gray-600 hover:bg-white rounded cursor-pointer"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Font Selector */}
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500 font-medium">Font</span>
+                <select
+                  value={data.typography?.fontFamily || 'Aquarelle'}
+                  onChange={(e) => updateTypography('fontFamily', e.target.value)}
+                  className="px-2.5 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-xs font-semibold text-gray-800 focus:outline-none focus:ring-1 focus:ring-sky-500 max-w-[170px] cursor-pointer"
+                >
+                  <option value="Aquarelle">Aquarelle (Cinelove Thư pháp)</option>
+                  <option value="Dancing Script">Dancing Script (Chữ ký mềm)</option>
+                  <option value="Playfair Display">Playfair Display (Hoàng gia)</option>
+                  <option value="Lora">Lora (Vogue Thanh lịch)</option>
+                  <option value="Pattaya">Pattaya (Bút lông mềm)</option>
+                  <option value="Montserrat">Montserrat (Hiện đại)</option>
                 </select>
               </div>
 
-              {/* Font Size +/- */}
-              <div className="flex items-center gap-0.5 bg-stone-100 p-0.5 rounded-lg border border-stone-200">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setData({
-                      ...data,
-                      typography: {
-                        ...data.typography,
-                        fontSize: Math.max(28, (data.typography?.fontSize || 42) - 2)
-                      }
-                    })
-                  }
-                  className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
-                  title="Giảm cỡ chữ"
-                >
-                  -
-                </button>
-                <span className="text-[10px] font-mono font-bold px-1 text-stone-800 min-w-[20px] text-center">
-                  {data.typography?.fontSize || 42}
-                </span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setData({
-                      ...data,
-                      typography: {
-                        ...data.typography,
-                        fontSize: Math.min(60, (data.typography?.fontSize || 42) + 2)
-                      }
-                    })
-                  }
-                  className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
-                  title="Tăng cỡ chữ"
-                >
-                  +
-                </button>
+              {/* Colors */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500 font-medium">Màu chữ</span>
+                    <div className="relative">
+                      <input
+                        type="color"
+                        value={data.typography?.color || '#111827'}
+                        onChange={(e) => updateTypography('color', e.target.value)}
+                        className="opacity-0 absolute inset-0 w-6 h-6 cursor-pointer"
+                      />
+                      <div
+                        className="w-6 h-6 rounded-md border border-gray-300 shadow-xs cursor-pointer"
+                        style={{ backgroundColor: data.typography?.color || '#111827' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500 font-medium">Màu nền</span>
+                    <div className="w-6 h-6 rounded-md border border-gray-300 bg-white flex items-center justify-center text-xs text-gray-400">
+                      ⊘
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Swatches */}
+                <div className="flex items-center justify-between pt-1">
+                  {[
+                    { label: 'Đen', hex: '#111827' },
+                    { label: 'Đỏ Rượu ZenLove', hex: '#641b24' },
+                    { label: 'Vàng Gold', hex: '#d4af37' },
+                    { label: 'Trắng Sáng', hex: '#ffffff' },
+                    { label: 'Xanh Navy', hex: '#1e293b' },
+                    { label: 'Nâu Cacao', hex: '#4a2c20' }
+                  ].map((c) => (
+                    <button
+                      key={c.hex}
+                      type="button"
+                      onClick={() => updateTypography('color', c.hex)}
+                      className={`w-5 h-5 rounded-full border border-gray-300 transition-all cursor-pointer ${
+                        (data.typography?.color || '#111827') === c.hex ? 'scale-125 ring-2 ring-sky-500 shadow-xs' : 'hover:scale-110'
+                      }`}
+                      style={{ backgroundColor: c.hex }}
+                      title={c.label}
+                    />
+                  ))}
+                </div>
               </div>
 
-              {/* Text Color Swatches (Including ZenLove Burgundy & Champagne Gold) */}
-              <div className="flex items-center gap-1">
-                {[
-                  { label: 'Rượu Vang ZenLove', hex: '#641b24' },
-                  { label: 'Vàng Đồng', hex: '#d4af37' },
-                  { label: 'Trắng Sáng (Nổi trên nền tối)', hex: '#ffffff' },
-                  { label: 'Đen Than Chì', hex: '#18181b' },
-                  { label: 'Nâu Cacao', hex: '#4a2c20' },
-                ].map((c) => (
-                  <button
-                    key={c.hex}
-                    type="button"
-                    onClick={() =>
-                      setData({
-                        ...data,
-                        typography: {
-                          ...data.typography,
-                          color: c.hex
-                        }
-                      })
-                    }
-                    className={`w-4 h-4 rounded-full border border-stone-300 transition-all cursor-pointer ${
-                      (data.typography?.color || '#18181b') === c.hex ? 'scale-125 ring-2 ring-rose-500 shadow-xs' : 'hover:scale-110'
-                    }`}
-                    style={{ backgroundColor: c.hex }}
-                    title={`Màu ${c.label}`}
-                  />
-                ))}
+              {/* Trong suốt (Opacity) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-gray-500">
+                  <span className="font-medium">Trong suốt</span>
+                  <span className="font-mono text-gray-700">{(data.typography?.opacity ?? 1).toFixed(2)}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.1"
+                  max="1"
+                  step="0.05"
+                  value={data.typography?.opacity ?? 1}
+                  onChange={(e) => updateTypography('opacity', parseFloat(e.target.value))}
+                  className="w-full accent-sky-500 h-1.5 bg-gray-200 rounded-lg cursor-pointer"
+                />
+              </div>
+
+              {/* Sửa tên trực tiếp trên thiệp */}
+              <div className="pt-2 border-t border-gray-100 space-y-2">
+                <span className="text-[11px] font-bold text-gray-700 block">Sửa tên trực tiếp trên thiệp:</span>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] text-gray-500 block mb-0.5">Tên Cô Dâu</label>
+                    <input
+                      type="text"
+                      value={data.bride.shortName}
+                      onChange={(e) => updateBride('shortName', e.target.value)}
+                      className="w-full px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 font-semibold text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-gray-500 block mb-0.5">Tên Chú Rể</label>
+                    <input
+                      type="text"
+                      value={data.groom.shortName}
+                      onChange={(e) => updateGroom('shortName', e.target.value)}
+                      className="w-full px-2 py-1.5 rounded-lg border border-gray-200 bg-gray-50 font-semibold text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="w-full max-w-[390px] h-[780px] bg-black rounded-[48px] p-3 shadow-2xl ring-8 ring-stone-800/10 flex flex-col relative overflow-hidden">
-            {/* iPhone Dynamic Island Mockup Notch */}
-            <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-40 pointer-events-none" />
-
-            {/* Mobile Screen Container */}
-            <div
-              ref={phoneScrollRef}
-              className="flex-1 bg-white rounded-[38px] overflow-y-auto relative no-scrollbar"
-            >
-              <WeddingView
-                data={data}
-                isLivePreview={true}
-                onEditField={(field) => {
-                  if (field === 'couple') setActiveStep(2);
-                  if (field === 'date') setActiveStep(3);
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Cinelove Section Navigation Bar */}
-          <div className="w-full max-w-[390px] mt-2.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar py-1">
+          {/* Collapsible Accordions below */}
+          <div className="divide-y divide-gray-100">
             {[
-              { label: 'Ảnh bìa', step: 1, icon: '📷', targetScroll: 0 },
-              { label: 'Dâu & Rể', step: 2, icon: '💍', targetScroll: 750 },
-              { label: 'Lịch trình', step: 3, icon: '💒', targetScroll: 1350 },
-              { label: 'Album', step: 4, icon: '📸', targetScroll: 2100 },
-              { label: 'Mừng cưới', step: 5, icon: '🧧', targetScroll: 2800 },
-            ].map((tab, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => {
-                  setActiveStep(tab.step as any);
-                  if (phoneScrollRef.current) {
-                    phoneScrollRef.current.scrollTo({ top: tab.targetScroll, behavior: 'smooth' });
-                  }
-                }}
-                className={`px-2 py-1 rounded-xl text-[10px] font-bold border transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
-                  activeStep === tab.step
-                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
-                    : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
+              { id: 'spacing', title: 'Khoảng đệm' },
+              { id: 'border', title: 'Đường viền' },
+              { id: 'shadow', title: 'Đổ bóng' },
+              { id: 'link', title: 'Liên kết' },
+              { id: 'animation', title: 'Hiệu ứng chuyển động' },
+              { id: 'loop', title: 'Chuyển động liên tục' }
+            ].map((sec) => (
+              <div key={sec.id} className="p-3.5 flex items-center justify-between text-gray-700 hover:bg-gray-50 cursor-pointer font-medium">
+                <span>❯ {sec.title}</span>
+              </div>
             ))}
           </div>
-
-          <span className="text-[11px] text-gray-400 mt-2 font-medium">
-            📱 Bấm vào chữ trên màn hình hoặc dùng thanh công cụ để chỉnh sửa trực tiếp
-          </span>
         </div>
         {/* MODAL XEM LỜI BÀI HÁT (LYRICS MODAL) */}
         {activeLyricsSong && (

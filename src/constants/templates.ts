@@ -1071,9 +1071,17 @@ export const DEFAULT_WEDDING_DATA = {
   musicTitle: 'Ánh Nắng Của Anh - Đức Phúc (Bản Có Lời)',
   fallingEffect: 'petals' as const,
   typography: {
-    fontFamily: 'Charmonman',
+    fontFamily: 'Aquarelle',
     fontSize: 42,
     color: '#111827',
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    textDecoration: 'none',
+    textTransform: 'none',
+    textAlign: 'center',
+    opacity: 1,
+    letterSpacing: 0,
+    shadow: 'soft'
   },
 
   groom: {
