@@ -1807,35 +1807,11 @@ function CreateInvitationContent() {
             showMobilePreview ? 'flex' : 'hidden lg:flex'
           }`}
         >
-          {/* Cinelove Interactive Typography & Design Quick Toolbar */}
-          <div className="w-full max-w-[390px] mb-2.5 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-stone-200/90 shadow-md flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs">✍️</span>
-              <span className="text-[11px] font-bold text-stone-800">Kiểu chữ:</span>
-              <select
-                value={data.typography?.fontFamily || 'Charmonman'}
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    typography: {
-                      ...data.typography,
-                      fontFamily: e.target.value
-                    }
-                  })
-                }
-                className="text-[11px] font-medium py-1 px-1.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-800 cursor-pointer"
-              >
-                <option value="Charmonman">Aquarelle (Thư pháp mềm)</option>
-                <option value="Dancing Script">Dancing Script (Viết tay)</option>
-                <option value="Playfair Display">Playfair (Sang trọng)</option>
-                <option value="Lora">Lora (Cổ điển tinh tế)</option>
-                <option value="Charm">Charm (Quý phái)</option>
-                <option value="Pattaya">Pattaya (Chữ ký)</option>
-              </select>
-            </div>
-
-            {/* Font Size +/- */}
-            <div className="flex items-center gap-0.5 bg-stone-100 p-0.5 rounded-lg border border-stone-200">
+          {/* ZenLove & Cinelove Typography & Style Quick Toolbar */}
+          <div className="w-full max-w-[390px] mb-2.5 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-stone-200/90 shadow-md flex flex-col gap-2">
+            {/* Quick Presets matching ZenLove Reference Styles */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+              <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider shrink-0">Kiểu ZenLove:</span>
               <button
                 type="button"
                 onClick={() =>
@@ -1843,18 +1819,21 @@ function CreateInvitationContent() {
                     ...data,
                     typography: {
                       ...data.typography,
-                      fontSize: Math.max(28, (data.typography?.fontSize || 42) - 2)
+                      fontFamily: 'Charmonman',
+                      fontSize: 44,
+                      color: data.typography?.color === '#ffffff' ? '#ffffff' : '#18181b'
                     }
                   })
                 }
-                className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
-                title="Giảm cỡ chữ"
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
+                  data.typography?.fontFamily === 'Charmonman'
+                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
+                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
+                }`}
               >
-                -
+                ✨ Thư pháp Hoàng Gia
               </button>
-              <span className="text-[10px] font-mono font-bold px-1 text-stone-800 min-w-[20px] text-center">
-                {data.typography?.fontSize || 42}
-              </span>
+
               <button
                 type="button"
                 onClick={() =>
@@ -1862,44 +1841,136 @@ function CreateInvitationContent() {
                     ...data,
                     typography: {
                       ...data.typography,
-                      fontSize: Math.min(60, (data.typography?.fontSize || 42) + 2)
+                      fontFamily: 'Playfair Display',
+                      fontSize: 38,
+                      color: '#641b24'
                     }
                   })
                 }
-                className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
-                title="Tăng cỡ chữ"
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
+                  data.typography?.fontFamily === 'Playfair Display'
+                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
+                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
+                }`}
               >
-                +
+                👑 Cổ Điển Rượu Vang
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setData({
+                    ...data,
+                    typography: {
+                      ...data.typography,
+                      fontFamily: 'Dancing Script',
+                      fontSize: 44
+                    }
+                  })
+                }
+                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-all shrink-0 cursor-pointer ${
+                  data.typography?.fontFamily === 'Dancing Script'
+                    ? 'bg-rose-50 border-rose-400 text-rose-700 shadow-2xs'
+                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
+                }`}
+              >
+                🖋️ Viết Tay
               </button>
             </div>
 
-            {/* Text Color Swatches */}
-            <div className="flex items-center gap-1">
-              {[
-                { label: 'Đen', hex: '#111827' },
-                { label: 'Vàng Gold', hex: '#d4af37' },
-                { label: 'Đỏ Rượu', hex: '#991b1b' },
-                { label: 'Trắng', hex: '#ffffff' },
-              ].map((c) => (
+            {/* Granular Font Controls & Color Swatches */}
+            <div className="flex items-center justify-between gap-1.5 pt-1 border-t border-stone-100">
+              <div className="flex items-center gap-1">
+                <select
+                  value={data.typography?.fontFamily || 'Charmonman'}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      typography: {
+                        ...data.typography,
+                        fontFamily: e.target.value
+                      }
+                    })
+                  }
+                  className="text-[11px] font-medium py-1 px-1.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-800 cursor-pointer max-w-[130px]"
+                >
+                  <option value="Charmonman">Charmonman (Thư pháp)</option>
+                  <option value="Playfair Display">Playfair (Cổ điển)</option>
+                  <option value="Dancing Script">Dancing Script (Viết tay)</option>
+                  <option value="Lora">Lora (Tinh tế)</option>
+                  <option value="Charm">Charm (Quý phái)</option>
+                  <option value="Pattaya">Pattaya (Chữ ký)</option>
+                </select>
+              </div>
+
+              {/* Font Size +/- */}
+              <div className="flex items-center gap-0.5 bg-stone-100 p-0.5 rounded-lg border border-stone-200">
                 <button
-                  key={c.hex}
                   type="button"
                   onClick={() =>
                     setData({
                       ...data,
                       typography: {
                         ...data.typography,
-                        color: c.hex
+                        fontSize: Math.max(28, (data.typography?.fontSize || 42) - 2)
                       }
                     })
                   }
-                  className={`w-4 h-4 rounded-full border border-stone-400 transition-transform cursor-pointer ${
-                    (data.typography?.color || '#111827') === c.hex ? 'scale-125 ring-2 ring-rose-400' : 'hover:scale-110'
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                  title={`Màu ${c.label}`}
-                />
-              ))}
+                  className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
+                  title="Giảm cỡ chữ"
+                >
+                  -
+                </button>
+                <span className="text-[10px] font-mono font-bold px-1 text-stone-800 min-w-[20px] text-center">
+                  {data.typography?.fontSize || 42}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setData({
+                      ...data,
+                      typography: {
+                        ...data.typography,
+                        fontSize: Math.min(60, (data.typography?.fontSize || 42) + 2)
+                      }
+                    })
+                  }
+                  className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
+                  title="Tăng cỡ chữ"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Text Color Swatches (Including ZenLove Burgundy & Champagne Gold) */}
+              <div className="flex items-center gap-1">
+                {[
+                  { label: 'Rượu Vang ZenLove', hex: '#641b24' },
+                  { label: 'Vàng Đồng', hex: '#d4af37' },
+                  { label: 'Trắng Sáng (Nổi trên nền tối)', hex: '#ffffff' },
+                  { label: 'Đen Than Chì', hex: '#18181b' },
+                  { label: 'Nâu Cacao', hex: '#4a2c20' },
+                ].map((c) => (
+                  <button
+                    key={c.hex}
+                    type="button"
+                    onClick={() =>
+                      setData({
+                        ...data,
+                        typography: {
+                          ...data.typography,
+                          color: c.hex
+                        }
+                      })
+                    }
+                    className={`w-4 h-4 rounded-full border border-stone-300 transition-all cursor-pointer ${
+                      (data.typography?.color || '#18181b') === c.hex ? 'scale-125 ring-2 ring-rose-500 shadow-xs' : 'hover:scale-110'
+                    }`}
+                    style={{ backgroundColor: c.hex }}
+                    title={`Màu ${c.label}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 

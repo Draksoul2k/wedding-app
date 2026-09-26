@@ -164,69 +164,86 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           />
         </motion.div>
 
-        {/* Ambient Overlay: Only subtle bottom transition if needed, no dirtying top/middle overlay */}
-        {isDark ? (
+        {/* Ambient Overlay: Only subtle dark vignette for dark templates, NO cloudy white fog on light templates */}
+        {isDark && (
           <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/60 pointer-events-none" />
-        ) : (
-          <div
-            className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
-            style={{
-              background: `linear-gradient(to top, ${containerBg} 0%, transparent 100%)`
-            }}
-          />
         )}
 
-        {/* Top Header: "Save The Date" in Flowing Calligraphy - Crisp ZenLove Typography, No Drop Shadow */}
-        <div className="relative z-10 pt-7 px-6 flex justify-between items-start pointer-events-none">
+        {/* Top Header: "Save The Date" in Flowing Calligraphy - Large & Elegant ZenLove Style */}
+        <div className="relative z-10 pt-8 px-6 text-center pointer-events-none">
           <div
-            className="font-cursive text-3xl sm:text-4xl font-normal select-none"
+            className="font-cursive text-4xl sm:text-5xl font-bold select-none drop-shadow-sm"
             style={{
-              color: isDark ? '#ffffff' : '#111827',
-              textShadow: 'none'
+              color: isDark ? '#ffffff' : (data.typography?.color || '#18181b'),
+              textShadow: isDark
+                ? '0 2px 10px rgba(0,0,0,0.8)'
+                : '0 1px 3px rgba(255,255,255,0.9), 0 0 1px #ffffff'
             }}
           >
             Save The Date
           </div>
         </div>
 
-        {/* Lower-Third / Skirt Area: Editable Typography (Cinelove / ZenLove Style Calligraphy) */}
-        <div className="relative z-20 px-6 pt-2 pb-2 text-center mt-auto flex flex-col items-center justify-center">
+        {/* Centerpiece Area: Editable Typography (ZenLove Bold Script & Luxury Serif Styles) */}
+        <div className="relative z-20 px-6 py-4 text-center my-auto flex flex-col items-center justify-center">
           <div
             onClick={() => onEditField?.('couple')}
-            className={`group relative select-none transition-all duration-200 rounded-xl p-2.5 ${
+            className={`group relative select-none transition-all duration-200 rounded-xl p-3 ${
               onEditField
-                ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/60 hover:bg-sky-50/10'
+                ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15'
                 : ''
             }`}
             title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
           >
-            <div
-              className="font-cursive leading-tight text-center"
-              style={{
-                fontSize: `${data.typography?.fontSize || 42}px`,
-                color: data.typography?.color || (isDark ? '#ffffff' : '#111827'),
-                fontFamily: data.typography?.fontFamily
-                  ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
-                  : 'var(--font-charmonman), var(--font-cursive), cursive',
-                textShadow: 'none'
-              }}
-            >
-              <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
-              <div className="text-2xl opacity-75 my-0.5 italic font-serif">&amp;</div>
-              <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
-            </div>
+            {/* Dynamic Rendering: ZenLove Calligraphy (Bold Script) vs ZenLove All-Caps Luxury Serif */}
+            {data.typography?.fontFamily === 'Playfair Display' || data.typography?.fontFamily === 'Lora' ? (
+              <div
+                className="font-serif font-bold uppercase tracking-wider text-center leading-tight"
+                style={{
+                  fontSize: `${(data.typography?.fontSize || 42) - 4}px`,
+                  color: data.typography?.color || (isDark ? '#ffffff' : '#641b24'),
+                  textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
+                    ? '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)'
+                    : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
+                }}
+              >
+                <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
+                <div className="text-xl opacity-80 my-1 font-serif italic normal-case">&amp;</div>
+                <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
+              </div>
+            ) : (
+              <div
+                className="font-cursive font-bold leading-tight text-center"
+                style={{
+                  fontSize: `${data.typography?.fontSize || 44}px`,
+                  color: data.typography?.color || (isDark ? '#ffffff' : '#18181b'),
+                  fontFamily: data.typography?.fontFamily
+                    ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
+                    : 'var(--font-charmonman), var(--font-cursive), cursive',
+                  textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
+                    ? '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)'
+                    : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
+                }}
+              >
+                <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
+                <div className="text-2xl opacity-85 my-0.5 italic font-serif font-normal">&amp;</div>
+                <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
+              </div>
+            )}
           </div>
 
           {/* Wedding Solar Date */}
           {targetDateStr && (
             <div
               onClick={() => onEditField?.('date')}
-              className={`mt-1 text-xs uppercase tracking-[0.2em] font-mono font-medium select-none transition-all ${
+              className={`mt-2 text-xs uppercase tracking-[0.25em] font-mono font-bold select-none transition-all ${
                 onEditField ? 'cursor-pointer hover:underline' : ''
               }`}
               style={{
-                color: isDark ? '#f1f5f9' : '#374151',
-                textShadow: 'none'
+                color: data.typography?.color || (isDark ? '#f1f5f9' : '#374151'),
+                textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
+                  ? '0 1px 4px rgba(0,0,0,0.8)'
+                  : '0 1px 2px rgba(255,255,255,0.9), 0 0 1px #ffffff'
               }}
               title={onEditField ? 'Nhấp để chỉnh sửa ngày cưới' : undefined}
             >
