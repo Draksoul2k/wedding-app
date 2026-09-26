@@ -24,7 +24,7 @@ function CreateInvitationContent() {
     templateId: initialTemplate.id,
     themeName: initialTemplate.name,
     primaryColor: initialTemplate.primaryColor,
-    heroPhoto: initialTemplate.frameAsset
+    heroPhoto: ''
   }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
@@ -132,7 +132,7 @@ function CreateInvitationContent() {
       templateId: tmpl.id,
       themeName: tmpl.name,
       primaryColor: tmpl.primaryColor,
-      heroPhoto: tmpl.frameAsset,
+      heroPhoto: prev.heroPhoto && !prev.heroPhoto.includes('/templates/cinelove') && !prev.heroPhoto.includes('/templates/motdoi') ? prev.heroPhoto : '',
       fallingEffect:
         tmpl.category === 'hoa_la'
           ? 'petals'
@@ -155,7 +155,7 @@ function CreateInvitationContent() {
             setData((prev) => ({
               ...prev,
               primaryColor: v.primaryColor,
-              heroPhoto: v.frameAsset
+              heroPhoto: prev.heroPhoto && !prev.heroPhoto.includes('/templates/cinelove') && !prev.heroPhoto.includes('/templates/motdoi') ? prev.heroPhoto : ''
             }));
           }
         }

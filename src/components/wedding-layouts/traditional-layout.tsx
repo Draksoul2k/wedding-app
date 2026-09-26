@@ -46,7 +46,9 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const displayPhoto = data.heroPhoto || template.frameAsset;
+  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
+  const displayCardAsset = !isCatalogScreenshot(template.frameAsset) ? template.frameAsset : '/templates/song_hy_red.webp';
+  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto) ? data.heroPhoto : null;
 
   return (
     <div className="bg-[#fff9f5] text-stone-900 min-h-screen font-serif selection:bg-red-200">
@@ -77,7 +79,7 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
           style={{ borderColor: activeColor }}
         >
           <img
-            src={template.frameAsset}
+            src={displayCardAsset}
             alt={template.name}
             className="w-full h-auto object-cover rounded-xl shadow-inner"
             loading="eager"
@@ -94,13 +96,13 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
         </div>
 
         {/* User Uploaded Photo Spotlight (if provided) */}
-        {data.heroPhoto && (
+        {displayPhoto && (
           <div
             className="relative max-w-[280px] mx-auto mt-5 aspect-[3/4] rounded-t-[120px] rounded-b-2xl overflow-hidden shadow-xl border-2 p-1 bg-white"
             style={{ borderColor: activeAccent }}
           >
             <img
-              src={data.heroPhoto}
+              src={displayPhoto}
               alt="Ảnh cưới cặp đôi"
               className="w-full h-full object-cover rounded-t-[110px] rounded-b-xl"
             />

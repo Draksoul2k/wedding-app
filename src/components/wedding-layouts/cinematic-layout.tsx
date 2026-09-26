@@ -46,7 +46,15 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const displayPhoto = data.heroPhoto || template.frameAsset;
+  const mainCeremony = data.ceremonies[0];
+  const targetDateStr = mainCeremony?.dateSolar || '2026-10-24';
+
+  // Default clean cinematic couple portrait if user has not uploaded a photo yet
+  const defaultCinematicPhoto = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80';
+  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
+  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
+    ? data.heroPhoto
+    : defaultCinematicPhoto;
 
   return (
     <div className="bg-stone-950 text-stone-100 min-h-screen font-sans selection:bg-amber-400 selection:text-black">
@@ -55,42 +63,54 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
         <span className="text-[10px] tracking-[0.4em] uppercase text-amber-400 font-mono font-bold block">
           ★ A CINEMATIC WEDDING INVITATION ★
         </span>
-        <h1 className="text-2xl sm:text-3xl font-serif font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-300 py-1">
-          {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
-          <span className="text-amber-400 font-light italic text-xl">&amp;</span>{' '}
-          {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
-        </h1>
-        <p className="text-[9px] tracking-[0.25em] text-stone-400 uppercase font-mono">
-          {data.ceremonies[0]?.dateSolar || 'AUTUMN 2026'} • PREMIERING WORLDWIDE
+        <p className="text-[9px] tracking-[0.25em] text-stone-400 uppercase mt-0.5 font-mono">
+          PREMIERING WORLDWIDE • {mainCeremony?.dateSolar?.split('-')[0] || '2026'}
         </p>
       </div>
 
-      {/* Movie Poster Hero Section - Framed Aspect Card */}
+      {/* Movie Poster Hero Section - Single Elegant Overlay Typography on Clean Photo */}
       <div className="p-4 bg-gradient-to-b from-stone-950 via-black to-stone-950 text-center">
-        <div className="relative max-w-[300px] mx-auto aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/40 bg-stone-900 group">
+        <div className="relative max-w-[320px] mx-auto aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/40 bg-stone-900 group">
           <img
             src={displayPhoto}
             alt="Wedding Poster"
-            className="w-full h-full object-cover object-top select-none filter brightness-95"
+            className="w-full h-full object-cover select-none filter brightness-[0.88]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/30 pointer-events-none" />
 
-          {/* Floating Movie Badge on Poster */}
-          <div className="absolute bottom-3 left-3 right-3 text-center space-y-1">
-            <span className="inline-block px-3 py-0.5 rounded-full text-[9px] font-mono tracking-[0.25em] uppercase bg-black/70 border border-amber-400/40 text-amber-300 backdrop-blur-xs">
-              THE GREATEST LOVE STORY
+          {/* Top Script Accent */}
+          <div className="absolute top-4 inset-x-0 text-center pointer-events-none">
+            <span className="font-serif italic text-amber-200 text-sm tracking-widest drop-shadow-md">
+              Save The Date
             </span>
-            <div className="text-base font-serif font-bold text-white drop-shadow-md">
-              {data.groom.shortName || data.groom.fullName} &amp; {data.bride.shortName || data.bride.fullName}
+          </div>
+
+          {/* Centerpiece Movie Poster Typography: LIVE DYNAMIC COUPLE NAMES */}
+          <div className="absolute inset-x-4 bottom-5 text-center space-y-1 pointer-events-none">
+            <span className="text-[9px] tracking-[0.3em] uppercase font-mono text-amber-400/90 font-bold block">
+              LỄ THÀNH HÔN
+            </span>
+            <div className="flex flex-col items-center justify-center font-serif tracking-wider font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] py-0.5">
+              <span className="text-2xl sm:text-3xl uppercase leading-tight">
+                {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}
+              </span>
+              <div className="flex items-center justify-center gap-2.5 my-1">
+                <span className="w-8 h-px bg-amber-400/50" />
+                <span className="text-amber-300 font-serif italic text-base sm:text-lg font-light">&amp;</span>
+                <span className="w-8 h-px bg-amber-400/50" />
+              </div>
+              <span className="text-2xl sm:text-3xl uppercase leading-tight">
+                {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
+              </span>
             </div>
-            <p className="text-[10px] text-stone-300 font-mono">
-              {data.ceremonies[0]?.dateSolar} • {data.ceremonies[0]?.time}
+            <p className="text-xs font-mono tracking-widest text-amber-200 drop-shadow-md pt-0.5">
+              {mainCeremony?.dateSolar || '2026-10-25'}
             </p>
           </div>
         </div>
 
         {data.loveStory?.quotes && (
-          <p className="text-[11px] text-stone-400 italic max-w-xs mx-auto leading-relaxed mt-3">
+          <p className="text-[11px] text-stone-400 italic max-w-xs mx-auto leading-relaxed mt-3 font-serif">
             &ldquo;{data.loveStory.quotes}&rdquo;
           </p>
         )}

@@ -46,7 +46,11 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const displayPhoto = data.heroPhoto || template.frameAsset;
+  const defaultZenPhoto = 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&auto=format&fit=crop&q=80';
+  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
+  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
+    ? data.heroPhoto
+    : defaultZenPhoto;
 
   return (
     <div className="bg-[#fcfaf7] text-stone-800 min-h-screen font-sans selection:bg-stone-200">
@@ -66,45 +70,31 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
         </p>
       </div>
 
-      {/* Authentic Template Art Card Showcase */}
-      <div className="px-6 pb-6 text-center">
-        <div className="relative max-w-xs mx-auto rounded-2xl overflow-hidden shadow-xl border border-stone-200 bg-white">
-          <img
-            src={template.frameAsset}
-            alt={template.name}
-            className="w-full h-auto object-cover"
-            loading="eager"
-          />
-        </div>
-      </div>
+      {/* Polaroid Photo Frame with Tape Accent & Live Dynamic Names */}
+      <div className="px-6 pb-8">
+        <div className="relative max-w-[280px] mx-auto bg-white p-3.5 pb-8 rounded-xl shadow-xl border border-stone-200/80 rotate-[-1deg] hover:rotate-0 transition-transform duration-300">
+          {/* Masking tape on top */}
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-amber-100/70 border border-amber-200/50 backdrop-blur-xs shadow-2xs rotate-[2deg] z-10" />
 
-      {/* Polaroid Photo Frame with Tape Accent */}
-      {data.heroPhoto && (
-        <div className="px-6 pb-8">
-          <div className="relative max-w-[270px] mx-auto bg-white p-3 pb-7 rounded-xl shadow-xl border border-stone-200/80 rotate-[-1deg] hover:rotate-0 transition-transform duration-300">
-            {/* Masking tape on top */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-amber-100/70 border border-amber-200/50 backdrop-blur-xs shadow-2xs rotate-[2deg] z-10" />
+          <div className="aspect-[4/5] rounded-lg overflow-hidden bg-stone-100">
+            <img
+              src={displayPhoto}
+              alt="Ảnh cưới Polaroid"
+              className="w-full h-full object-cover"
+              loading="eager"
+            />
+          </div>
 
-            <div className="aspect-[4/5] rounded-lg overflow-hidden bg-stone-100">
-              <img
-                src={data.heroPhoto}
-                alt="Ảnh cưới Polaroid"
-                className="w-full h-full object-cover"
-                loading="eager"
-              />
-            </div>
-
-            <div className="text-center mt-2.5">
-              <p className="font-serif text-xs tracking-wider font-semibold text-stone-800">
-                {data.groom.fullName} &amp; {data.bride.fullName}
-              </p>
-              <p className="text-[9px] text-stone-400 font-mono tracking-widest mt-0.5 uppercase">
-                {data.ceremonies[0]?.dateSolar}
-              </p>
-            </div>
+          <div className="text-center mt-3 space-y-1">
+            <p className="font-serif text-sm tracking-wider font-semibold text-stone-800">
+              {data.groom.fullName || data.groom.shortName || 'Chú Rể'} &amp; {data.bride.fullName || data.bride.shortName || 'Cô Dâu'}
+            </p>
+            <p className="text-[10px] text-stone-400 font-mono tracking-widest uppercase">
+              {data.ceremonies[0]?.dateSolar}
+            </p>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Signature Zen Feature: Monthly Calendar Grid with Circled Wedding Date */}
       <div className="px-6 py-6 bg-stone-100/50 border-t border-b border-stone-200/60">

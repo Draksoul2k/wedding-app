@@ -46,7 +46,11 @@ export const EditorialMagazineLayout: React.FC<EditorialMagazineLayoutProps> = (
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const displayPhoto = data.heroPhoto || template.frameAsset;
+  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
+  const defaultMagazinePhoto = 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&auto=format&fit=crop&q=80';
+  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
+    ? data.heroPhoto
+    : defaultMagazinePhoto;
 
   return (
     <div className="bg-[#faf9f6] text-stone-900 min-h-screen font-sans selection:bg-rose-200">
