@@ -80,15 +80,32 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
     return list.sort((a, b) => (a.node.props?.zIndex || 0) - (b.node.props?.zIndex || 0));
   }, [craftTree]);
 
+  const GROOM_NAMES = new Set([
+    'anh tú', 'đức mạnh', 'mạnh đức', 'văn tuấn', 'tuấn', 'bá khang', 'gia khang', 'minh trí',
+    'hoàng hải', 'hoàng long', 'tuấn khang', 'chú rể', 'quang vinh', 'hải đăng', 'minh quân',
+    'thanh tùng', 'hoàng nam', 'ngọc sơn', 'tiến dũng', 'anh tuấn'
+  ]);
+
+  const BRIDE_NAMES = new Set([
+    'diệu nhi', 'lệ quyên', 'ngọc lan', 'lan nhi', 'quỳnh anh', 'ngọc oanh', 'thanh trúc',
+    'thanh hằng', 'mỹ châu', 'phương nga', 'bảo trâm', 'cô dâu', 'thu trang', 'lan anh',
+    'hồng ngọc', 'mai anh', 'huyền my', 'thùy linh', 'ngọc trâm', 'thảo vy'
+  ]);
+
   // Helper to determine if a text node represents groom or bride name
   const isGroomNameNode = (text: string): boolean => {
     const clean = text.toLowerCase().replace(/<[^>]+>/g, '').trim();
-    return clean === 'đức mạnh' || clean === 'mạnh đức' || clean === 'văn tuấn' || clean === 'tuấn' || clean === 'chú rể';
+    return GROOM_NAMES.has(clean);
   };
 
   const isBrideNameNode = (text: string): boolean => {
     const clean = text.toLowerCase().replace(/<[^>]+>/g, '').trim();
-    return clean === 'lệ quyên' || clean === 'ngọc lan' || clean === 'lan nhi' || clean === 'quỳnh anh' || clean === 'cô dâu';
+    return BRIDE_NAMES.has(clean);
+  };
+
+  const isCoupleCombinedNode = (text: string): boolean => {
+    const clean = text.toLowerCase().replace(/<[^>]+>/g, '').trim();
+    return clean.includes('&') || clean.includes(' và ') || clean.includes(' love ') || clean.includes(' loves ');
   };
 
   const handleNodeClick = (id: string, node: CraftNode, e: React.MouseEvent) => {
@@ -100,7 +117,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
     const type = node.type?.resolvedName;
     if (type === 'TextBox') {
       const txt = node.props?.text || '';
-      if (isGroomNameNode(txt) || isBrideNameNode(txt) || txt.includes('&')) {
+      if (isGroomNameNode(txt) || isBrideNameNode(txt) || isCoupleCombinedNode(txt)) {
         onEditField?.('couple');
       }
     }
@@ -156,22 +173,33 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             const rawText = p.text || '';
             let displayText = rawText;
 
-            // Dynamic Couple Name replacement
-            const isGroom = isGroomNameNode(rawText);
-            const isBride = isBrideNameNode(rawText);
-            if (isGroom) {
-              displayText = data.groom.shortName || data.groom.fullName || 'Chú Rể';
-            } else if (isBride) {
-              displayText = data.bride.shortName || data.bride.fullName || 'Cô Dâu';
+            // Direct custom text node override
+            if (data.customTextNodes && data.customTextNodes[id] !== undefined) {
+              displayText = data.customTextNodes[id];
+            } else {
+              // Dynamic Couple Name replacement
+              const isGroom = isGroomNameNode(rawText);
+              const isBride = isBrideNameNode(rawText);
+              const isCombined = isCoupleCombinedNode(rawText);
+
+              if (isGroom) {
+                displayText = data.groom.shortName || data.groom.fullName || 'Chú Rể';
+              } else if (isBride) {
+                displayText = data.bride.shortName || data.bride.fullName || 'Cô Dâu';
+              } else if (isCombined) {
+                displayText = `${data.groom.shortName || 'Gia Khang'} & ${data.bride.shortName || 'Thanh Trúc'}`;
+              }
             }
 
-            const fontFam = (isGroom || isBride) && data.typography?.fontFamily
+            const isNameRelated = isGroomNameNode(rawText) || isBrideNameNode(rawText) || isCoupleCombinedNode(rawText);
+
+            const fontFam = (isNameRelated || isSelected) && data.typography?.fontFamily
               ? data.typography.fontFamily
               : p.fontFamily;
-            const fontCol = (isGroom || isBride) && data.typography?.color
+            const fontCol = (isNameRelated || isSelected) && data.typography?.color
               ? data.typography.color
               : p.color;
-            const fontSz = (isGroom || isBride) && data.typography?.fontSize
+            const fontSz = (isNameRelated || isSelected) && data.typography?.fontSize
               ? `${data.typography.fontSize}px`
               : `${p.fontSize || 16}px`;
 

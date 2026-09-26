@@ -11,7 +11,7 @@ import { TraditionalLayout } from './wedding-layouts/traditional-layout';
 import { EditorialMagazineLayout } from './wedding-layouts/editorial-magazine-layout';
 import { FullCardLayout } from './wedding-layouts/full-card-layout';
 import { BotanicalGardenLayout } from './wedding-layouts/botanical-garden-layout';
-import { getCraftTemplate } from '@/constants/craft-templates';
+import { getCraftTemplate, fetchCraftTemplate, CraftTree } from '@/constants/craft-templates';
 import { ZenLoveCanvasRenderer } from '@/components/canvas/zenlove-canvas-renderer';
 
 interface WeddingViewProps {
@@ -19,6 +19,7 @@ interface WeddingViewProps {
   guestName?: string;
   isLivePreview?: boolean;
   onEditField?: (field: 'couple' | 'date') => void;
+  onSelectNode?: (id: string, node: any) => void;
 }
 
 export const WeddingView: React.FC<WeddingViewProps> = ({
@@ -26,6 +27,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   guestName = '',
   isLivePreview = false,
   onEditField,
+  onSelectNode,
 }) => {
   const [isOpen, setIsOpen] = useState(isLivePreview);
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
@@ -59,10 +61,25 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   // Current layout determined cleanly by template
   const currentLayout: TemplateLayoutType = template.layoutType || 'full_long_card';
 
-  // Authentic Craft.js Canvas Tree (ZenLove / Cinelove direct rendering)
-  const craftTree = useMemo(() => {
+  // Authentic Craft.js Canvas Tree (supports all 143 ZenLove templates dynamically)
+  const [asyncCraftTree, setAsyncCraftTree] = useState<CraftTree | null>(() => {
     return getCraftTemplate(data.templateId || template.slug || template.id);
+  });
+
+  useEffect(() => {
+    const slug = data.templateId || template.slug || template.id;
+    if (!slug) return;
+    const initial = getCraftTemplate(slug);
+    if (initial) {
+      setAsyncCraftTree(initial);
+      return;
+    }
+    fetchCraftTemplate(slug).then((tree) => {
+      if (tree) setAsyncCraftTree(tree);
+    });
   }, [data.templateId, template.slug, template.id]);
+
+  const craftTree = asyncCraftTree || getCraftTemplate(data.templateId || template.slug || template.id);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -292,6 +309,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
             craftTree={craftTree}
             data={data}
             onEditField={onEditField}
+            onSelectNode={onSelectNode}
           />
         ) : (
           <>

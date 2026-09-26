@@ -10,22 +10,14 @@ import { WeddingView } from '@/components/wedding-view';
 import { POPULAR_WEDDING_FONTS, loadZenLoveFont } from '@/lib/zenlove-fonts';
 
 const CURATED_STUDIO_PHOTOS = [
-  { id: 'p1', title: 'Rượu Vang Đỏ Thảm Đỏ', tag: 'Cinelove 61', url: '/templates/clean/clean_cine_thiep-cuoi-61.jpg' },
-  { id: 'p2', title: 'Studio Hoa Cưới Hàn Quốc', tag: 'Premiere 39', url: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg' },
-  { id: 'p3', title: 'Ánh Nhìn Ngọt Ngào', tag: 'Minimal 16', url: '/templates/clean/clean_cine_thiep-cuoi-16.jpg' },
-  { id: 'p4', title: 'Đen Trắng Điện Ảnh', tag: 'Classic 40', url: '/templates/clean/clean_cine_thiep-cuoi-40.jpeg' },
-  { id: 'p5', title: 'Tự Nhiên Ngoài Trời', tag: 'Outdoor 44', url: '/templates/clean/clean_cine_thiep-cuoi-44.jpg' },
-  { id: 'p6', title: 'Châu Âu Hoàng Gia', tag: 'Royal 46', url: '/templates/clean/clean_cine_thiep-cuoi-46.jpg' },
-  { id: 'p7', title: 'Áo Dài Truyền Thống', tag: 'Tradition 47', url: '/templates/clean/clean_cine_thiep-cuoi-47.jpeg' },
-  { id: 'p8', title: 'Nụ Cười Rạng Rỡ', tag: 'Studio 36', url: '/templates/clean/clean_cine_thiep-cuoi-36.jpeg' },
-  { id: 'p9', title: 'Hoàng Hôn Lãng Mạn', tag: 'Sunset 38', url: '/templates/clean/clean_cine_thiep-cuoi-38.png' },
-  { id: 'p10', title: 'Poster Điện Ảnh', tag: 'Poster 01', url: '/templates/clean/clean_cine_thiep-cuoi-1.webp' },
-  { id: 'p11', title: 'Tạp Chí Vogue Fashion', tag: 'Vogue 02', url: '/templates/clean/clean_cine_thiep-cuoi-2.webp' },
-  { id: 'p12', title: 'Nghệ Thuật Đương Đại', tag: 'Modern 05', url: '/templates/clean/clean_cine_thiep-cuoi-5.webp' },
-  { id: 'p13', title: 'Thanh Lịch Tinh Khôi', tag: 'Pure 114', url: '/templates/clean/clean_cine_thiep-cuoi-114.png' },
-  { id: 'p14', title: 'Vintage Ấm Cúng', tag: 'Warmth 17', url: '/templates/clean/clean_cine_thiep-cuoi-17.jpeg' },
-  { id: 'p15', title: 'Thanh Xuân Hạnh Phúc', tag: 'Sweet 23', url: '/templates/clean/clean_cine_thiep-cuoi-23.jpeg' },
-  { id: 'p16', title: 'Hiện Đại Tone Xanh', tag: 'Blue Calm', url: '/templates/clean/clean_cine_thiep-cuoi-tone-xanh.png' },
+  { id: 'p1', title: 'Studio Lãng Mạn', tag: 'Studio', url: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/Ny0yMDI0MDIwODEyMjE1OS1odGZncF8xNzY1NDc0MDU2Xzc3cg.jpg' },
+  { id: 'p2', title: 'Váy Cưới Trắng Tinh Khôi', tag: 'White Dress', url: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/OC0yMDI0MDIwODEyMjE1OS1ib3F0bi0xXzE3NjU0NzUyNzNfMTEw.jpg' },
+  { id: 'p3', title: 'Châu Âu Hiện Đại', tag: 'Modern', url: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NC0yMDI0MDIwODEyMjE1OS1kbG1pMV8xNzY1NDc2MjI3X2J1aA.jpg' },
+  { id: 'p4', title: 'Nụ Cười Hạnh Phúc', tag: 'Happy Smile', url: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NS0yMDI0MDIwODEyMjE1OS10Z25yal8xNzY1NDc2MjI3XzVkYg.jpg' },
+  { id: 'p5', title: 'Ngoại Cảnh Tự Nhiên', tag: 'Outdoor', url: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/MTAtMjAyNDAyMDgxMjIxNTktZGhrY18xNzY1NDc2MjI3X2Q2Yg.jpg' },
+  { id: 'p6', title: 'Vintage Cổ Điển', tag: 'Vintage', url: 'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761825944_6hw.jpeg' },
+  { id: 'p7', title: 'Ảnh Đôi Hàn Quốc', tag: 'Korean Style', url: 'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761825945_4bv.jpeg' },
+  { id: 'p8', title: 'Bên Nhau Bình Yên', tag: 'Romance', url: 'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761892389_jiw.jpeg' },
 ];
 
 function CreateInvitationContent() {
@@ -52,6 +44,8 @@ function CreateInvitationContent() {
   }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedNodeText, setSelectedNodeText] = useState<string>('');
 
   useEffect(() => {
     loadZenLoveFont(data.typography?.fontFamily || 'The Nautigal');
@@ -753,10 +747,7 @@ function CreateInvitationContent() {
                         <span className="text-[10px] font-bold uppercase text-stone-500 pl-2 shrink-0">Bộ sưu tập:</span>
                         {[
                           { id: 'all', label: `Tất cả (${ALL_TEMPLATES.length})` },
-                          { id: 'zenlove', label: `🌿 ZenLove & Tối Giản (${ALL_TEMPLATES.filter((t) => t.source === 'zenlove').length})` },
-                          { id: 'cinelove', label: `🎬 Điện Ảnh & Poster (${ALL_TEMPLATES.filter((t) => t.source === 'cinelove').length})` },
-                          { id: 'motdoi', label: `🌟 Thanh Lịch & Quý Phái (${ALL_TEMPLATES.filter((t) => t.source === 'motdoi').length})` },
-                          { id: 'chungdoi', label: `🌸 Đa Sắc Phối Màu (${ALL_TEMPLATES.filter((t) => t.source === 'chungdoi').length})` },
+                          { id: 'zenlove', label: `✨ ZenLove (${ALL_TEMPLATES.length})` },
                         ].map((s) => (
                           <button
                             key={s.id}
@@ -2277,6 +2268,17 @@ function CreateInvitationContent() {
                     if (field === 'couple') setActiveDrawerTool('text');
                     if (field === 'date') setActiveDrawerTool('utility');
                   }}
+                  onSelectNode={(id, node) => {
+                    setSelectedNodeId(id);
+                    const type = node.type?.resolvedName;
+                    if (type === 'TextBox') {
+                      setIsTypographyOpen(true);
+                      const clean = (data.customTextNodes?.[id] !== undefined)
+                        ? data.customTextNodes[id]
+                        : (node.props?.text || '').replace(/<[^>]+>/g, ' ').trim();
+                      setSelectedNodeText(clean);
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -2562,6 +2564,40 @@ function CreateInvitationContent() {
                   className="w-full accent-sky-500 h-1.5 bg-gray-200 rounded-lg cursor-pointer"
                 />
               </div>
+
+              {/* Direct Selected Text Editor (ZenLove style) */}
+              {selectedNodeId && (
+                <div className="pt-2 border-t border-sky-200 space-y-1.5 bg-sky-50/70 p-2.5 rounded-xl border border-sky-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-sky-900">✍️ Sửa văn bản đang chọn:</span>
+                    <button
+                      type="button"
+                      onClick={() => { setSelectedNodeId(null); setSelectedNodeText(''); }}
+                      className="text-[10px] text-gray-400 hover:text-gray-600 cursor-pointer"
+                    >
+                      Bỏ chọn ✕
+                    </button>
+                  </div>
+                  <textarea
+                    rows={2}
+                    value={selectedNodeText}
+                    onChange={(e) => {
+                      const newTxt = e.target.value;
+                      setSelectedNodeText(newTxt);
+                      setData((prev) => ({
+                        ...prev,
+                        customTextNodes: {
+                          ...prev.customTextNodes,
+                          [selectedNodeId]: newTxt
+                        }
+                      }));
+                    }}
+                    placeholder="Nhập nội dung thay thế..."
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-sky-200 bg-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-2xs"
+                  />
+                  <p className="text-[9px] text-sky-700">Chữ trên thiệp sẽ cập nhật tức thì theo bạn gõ.</p>
+                </div>
+              )}
 
               {/* Sửa tên trực tiếp trên thiệp */}
               <div className="pt-2 border-t border-gray-100 space-y-2">
