@@ -62,12 +62,13 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   const currentLayout: TemplateLayoutType = template.layoutType || 'full_long_card';
 
   // Authentic Craft.js Canvas Tree (supports all 144 ZenLove templates dynamically)
-  const [isLoadingCraft, setIsLoadingCraft] = useState<boolean>(() => {
-    return !getCraftTemplate(data.templateId || template.slug || template.id);
-  });
+  const currentSlug = data.templateId || template.slug || template.id;
 
   const [asyncCraftTree, setAsyncCraftTree] = useState<CraftTree | null>(() => {
-    return getCraftTemplate(data.templateId || template.slug || template.id);
+    return getCraftTemplate(currentSlug);
+  });
+  const [isLoadingCraft, setIsLoadingCraft] = useState<boolean>(() => {
+    return !getCraftTemplate(currentSlug);
   });
 
   useEffect(() => {
@@ -79,14 +80,30 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
       setIsLoadingCraft(false);
       return;
     }
+    // Clear old template immediately so canvas never shows stale template
+    setAsyncCraftTree(null);
     setIsLoadingCraft(true);
+    let cancelled = false;
+
     fetchCraftTemplate(slug)
       .then((tree) => {
-        if (tree) setAsyncCraftTree(tree);
+        if (cancelled) return;
+        if (tree) {
+          setAsyncCraftTree(tree);
+        } else {
+          setAsyncCraftTree(getCraftTemplate('thiep-cuoi-2'));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setAsyncCraftTree(getCraftTemplate('thiep-cuoi-2'));
       })
       .finally(() => {
-        setIsLoadingCraft(false);
+        if (!cancelled) setIsLoadingCraft(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [data.templateId, template.slug, template.id]);
 
   const craftTree = asyncCraftTree || getCraftTemplate(data.templateId || template.slug || template.id);
@@ -321,6 +338,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
           </div>
         ) : craftTree ? (
           <ZenLoveCanvasRenderer
+            key={data.templateId || template.slug || template.id}
             craftTree={craftTree}
             data={data}
             onEditField={onEditField}

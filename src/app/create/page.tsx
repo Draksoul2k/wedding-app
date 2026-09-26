@@ -219,12 +219,24 @@ function CreateInvitationContent() {
     }
 
     loadZenLoveFont(font);
+    setSelectedNodeId(null);
+    setSelectedNodeText('');
+
+    if (typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('template', tmpl.id);
+        window.history.replaceState(null, '', url.toString());
+      } catch {}
+    }
 
     setData((prev) => ({
       ...prev,
       templateId: tmpl.id,
       themeName: tmpl.name,
       primaryColor: tmpl.primaryColor,
+      customTextNodes: {},
+      customPhotoNodes: {},
       heroPhoto: (prev.heroPhoto && !prev.heroPhoto.includes('/long_') && !prev.heroPhoto.includes('clean_cine') && !prev.heroPhoto.includes('cinelove_') && !prev.heroPhoto.includes('thiep-cuoi-2'))
         ? prev.heroPhoto
         : DEFAULT_WEDDING_DATA.heroPhoto,

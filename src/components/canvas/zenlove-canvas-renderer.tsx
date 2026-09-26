@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { WeddingInvitationData } from '@/types/wedding';
 import { CraftTree, CraftNode } from '@/constants/craft-templates';
-import { resolveZenLoveAsset } from '@/lib/zenlove-assets';
+import { resolveZenLoveAsset, getCleanWeddingPhoto } from '@/lib/zenlove-assets';
 import { getFontCssUrl } from '@/lib/zenlove-fonts';
 
 interface ZenLoveCanvasRendererProps {
@@ -14,6 +14,60 @@ interface ZenLoveCanvasRendererProps {
   onEditField?: (field: 'couple' | 'date') => void;
   isInteractive?: boolean;
 }
+
+// 1. CAROUSEL WIDGET (Handles CarouselBox with auto-cycle, smooth transition and clean photos)
+const CarouselWidget: React.FC<{
+  id: string;
+  imgList: Array<{ id: string; imageKey: string; alt?: string }>;
+  data: WeddingInvitationData;
+  borderRadius?: number[];
+}> = ({ id, imgList, data, borderRadius }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (imgList.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % imgList.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [imgList.length]);
+
+  const currentItem = imgList[currentIndex] || imgList[0];
+  const customPhoto = data.customPhotoNodes?.[`${id}_${currentIndex}`] || data.customPhotoNodes?.[id];
+  const imgSrc = customPhoto || resolveZenLoveAsset(currentItem?.imageKey) || getCleanWeddingPhoto(`${id}_${currentIndex}`);
+
+  return (
+    <div className="w-full h-full relative overflow-hidden bg-stone-100 shadow-sm">
+      <img
+        key={currentIndex}
+        src={imgSrc}
+        alt={currentItem?.alt || 'Album ảnh cưới'}
+        className="w-full h-full object-cover block select-none pointer-events-none transition-all duration-700 ease-in-out"
+        style={{
+          borderRadius: Array.isArray(borderRadius)
+            ? `${borderRadius[0]}px ${borderRadius[1]}px ${borderRadius[2]}px ${borderRadius[3]}px`
+            : undefined,
+        }}
+        onError={(e) => {
+          e.currentTarget.src = getCleanWeddingPhoto(`${id}_${currentIndex}`);
+        }}
+      />
+      {/* Dots Indicator */}
+      {imgList.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-xs pointer-events-none z-10">
+          {imgList.map((_, idx) => (
+            <span
+              key={idx}
+              className={`block rounded-full transition-all ${
+                idx === currentIndex ? 'w-4 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
   craftTree,
@@ -114,6 +168,21 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
     );
   };
 
+  // Watermark text suppressor
+  const isZenLoveWatermarkText = (txt: string): boolean => {
+    const clean = txt.toLowerCase().replace(/<[^>]+>/g, '').trim();
+    return (
+      clean.includes('zenlove.me') ||
+      clean.includes('thiết kế thiệp tại zenlove') ||
+      clean.includes('thiết kế thiệp online tại zenlove') ||
+      clean.includes('thiết kế thiệp cưới tại zenlove') ||
+      clean.includes('thiệp online tại zenlove') ||
+      clean.includes('@zenlove') ||
+      clean.includes('zenlove wedding') ||
+      clean === 'zenlove'
+    );
+  };
+
   const handleNodeClick = (id: string, node: CraftNode, e: React.MouseEvent) => {
     if (!isInteractive) return;
     e.stopPropagation();
@@ -181,6 +250,12 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           // 1. TEXT BOX RENDERING
           if (type === 'TextBox') {
             const rawText = p.text || '';
+
+            // Suppress competitor watermark text completely
+            if (isZenLoveWatermarkText(rawText)) {
+              return null;
+            }
+
             let displayText = rawText;
 
             // Direct custom text node override
@@ -195,10 +270,20 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                 displayText = data.groom.shortName || data.groom.fullName || 'Chú Rể';
               } else if (isBride) {
                 displayText = data.bride.shortName || data.bride.fullName || 'Cô Dâu';
-              } else if (isCoupleCombinedNode(rawText) && (rawText.includes('Anh Tú') || rawText.includes('Diệu Nhi') || rawText.includes('Vũ Thanh Thành'))) {
+              } else if (isCoupleCombinedNode(rawText) && (rawText.includes('Anh Tú') || rawText.includes('Diệu Nhi') || rawText.includes('Vũ Thanh Thành') || rawText.includes('Gia Khang') || rawText.includes('Thanh Trúc'))) {
                 displayText = `${data.groom.shortName || 'Chú Rể'} & ${data.bride.shortName || 'Cô Dâu'}`;
               }
             }
+
+            // Sanitize any remaining competitor venue names
+            displayText = displayText
+              .replace(/Khách sạn ZenLove/gi, mainCeremony?.venueName || 'The Mira Convention Center')
+              .replace(/Trung tâm tiệc cưới ZenLove/gi, mainCeremony?.venueName || 'Trung Tâm Tiệc Cưới')
+              .replace(/ZenLove Hotel/gi, mainCeremony?.venueName || 'The Mira Hotel')
+              .replace(/ZenLove Plaza/gi, 'Trung Tâm Hội Nghị')
+              .replace(/Zenlove restaurant/gi, 'Nhà Hàng Tiệc Cưới')
+              .replace(/Nhà hàng ZenLove/gi, 'Nhà Hàng Tiệc Cưới')
+              .replace(/ZenLove/g, 'Hạnh Phúc');
 
             // Keep the designer's exact font styling unless specifically chosen
             const fontFam = p.fontFamily;
@@ -262,6 +347,9 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                   alt="Họa tiết trang trí"
                   className="w-full h-full object-contain block select-none pointer-events-none"
                   loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
               </div>
             );
@@ -271,16 +359,14 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           if (type === 'PhotoBox') {
             const rawImg = p.imgKey;
             const customPhoto = data.customPhotoNodes?.[id];
-            const imgSrc = customPhoto || resolveZenLoveAsset(rawImg);
-
-            if (!imgSrc) return null;
+            const imgSrc = customPhoto || resolveZenLoveAsset(rawImg) || getCleanWeddingPhoto(id);
 
             return (
               <div
                 key={id}
                 onClick={(e) => handleNodeClick(id, node, e)}
                 style={posStyle}
-                className={`overflow-hidden transition-all ${
+                className={`overflow-hidden transition-all bg-stone-100/50 ${
                   isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
                 } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
               >
@@ -294,12 +380,169 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                       : undefined,
                   }}
                   loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = getCleanWeddingPhoto(id);
+                  }}
                 />
               </div>
             );
           }
 
-          // 4. GEOMETRIC BOX / LINE BOX
+          // 4. CAROUSEL BOX (Photo Slider / Album)
+          if (type === 'CarouselBox') {
+            const imgList: Array<{ id: string; imageKey: string; alt?: string }> = p.imgList || [];
+            if (imgList.length === 0) return null;
+
+            return (
+              <div
+                key={id}
+                onClick={(e) => handleNodeClick(id, node, e)}
+                style={{
+                  ...posStyle,
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                    : undefined,
+                }}
+                className={`overflow-hidden relative transition-all ${
+                  isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
+                } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
+              >
+                <CarouselWidget
+                  id={id}
+                  imgList={imgList}
+                  data={data}
+                  borderRadius={p.borderRadius}
+                />
+              </div>
+            );
+          }
+
+          // 5. PHOTO GALLERY BOX (Wedding Gallery Grid)
+          if (type === 'PhotoGalleryBox') {
+            const photos: Array<{ id: string; imageKey: string; alt?: string }> = p.photos || [];
+            if (photos.length === 0) return null;
+
+            return (
+              <div
+                key={id}
+                onClick={(e) => handleNodeClick(id, node, e)}
+                style={{
+                  ...posStyle,
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                    : undefined,
+                }}
+                className={`overflow-hidden relative transition-all ${
+                  isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
+                } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
+              >
+                <div className="w-full h-full grid grid-cols-2 gap-2 p-1 overflow-hidden bg-transparent">
+                  {photos.slice(0, 4).map((item, idx) => {
+                    const customPhoto = data.customPhotoNodes?.[`${id}_${idx}`];
+                    const imgSrc = customPhoto || resolveZenLoveAsset(item.imageKey) || getCleanWeddingPhoto(`${id}_${idx}`);
+                    return (
+                      <div key={item.id || idx} className="w-full h-full rounded-lg overflow-hidden bg-stone-100 shadow-xs relative">
+                        <img
+                          src={imgSrc}
+                          alt={item.alt || 'Ảnh cưới'}
+                          className="w-full h-full object-cover block select-none pointer-events-none hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.currentTarget.src = getCleanWeddingPhoto(`${id}_${idx}`);
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
+          // 6. RSVP BOX V2 (Interactive attendance confirmation)
+          if (type === 'RsvpBoxV2') {
+            const btnColor = p.buttonColor || data.primaryColor || '#8a1528';
+            const textColor = p.color || '#1c1917';
+            const title = p.titleText || 'Xác nhận tham dự';
+
+            return (
+              <div
+                key={id}
+                style={{
+                  ...posStyle,
+                  backgroundColor: p.backgroundColor || '#ffffff',
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                    : '16px',
+                  boxShadow: '0 10px 25px -5px rgba(0,0,0,0.08)',
+                }}
+                className="p-5 flex flex-col justify-between border border-stone-100"
+              >
+                <div className="text-center mb-2">
+                  <h3 className="font-serif font-bold text-base" style={{ color: textColor }}>{title}</h3>
+                  <p className="text-[11px] text-stone-500 mt-0.5">Sự hiện diện của quý khách là niềm vinh hạnh cho chúng tôi</p>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <label className="block text-[11px] font-medium text-stone-600 mb-1">{p.nameLabel || 'Họ và tên'}</label>
+                    <input
+                      type="text"
+                      placeholder="Nhập tên của bạn"
+                      className="w-full px-3 py-1.5 rounded-lg border border-stone-200 text-xs bg-stone-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-rose-500"
+                      readOnly={!isInteractive}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-stone-600 mb-1">{p.attendLabel || 'Bạn sẽ tham dự chứ?'}</label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        className="flex-1 py-1 px-2 rounded-md border text-[11px] font-medium bg-rose-50 border-rose-200 text-rose-800"
+                      >
+                        {p.attendYesText || 'Sẽ tham dự'}
+                      </button>
+                      <button
+                        type="button"
+                        className="flex-1 py-1 px-2 rounded-md border text-[11px] font-medium bg-stone-50 border-stone-200 text-stone-600"
+                      >
+                        {p.attendNoText || 'Rất tiếc không thể'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  style={{ backgroundColor: btnColor, color: p.buttonTextColor || '#ffffff' }}
+                  className="w-full py-2 rounded-lg text-xs font-bold shadow-sm hover:opacity-95 transition-opacity mt-3 cursor-pointer"
+                >
+                  {p.submitText || 'Gửi lời phản hồi'}
+                </button>
+              </div>
+            );
+          }
+
+          // 7. ENVELOPE BOX (Interactive open invitation envelope)
+          if (type === 'EnvelopeBox') {
+            return (
+              <div
+                key={id}
+                onClick={(e) => handleNodeClick(id, node, e)}
+                style={posStyle}
+                className="flex items-center justify-center relative cursor-pointer group"
+              >
+                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-rose-800 to-red-950 shadow-2xl p-4 flex flex-col items-center justify-center text-center text-amber-200 border-2 border-amber-300/40">
+                  <div className="w-12 h-12 rounded-full border border-amber-300/60 bg-red-900/80 flex items-center justify-center text-xl shadow-inner mb-2 group-hover:scale-110 transition-transform">
+                    囍
+                  </div>
+                  <span className="font-serif text-sm tracking-widest uppercase font-semibold">Thiệp Mời Thành Hôn</span>
+                  <span className="text-[10px] text-amber-300/75 mt-0.5">Chạm để mở thiệp</span>
+                </div>
+              </div>
+            );
+          }
+
+          // 8. GEOMETRIC BOX / LINE BOX
           if (type === 'GeometricBox' || type === 'LineBox') {
             return (
               <div
@@ -316,7 +559,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 5. COUNTDOWN WIDGET
+          // 9. COUNTDOWN WIDGET
           if (type === 'CountdownBoxV2' || type === 'CountdownBox') {
             return (
               <div
@@ -352,7 +595,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 6. CALENDAR WIDGET
+          // 10. CALENDAR WIDGET
           if (type === 'CalendarBoxV2' || type === 'CalendarBox') {
             const displayMonth = targetMonth || '12';
             const displayYear = targetYear || '2026';
@@ -384,7 +627,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 7. MAP & VENUE BOX
+          // 11. MAP & VENUE BOX
           if (type === 'MapBox') {
             return (
               <div
@@ -411,7 +654,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 8. BUTTON BOX (RSVP / Lời Chúc)
+          // 12. BUTTON BOX (RSVP / Lời Chúc)
           if (type === 'ButtonBox') {
             return (
               <div
@@ -437,7 +680,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 9. GIFT QR BOX
+          // 13. GIFT QR BOX
           if (type === 'GiftQrBox') {
             const qrAccount = data.groom?.bank?.accountNumber || '0988889999';
             const qrBank = data.groom?.bank?.bankCode || 'MB';
@@ -458,7 +701,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 10. GUEST AUTO NAME (Hiển thị tên khách tự động)
+          // 14. GUEST AUTO NAME (Hiển thị tên khách tự động)
           if (type === 'GuestAutoName') {
             return (
               <div

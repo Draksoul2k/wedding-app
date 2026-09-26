@@ -95,7 +95,7 @@ export interface TemplateConfig {
 import { resolveCraftTemplateSlug } from './craft-templates/manifest';
 
 export const ALL_TEMPLATES: TemplateConfig[] = ZENLOVE_TEMPLATES
-  .filter((t) => t.targetPageType === 'CANVAS' || resolveCraftTemplateSlug(t.slug) || resolveCraftTemplateSlug(t.id))
+  .filter((t) => resolveCraftTemplateSlug(t.slug) !== null || resolveCraftTemplateSlug(t.id) !== null)
   .map(zenLoveToTemplateConfig);
 export const TEMPLATES: TemplateConfig[] = ALL_TEMPLATES;
 
