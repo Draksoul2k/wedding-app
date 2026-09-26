@@ -84,7 +84,7 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
             <span className="text-[9px] tracking-[0.3em] uppercase font-mono text-amber-400 font-bold block">
               LỄ THÀNH HÔN
             </span>
-            <div className="flex flex-col items-center justify-center font-serif tracking-wider font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] py-0.5">
+            <div className="flex flex-col items-center justify-center font-serif tracking-normal font-extrabold text-white py-0.5">
               <span className="text-xl sm:text-2xl uppercase leading-tight">
                 {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}
               </span>

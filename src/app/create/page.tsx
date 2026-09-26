@@ -1827,9 +1827,10 @@ function CreateInvitationContent() {
               >
                 <option value="Charmonman">Aquarelle (Thư pháp mềm)</option>
                 <option value="Dancing Script">Dancing Script (Viết tay)</option>
+                <option value="Playfair Display">Playfair (Sang trọng)</option>
+                <option value="Lora">Lora (Cổ điển tinh tế)</option>
                 <option value="Charm">Charm (Quý phái)</option>
                 <option value="Pattaya">Pattaya (Chữ ký)</option>
-                <option value="Playfair Display">Playfair (Sang trọng)</option>
               </select>
             </div>
 

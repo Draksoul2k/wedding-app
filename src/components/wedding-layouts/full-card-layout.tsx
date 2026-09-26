@@ -159,72 +159,56 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           <img
             src={displayPhoto}
             alt={template.name}
-            className="w-full h-full object-cover object-top select-none filter brightness-[0.93]"
+            className="w-full h-full object-cover object-top select-none"
             loading="eager"
           />
         </motion.div>
 
-        {/* Subtle Ambient Gradient Overlays for Readability of Badges */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
-        <div
-          className="absolute inset-x-0 bottom-0 h-28 pointer-events-none"
-          style={{
-            background: isDark
-              ? 'linear-gradient(to top, #0c0a09, transparent)'
-              : `linear-gradient(to top, ${containerBg} 0%, transparent 100%)`
-          }}
-        />
+        {/* Ambient Overlay: Only subtle bottom transition if needed, no dirtying top/middle overlay */}
+        {isDark ? (
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/60 pointer-events-none" />
+        ) : (
+          <div
+            className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+            style={{
+              background: `linear-gradient(to top, ${containerBg} 0%, transparent 100%)`
+            }}
+          />
+        )}
 
-        {/* Top Header: "Save The Date" in Flowing Calligraphy */}
+        {/* Top Header: "Save The Date" in Flowing Calligraphy - Crisp ZenLove Typography, No Drop Shadow */}
         <div className="relative z-10 pt-7 px-6 flex justify-between items-start pointer-events-none">
           <div
-            className="font-cursive text-3xl sm:text-4xl font-normal tracking-wide select-none drop-shadow-xs"
+            className="font-cursive text-3xl sm:text-4xl font-normal select-none"
             style={{
               color: isDark ? '#ffffff' : '#111827',
-              textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.9)' : '0 1px 3px rgba(255,255,255,0.8)'
+              textShadow: 'none'
             }}
           >
             Save The Date
           </div>
         </div>
 
-        {/* Lower-Third / Skirt Area: Editable Typography (Cinelove Style Calligraphy) */}
+        {/* Lower-Third / Skirt Area: Editable Typography (Cinelove / ZenLove Style Calligraphy) */}
         <div className="relative z-20 px-6 pt-2 pb-2 text-center mt-auto flex flex-col items-center justify-center">
           <div
             onClick={() => onEditField?.('couple')}
-            className={`group relative select-none transition-all duration-200 rounded-2xl p-3 ${
+            className={`group relative select-none transition-all duration-200 rounded-xl p-2.5 ${
               onEditField
-                ? 'cursor-pointer border-2 border-dashed border-sky-400 bg-sky-500/10 shadow-lg ring-4 ring-sky-400/20'
+                ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/60 hover:bg-sky-50/10'
                 : ''
             }`}
             title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
           >
-            {/* Corner Selection Nodes matching Cinelove Editor */}
-            {onEditField && (
-              <>
-                <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
-                <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
-                <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
-                <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
-
-                {/* Floating Cinelove Action Pill */}
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white/95 text-stone-800 text-[10px] font-sans font-bold px-3 py-1 rounded-full shadow-lg border border-sky-200 flex items-center gap-1.5 whitespace-nowrap">
-                  <span>✎ Chạm để đổi tên &amp; kiểu chữ</span>
-                </div>
-              </>
-            )}
-
             <div
-              className="font-cursive leading-tight text-center tracking-wide"
+              className="font-cursive leading-tight text-center"
               style={{
                 fontSize: `${data.typography?.fontSize || 42}px`,
                 color: data.typography?.color || (isDark ? '#ffffff' : '#111827'),
                 fontFamily: data.typography?.fontFamily
-                  ? `'${data.typography.fontFamily}', 'Charmonman', 'Dancing Script', cursive`
-                  : undefined,
-                textShadow: isDark
-                  ? '0 2px 12px rgba(0,0,0,0.9)'
-                  : '0 1px 3px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.7)'
+                  ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
+                  : 'var(--font-charmonman), var(--font-cursive), cursive',
+                textShadow: 'none'
               }}
             >
               <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
@@ -237,12 +221,12 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           {targetDateStr && (
             <div
               onClick={() => onEditField?.('date')}
-              className={`mt-1 text-xs uppercase tracking-[0.25em] font-mono font-semibold select-none transition-all ${
+              className={`mt-1 text-xs uppercase tracking-[0.2em] font-mono font-medium select-none transition-all ${
                 onEditField ? 'cursor-pointer hover:underline' : ''
               }`}
               style={{
                 color: isDark ? '#f1f5f9' : '#374151',
-                textShadow: isDark ? '0 1px 4px rgba(0,0,0,0.8)' : '0 1px 2px rgba(255,255,255,0.7)'
+                textShadow: 'none'
               }}
               title={onEditField ? 'Nhấp để chỉnh sửa ngày cưới' : undefined}
             >

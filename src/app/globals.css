@@ -10,6 +10,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-poppins: var(--font-poppins);
+  --font-serif: var(--font-playfair), var(--font-lora), 'Playfair Display', 'Lora', serif;
+  --font-cursive: var(--font-charmonman), var(--font-cursive), 'Charmonman', 'Dancing Script', cursive;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,12 +31,12 @@ body {
 .font-cursive,
 .font-calligraphy,
 .font-aquarelle {
-  font-family: 'Charmonman', 'Dancing Script', 'Charm', 'Pattaya', cursive !important;
+  font-family: var(--font-charmonman), var(--font-cursive), 'Charmonman', 'Dancing Script', 'Charm', 'Pattaya', cursive !important;
 }
 
 .font-serif,
 .font-playfair,
 .font-serif-wedding {
-  font-family: 'Playfair Display', 'Lora', Georgia, serif !important;
+  font-family: var(--font-playfair), var(--font-lora), 'Playfair Display', 'Lora', serif !important;
 }
 

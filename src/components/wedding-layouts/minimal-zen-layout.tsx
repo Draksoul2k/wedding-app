@@ -55,10 +55,17 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
         <span className="text-[11px] font-mono tracking-[0.3em] uppercase text-stone-400 block">
           WEDDING INVITATION
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif tracking-wide text-stone-900 font-light">
-          {data.groom.shortName || data.groom.fullName || 'Chú Rể'}{' '}
-          <span className="text-stone-400 italic text-2xl">&amp;</span>{' '}
-          {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
+        <h1
+          className="text-3xl sm:text-4xl text-stone-900 font-normal leading-snug"
+          style={{
+            fontFamily: data.typography?.fontFamily
+              ? `'${data.typography.fontFamily}', var(--font-playfair), 'Playfair Display', serif`
+              : 'var(--font-playfair), "Playfair Display", serif'
+          }}
+        >
+          <span>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</span>{' '}
+          <span className="text-stone-400 italic text-2xl font-serif">&amp;</span>{' '}
+          <span>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</span>
         </h1>
         <div className="w-8 h-[1px] bg-stone-300 mx-auto my-2" />
         <p className="text-xs font-serif text-stone-500 italic">
@@ -82,7 +89,10 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
           </div>
 
           <div className="text-center mt-3 space-y-1">
-            <p className="font-serif text-sm tracking-wider font-semibold text-stone-800">
+            <p
+              className="text-sm font-semibold text-stone-800"
+              style={{ fontFamily: 'var(--font-playfair), "Playfair Display", serif' }}
+            >
               {data.groom.fullName || data.groom.shortName || 'Chú Rể'} &amp; {data.bride.fullName || data.bride.shortName || 'Cô Dâu'}
             </p>
             <p className="text-[10px] text-stone-400 font-mono tracking-widest uppercase">

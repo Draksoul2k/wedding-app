@@ -80,7 +80,7 @@ export const BotanicalGardenLayout: React.FC<BotanicalGardenLayoutProps> = ({
           SAVE THE DATE
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-serif text-emerald-950 font-normal tracking-wide">
+        <h1 className="text-3xl sm:text-4xl font-serif text-emerald-950 font-normal leading-snug">
           {data.groom.shortName || data.groom.fullName || 'Chú Rể'}{' '}
           <span className="text-rose-500 font-light italic">&amp;</span>{' '}
           {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}

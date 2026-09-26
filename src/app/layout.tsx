@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Poppins, Dancing_Script, Playfair_Display } from 'next/font/google';
+import { Poppins, Dancing_Script, Playfair_Display, Charmonman, Lora } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 
 const poppins = Poppins({
   variable: '--font-poppins',
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 const dancingScript = Dancing_Script({
@@ -19,6 +19,18 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin', 'vietnamese'],
   weight: ['400', '600', '700', '900'],
+});
+
+const charmonman = Charmonman({
+  variable: '--font-charmonman',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '700'],
+});
+
+const lora = Lora({
+  variable: '--font-lora',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${poppins.variable} ${dancingScript.variable} ${playfair.variable} antialiased`}>
+      <body className={`${poppins.variable} ${dancingScript.variable} ${playfair.variable} ${charmonman.variable} ${lora.variable} antialiased`}>
         {children}
         <Toaster />
       </body>
