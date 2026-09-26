@@ -3,7 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { WeddingInvitationData } from '@/types/wedding';
-import { DEFAULT_WEDDING_DATA, TEMPLATES } from '@/constants/templates';
+import { DEFAULT_WEDDING_DATA, TEMPLATES, findTemplate } from '@/constants/templates';
 import { WeddingView } from '@/components/wedding-view';
 
 function DynamicWeddingInvitationContent() {
@@ -50,7 +50,7 @@ function DynamicWeddingInvitationContent() {
 
       if (weddingData) {
         if (templateParam) {
-          const found = TEMPLATES.find((t) => t.id === templateParam);
+          const found = findTemplate(templateParam);
           if (found) {
             weddingData.templateId = found.id;
             weddingData.themeName = found.name;
@@ -59,7 +59,7 @@ function DynamicWeddingInvitationContent() {
         }
         setData(weddingData);
       } else {
-        const found = templateParam ? TEMPLATES.find((t) => t.id === templateParam) : null;
+        const found = templateParam ? findTemplate(templateParam) : null;
         setData({
           ...DEFAULT_WEDDING_DATA,
           slug: slug,

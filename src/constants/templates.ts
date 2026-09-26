@@ -1,3 +1,5 @@
+import { ZENLOVE_TEMPLATES, ZenLoveTemplate } from './zenlove-templates';
+
 export type TemplateLayoutType =
   | 'cinelove_movie'
   | 'zenlove_minimal'
@@ -18,6 +20,7 @@ export interface TemplateColorVariant {
 export interface TemplateConfig {
   id: string;
   name: string;
+  slug?: string;
   category: 'truyen_thong' | 'hien_dai' | 'hoa_la' | 'toi_gian';
   source: 'chungdoi' | 'zenlove' | 'cinelove' | 'motdoi';
   layoutType: TemplateLayoutType;
@@ -28,6 +31,7 @@ export interface TemplateConfig {
   envelopeGradient: string;
   sealSymbol: string;
   frameAsset: string;
+  longThumbnailUrl?: string;
   description: string;
   tag: string;
   isLongThumbnail?: boolean;
@@ -1038,6 +1042,78 @@ export const TEMPLATES: TemplateConfig[] = [
     "isLongThumbnail": true
 }
 ];
+
+export function zenLoveToTemplateConfig(zen: ZenLoveTemplate): TemplateConfig {
+  const isTraditional = [
+    'hong-phong', 'ruoc-den-ong-sao', 'song-hy-hong-lien', 'song-hy-thanh-ngoc',
+    'chu-sa', 'song-phung-hy-thanh', 'trung-thu-01', 'co_ba_red', 'nhat_binh_red'
+  ].includes(zen.slug);
+
+  const isFloral = [
+    'sen-ngay-hy', 'la-mong-o-liu', 'canh-dong-yeu-thuong', 'hong-yeu-thuong',
+    'yeu-nhu-ban-dau', 'vom-may-hong', 'nang-xanh-thuy-tinh', 'dong-xanh', 'nang-trang-ngoi', 'trang-tinh-khoi'
+  ].includes(zen.slug);
+
+  const isMinimal = [
+    'hen-uoc', 'sac-be-thanh-lich', 'sac-cuoi-be', 'net-chu-tinh-nhan',
+    'co-dien-tinh-khoi', 'bich-ngoc', 'sac-xanh-diu-em', 'chieu-nau-dien-anh'
+  ].includes(zen.slug);
+
+  const category: TemplateConfig['category'] = isTraditional
+    ? 'truyen_thong'
+    : isFloral
+    ? 'hoa_la'
+    : isMinimal
+    ? 'toi_gian'
+    : 'hien_dai';
+
+  const primaryColor = isTraditional
+    ? '#b91c1c'
+    : isFloral
+    ? '#e11d48'
+    : isMinimal
+    ? '#78350f'
+    : '#1c1917';
+
+  return {
+    id: zen.slug || zen.id,
+    name: zen.name,
+    slug: zen.slug,
+    category,
+    source: 'zenlove',
+    layoutType: isTraditional ? 'chungdoi_traditional' : 'full_long_card',
+    primaryColor,
+    accentColor: '#d4af37',
+    bgTexture: isTraditional ? '#fffbeb' : '#faf8f5',
+    cardBg: '#ffffff',
+    envelopeGradient: isTraditional ? 'from-red-700 to-rose-900' : 'from-rose-600 to-amber-700',
+    sealSymbol: isTraditional ? '囍' : '💍',
+    frameAsset: zen.longThumbnailUrl || zen.thumbnailUrl,
+    longThumbnailUrl: zen.longThumbnailUrl,
+    description: zen.description,
+    tag: zen.tag || (zen.templateType === 'premium' ? 'Cao cấp' : 'Mới'),
+    isLongThumbnail: true,
+  };
+}
+
+export const ALL_TEMPLATES: TemplateConfig[] = [
+  ...ZENLOVE_TEMPLATES.map(zenLoveToTemplateConfig),
+  ...TEMPLATES,
+];
+
+export function findTemplate(idOrSlug?: string | null): TemplateConfig {
+  if (!idOrSlug) return ALL_TEMPLATES[0];
+
+  const directMatch = ALL_TEMPLATES.find((t) => t.id === idOrSlug || (t.slug && t.slug === idOrSlug));
+  if (directMatch) return directMatch;
+
+  const zenMatch = ZENLOVE_TEMPLATES.find((t) => t.slug === idOrSlug || t.id === idOrSlug);
+  if (zenMatch) {
+    return zenLoveToTemplateConfig(zenMatch);
+  }
+
+  return ALL_TEMPLATES[0];
+}
 
 export interface BankConfig {
   code: string;

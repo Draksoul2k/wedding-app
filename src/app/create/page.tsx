@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { TEMPLATES, VIETNAMESE_BANKS, DEFAULT_WEDDING_DATA, TemplateConfig } from '@/constants/templates';
+import { TEMPLATES, ALL_TEMPLATES, findTemplate, VIETNAMESE_BANKS, DEFAULT_WEDDING_DATA, TemplateConfig } from '@/constants/templates';
 import { POPULAR_WEDDING_SONGS, findSongByQuery, WeddingSong } from '@/constants/songs';
 import { WeddingInvitationData } from '@/types/wedding';
 import { WeddingView } from '@/components/wedding-view';
@@ -33,9 +33,7 @@ function CreateInvitationContent() {
   const variantParam = searchParams.get('variant');
   const phoneScrollRef = useRef<HTMLDivElement>(null);
 
-  const initialTemplate = templateParam
-    ? TEMPLATES.find((t) => t.id === templateParam) || TEMPLATES[0]
-    : TEMPLATES[0];
+  const initialTemplate = findTemplate(templateParam);
 
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [activeDrawerTool, setActiveDrawerTool] = useState<string | null>('template');
@@ -49,7 +47,7 @@ function CreateInvitationContent() {
     templateId: initialTemplate.id,
     themeName: initialTemplate.name,
     primaryColor: initialTemplate.primaryColor,
-    heroPhoto: ''
+    heroPhoto: initialTemplate.frameAsset || ''
   }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
@@ -219,7 +217,7 @@ function CreateInvitationContent() {
       templateId: tmpl.id,
       themeName: tmpl.name,
       primaryColor: tmpl.primaryColor,
-      heroPhoto: prev.heroPhoto && !prev.heroPhoto.includes('/templates/cinelove') && !prev.heroPhoto.includes('/templates/motdoi') ? prev.heroPhoto : '',
+      heroPhoto: (prev.heroPhoto && !prev.heroPhoto.startsWith('/templates/') && !prev.heroPhoto.startsWith('http')) ? prev.heroPhoto : (tmpl.frameAsset || ''),
       typography: {
         ...prev.typography,
         fontFamily: font,
@@ -250,7 +248,7 @@ function CreateInvitationContent() {
 
   useEffect(() => {
     if (templateParam) {
-      const found = TEMPLATES.find((t) => t.id === templateParam);
+      const found = findTemplate(templateParam);
       if (found) {
         handleSelectTemplate(found);
         if (variantParam && found.colorVariants) {
@@ -259,7 +257,7 @@ function CreateInvitationContent() {
             setData((prev) => ({
               ...prev,
               primaryColor: v.primaryColor,
-              heroPhoto: prev.heroPhoto && !prev.heroPhoto.includes('/templates/cinelove') && !prev.heroPhoto.includes('/templates/motdoi') ? prev.heroPhoto : ''
+              heroPhoto: v.frameAsset || found.frameAsset || ''
             }));
           }
         }
@@ -629,7 +627,7 @@ function CreateInvitationContent() {
                   <h2 className="text-base font-bold text-gray-900 flex items-center justify-between">
                     <span>1. Chọn Mẫu Thiệp & Cài Đặt Nhạc Nền</span>
                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-semibold">
-                      {TEMPLATES.length} mẫu phong phú
+                      {ALL_TEMPLATES.length} mẫu phong phú
                     </span>
                   </h2>
                   <p className="text-xs text-gray-500 mt-0.5">
@@ -650,7 +648,7 @@ function CreateInvitationContent() {
                   >
                     <span>🎨 Chọn Mẫu & Tông Màu</span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-200 text-stone-700">
-                      {TEMPLATES.length} mẫu
+                      {ALL_TEMPLATES.length} mẫu
                     </span>
                   </button>
 
@@ -740,11 +738,11 @@ function CreateInvitationContent() {
                       <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-xl overflow-x-auto">
                         <span className="text-[10px] font-bold uppercase text-stone-500 pl-2 shrink-0">Bộ sưu tập:</span>
                         {[
-                          { id: 'all', label: `Tất cả (${TEMPLATES.length})` },
-                          { id: 'cinelove', label: `🎬 Điện Ảnh & Poster (${TEMPLATES.filter((t) => t.source === 'cinelove').length})` },
-                          { id: 'motdoi', label: `🌟 Thanh Lịch & Quý Phái (${TEMPLATES.filter((t) => t.source === 'motdoi').length})` },
-                          { id: 'chungdoi', label: `🌸 Đa Sắc Phối Màu (${TEMPLATES.filter((t) => t.source === 'chungdoi').length})` },
-                          { id: 'zenlove', label: `🌿 Mộc Mạc & Tối Giản (${TEMPLATES.filter((t) => t.source === 'zenlove').length})` },
+                          { id: 'all', label: `Tất cả (${ALL_TEMPLATES.length})` },
+                          { id: 'zenlove', label: `🌿 ZenLove & Tối Giản (${ALL_TEMPLATES.filter((t) => t.source === 'zenlove').length})` },
+                          { id: 'cinelove', label: `🎬 Điện Ảnh & Poster (${ALL_TEMPLATES.filter((t) => t.source === 'cinelove').length})` },
+                          { id: 'motdoi', label: `🌟 Thanh Lịch & Quý Phái (${ALL_TEMPLATES.filter((t) => t.source === 'motdoi').length})` },
+                          { id: 'chungdoi', label: `🌸 Đa Sắc Phối Màu (${ALL_TEMPLATES.filter((t) => t.source === 'chungdoi').length})` },
                         ].map((s) => (
                           <button
                             key={s.id}
@@ -765,10 +763,10 @@ function CreateInvitationContent() {
                       <div className="flex flex-wrap gap-1.5 border-b border-stone-200 pb-2">
                         {[
                           { id: 'all', label: 'Mọi phong cách' },
-                          { id: 'truyen_thong', label: `🏮 Truyền thống (${TEMPLATES.filter((t) => t.category === 'truyen_thong').length})` },
-                          { id: 'hoa_la', label: `🌿 Hoa lá (${TEMPLATES.filter((t) => t.category === 'hoa_la').length})` },
-                          { id: 'toi_gian', label: `✨ Tối giản (${TEMPLATES.filter((t) => t.category === 'toi_gian').length})` },
-                          { id: 'hien_dai', label: `👑 Điện ảnh & Hiện đại (${TEMPLATES.filter((t) => t.category === 'hien_dai').length})` },
+                          { id: 'truyen_thong', label: `🏮 Truyền thống (${ALL_TEMPLATES.filter((t) => t.category === 'truyen_thong').length})` },
+                          { id: 'hoa_la', label: `🌿 Hoa lá (${ALL_TEMPLATES.filter((t) => t.category === 'hoa_la').length})` },
+                          { id: 'toi_gian', label: `✨ Tối giản (${ALL_TEMPLATES.filter((t) => t.category === 'toi_gian').length})` },
+                          { id: 'hien_dai', label: `👑 Điện ảnh & Hiện đại (${ALL_TEMPLATES.filter((t) => t.category === 'hien_dai').length})` },
                         ].map((cat) => (
                           <button
                             key={cat.id}
@@ -808,7 +806,7 @@ function CreateInvitationContent() {
 
                     {/* Template Grid with Smooth Auto-Scroll Preview */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[480px] overflow-y-auto pr-1">
-                      {TEMPLATES.filter((tmpl) => {
+                      {ALL_TEMPLATES.filter((tmpl) => {
                         const matchesSource = sourceFilter === 'all' || tmpl.source === sourceFilter;
                         const matchesCat = selectedCategory === 'all' || tmpl.category === selectedCategory;
                         const q = templateSearch.toLowerCase().trim();
@@ -845,7 +843,7 @@ function CreateInvitationContent() {
                                   : tmpl.source === 'motdoi'
                                   ? '🌟 Thanh Lịch'
                                   : tmpl.source === 'zenlove'
-                                  ? '🌿 Tối Giản'
+                                  ? '🌿 ZenLove'
                                   : '🌸 Đa Sắc'}
                               </span>
                               <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/70 text-white backdrop-blur-xs">
@@ -894,7 +892,7 @@ function CreateInvitationContent() {
 
                     {/* Color Variant Chooser Section when selected template has color variations */}
                     {(() => {
-                      const curTmpl = TEMPLATES.find((t) => t.id === data.templateId);
+                      const curTmpl = findTemplate(data.templateId);
                       if (!curTmpl || !curTmpl.colorVariants || curTmpl.colorVariants.length === 0) return null;
 
                       return (

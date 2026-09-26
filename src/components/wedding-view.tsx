@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { WeddingInvitationData } from '@/types/wedding';
-import { TEMPLATES, TemplateLayoutType } from '@/constants/templates';
+import { TEMPLATES, TemplateLayoutType, findTemplate } from '@/constants/templates';
 import { FallingEffect } from './falling-effect';
 import { motion, AnimatePresence } from 'motion/react';
 import { CinematicLayout } from './wedding-layouts/cinematic-layout';
@@ -48,7 +48,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   const [rsvpSide, setRsvpSide] = useState<'nha_trai' | 'nha_gai'>('nha_trai');
   const [rsvpCount, setRsvpCount] = useState(1);
 
-  const template = TEMPLATES.find((t) => t.id === data.templateId) || TEMPLATES[0];
+  const template = findTemplate(data.templateId);
   const activeColor = data.primaryColor || template.primaryColor;
   const activeAccent = template.accentColor || '#d4af37';
   const envelopeGradient = template.envelopeGradient || 'from-red-600 to-rose-700';

@@ -12,6 +12,11 @@ export interface ZenLoveTemplate {
   viewCount: number;
 }
 
+export function findZenLoveTemplate(slugOrId?: string | null): ZenLoveTemplate | undefined {
+  if (!slugOrId) return undefined;
+  return ZENLOVE_TEMPLATES.find((t) => t.slug === slugOrId || t.id === slugOrId);
+}
+
 export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
   {
     "id": "a9195353-7ba5-4a2b-9611-5868025d3f02",
@@ -21,8 +26,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online Sen Ngày Hỷ với họa tiết hoa sen thanh nhã, mang vẻ đẹp truyền thống và tinh tế, phù hợp cho những cặp đôi yêu thích phong cách Á Đông.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/a9195353-7ba5-4a2b-9611-5868025d3f02/long_a9195353-7ba5-4a2b-9611-5868025d3f02.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/a9195353-7ba5-4a2b-9611-5868025d3f02/long_a9195353-7ba5-4a2b-9611-5868025d3f02.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/lien_hoa_pink.webp",
+    "thumbnailUrl": "/templates/lien_hoa_pink.webp",
     "likeCount": 0,
     "viewCount": 33
   },
@@ -34,8 +39,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online thanh lịch, nhẹ nhàng với thiết kế tinh tế, phù hợp cho những cặp đôi yêu thích phong cách tối giản và lãng mạn.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/4ec76647-a5ef-4f58-8160-d20febb9e84a/long_4ec76647-a5ef-4f58-8160-d20febb9e84a.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/4ec76647-a5ef-4f58-8160-d20febb9e84a/long_4ec76647-a5ef-4f58-8160-d20febb9e84a.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/minimalism_brown.webp",
+    "thumbnailUrl": "/templates/minimalism_brown.webp",
     "likeCount": 5,
     "viewCount": 84
   },
@@ -47,8 +52,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Hồng Phong – Mẫu thiệp cưới online màu đỏ sang trọng, nổi bật với thiết kế phong bì tinh tế ở phần mở đầu. Phù hợp cho các cặp đôi yêu thích vẻ đẹp truyền thống, ấm áp và trang trọng.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/8c5055d8-30db-4b38-8831-e11063e3d352/long_8c5055d8-30db-4b38-8831-e11063e3d352.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/8c5055d8-30db-4b38-8831-e11063e3d352/long_8c5055d8-30db-4b38-8831-e11063e3d352.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/nhat_binh_red.webp",
+    "thumbnailUrl": "/templates/nhat_binh_red.webp",
     "likeCount": 64,
     "viewCount": 1000
   },
@@ -60,8 +65,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Rước Đèn Ông Sao – Mẫu thiệp Trung Thu online mang không khí vui tươi, rực rỡ và đậm nét tuổi thơ. Thiết kế phù hợp gửi lời chúc Trung Thu đến gia đình, bạn bè, khách hàng và người thân trên ZenLove.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/84db03a1-1d4a-4274-a0bc-a8419d90e4be/long_84db03a1-1d4a-4274-a0bc-a8419d90e4be.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/84db03a1-1d4a-4274-a0bc-a8419d90e4be/long_84db03a1-1d4a-4274-a0bc-a8419d90e4be.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/chibi_red.webp",
+    "thumbnailUrl": "/templates/chibi_red.webp",
     "likeCount": 10,
     "viewCount": 59
   },
@@ -73,8 +78,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Trung Thu 01 – Mẫu thiệp Trung Thu online mang phong cách ấm áp, tinh tế, kết hợp sắc màu truyền thống và thiết kế hiện đại. Phù hợp g���i lời chúc Trung Thu ý nghĩa đến gia đình, bạn bè và người thân trên ZenLove.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/328c2d89-01d9-486f-b245-10362d2fbaa0/long_328c2d89-01d9-486f-b245-10362d2fbaa0.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/328c2d89-01d9-486f-b245-10362d2fbaa0/long_328c2d89-01d9-486f-b245-10362d2fbaa0.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/spring_garden_red.webp",
+    "thumbnailUrl": "/templates/spring_garden_red.webp",
     "likeCount": 10,
     "viewCount": 72
   },
@@ -86,8 +91,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/1f422dc5-7795-48c4-8e1a-48cc8421dbc3/long_1f422dc5-7795-48c4-8e1a-48cc8421dbc3.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/1f422dc5-7795-48c4-8e1a-48cc8421dbc3/long_1f422dc5-7795-48c4-8e1a-48cc8421dbc3.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/boho_floral_brown.webp",
+    "thumbnailUrl": "/templates/boho_floral_brown.webp",
     "likeCount": 11,
     "viewCount": 102
   },
@@ -99,8 +104,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/24d88c9e-159b-4888-9c77-c3ed775035b6/long_24d88c9e-159b-4888-9c77-c3ed775035b6.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/24d88c9e-159b-4888-9c77-c3ed775035b6/long_24d88c9e-159b-4888-9c77-c3ed775035b6.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/spring_garden_green.webp",
+    "thumbnailUrl": "/templates/spring_garden_green.webp",
     "likeCount": 18,
     "viewCount": 208
   },
@@ -112,8 +117,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/de48d917-df7d-4ab9-a553-be6e8fd84c04/long_de48d917-df7d-4ab9-a553-be6e8fd84c04.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/de48d917-df7d-4ab9-a553-be6e8fd84c04/long_de48d917-df7d-4ab9-a553-be6e8fd84c04.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/silk_ribbon_pink.webp",
+    "thumbnailUrl": "/templates/silk_ribbon_pink.webp",
     "likeCount": 10,
     "viewCount": 100
   },
@@ -125,8 +130,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/3d7badec-67c8-4eb3-90a4-bf96d2948ec8/long_3d7badec-67c8-4eb3-90a4-bf96d2948ec8.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/3d7badec-67c8-4eb3-90a4-bf96d2948ec8/long_3d7badec-67c8-4eb3-90a4-bf96d2948ec8.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/silk_flora_brown.webp",
+    "thumbnailUrl": "/templates/silk_flora_brown.webp",
     "likeCount": 17,
     "viewCount": 123
   },
@@ -138,8 +143,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/3410d8c2-6141-4c75-8848-445353a884b5/long_3410d8c2-6141-4c75-8848-445353a884b5.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/3410d8c2-6141-4c75-8848-445353a884b5/long_3410d8c2-6141-4c75-8848-445353a884b5.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/minimalism_brown.webp",
+    "thumbnailUrl": "/templates/minimalism_brown.webp",
     "likeCount": 9,
     "viewCount": 100
   },
@@ -151,8 +156,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/3b6728a2-bb39-4331-82f6-410eca19f9db/long_3b6728a2-bb39-4331-82f6-410eca19f9db.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/3b6728a2-bb39-4331-82f6-410eca19f9db/long_3b6728a2-bb39-4331-82f6-410eca19f9db.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/baroque_gold.webp",
+    "thumbnailUrl": "/templates/baroque_gold.webp",
     "likeCount": 13,
     "viewCount": 69
   },
@@ -164,8 +169,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/917772d9-d56c-43ca-b671-12f7023f01ce/long_917772d9-d56c-43ca-b671-12f7023f01ce.jpg",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/917772d9-d56c-43ca-b671-12f7023f01ce/long_917772d9-d56c-43ca-b671-12f7023f01ce.jpg?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/jasmine_white.webp",
+    "thumbnailUrl": "/templates/jasmine_white.webp",
     "likeCount": 16,
     "viewCount": 108
   },
@@ -177,8 +182,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/f97f767a-b8c2-438d-80e9-89651095e93e/long_f97f767a-b8c2-438d-80e9-89651095e93e.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/f97f767a-b8c2-438d-80e9-89651095e93e/long_f97f767a-b8c2-438d-80e9-89651095e93e.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/spring_garden_blue.webp",
+    "thumbnailUrl": "/templates/spring_garden_blue.webp",
     "likeCount": 17,
     "viewCount": 91
   },
@@ -190,8 +195,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/453f372e-5d22-474e-b947-0a833ba1bb66/long_453f372e-5d22-474e-b947-0a833ba1bb66.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/453f372e-5d22-474e-b947-0a833ba1bb66/long_453f372e-5d22-474e-b947-0a833ba1bb66.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/boho_floral_pink.webp",
+    "thumbnailUrl": "/templates/boho_floral_pink.webp",
     "likeCount": 5,
     "viewCount": 80
   },
@@ -203,8 +208,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/c0031611-6847-4945-b7f5-f98ddaf5f1ee/long_c0031611-6847-4945-b7f5-f98ddaf5f1ee.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/c0031611-6847-4945-b7f5-f98ddaf5f1ee/long_c0031611-6847-4945-b7f5-f98ddaf5f1ee.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/baroque_v2_darkblue.webp",
+    "thumbnailUrl": "/templates/baroque_v2_darkblue.webp",
     "likeCount": 3,
     "viewCount": 50
   },
@@ -216,8 +221,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/c026f536-0230-4d5e-80af-7533f26eed61/long_c026f536-0230-4d5e-80af-7533f26eed61.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/c026f536-0230-4d5e-80af-7533f26eed61/long_c026f536-0230-4d5e-80af-7533f26eed61.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/elegant_leaf_green.webp",
+    "thumbnailUrl": "/templates/elegant_leaf_green.webp",
     "likeCount": 4,
     "viewCount": 99
   },
@@ -229,8 +234,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/8b92bbcd-83d7-46d9-b522-8c61042b0342/long_8b92bbcd-83d7-46d9-b522-8c61042b0342.png",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/8b92bbcd-83d7-46d9-b522-8c61042b0342/long_8b92bbcd-83d7-46d9-b522-8c61042b0342.png?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/glass_garden_blue.webp",
+    "thumbnailUrl": "/templates/glass_garden_blue.webp",
     "likeCount": 10,
     "viewCount": 91
   },
@@ -242,8 +247,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/43498986-ba34-4bcf-857a-0a4caa8d7dcb/long_43498986-ba34-4bcf-857a-0a4caa8d7dcb.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/43498986-ba34-4bcf-857a-0a4caa8d7dcb/long_43498986-ba34-4bcf-857a-0a4caa8d7dcb.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/hoa_kho_orange.webp",
+    "thumbnailUrl": "/templates/hoa_kho_orange.webp",
     "likeCount": 12,
     "viewCount": 106
   },
@@ -255,8 +260,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/82f29721-5471-4784-b3f8-bee9afa7c790/long_82f29721-5471-4784-b3f8-bee9afa7c790.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/82f29721-5471-4784-b3f8-bee9afa7c790/long_82f29721-5471-4784-b3f8-bee9afa7c790.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/glass_garden_green.webp",
+    "thumbnailUrl": "/templates/glass_garden_green.webp",
     "likeCount": 12,
     "viewCount": 97
   },
@@ -268,8 +273,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/b546553f-34a8-4313-a259-a79933725b70/long_b546553f-34a8-4313-a259-a79933725b70.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/b546553f-34a8-4313-a259-a79933725b70/long_b546553f-34a8-4313-a259-a79933725b70.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/minimalism_darkblue.webp",
+    "thumbnailUrl": "/templates/minimalism_darkblue.webp",
     "likeCount": 3,
     "viewCount": 72
   },
@@ -281,8 +286,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/b36690e6-ca43-45a7-83e5-4f5aa66aedd1/long_b36690e6-ca43-45a7-83e5-4f5aa66aedd1.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/b36690e6-ca43-45a7-83e5-4f5aa66aedd1/long_b36690e6-ca43-45a7-83e5-4f5aa66aedd1.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/minimalism_brown.webp",
+    "thumbnailUrl": "/templates/minimalism_brown.webp",
     "likeCount": 10,
     "viewCount": 121
   },
@@ -294,8 +299,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/9ab4a8a1-5093-4172-8e5c-ebd83333cac6/long_9ab4a8a1-5093-4172-8e5c-ebd83333cac6.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/9ab4a8a1-5093-4172-8e5c-ebd83333cac6/long_9ab4a8a1-5093-4172-8e5c-ebd83333cac6.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/cherry_blossom_pink.webp",
+    "thumbnailUrl": "/templates/cherry_blossom_pink.webp",
     "likeCount": 13,
     "viewCount": 98
   },
@@ -307,8 +312,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/5ba8fc8b-04a4-446f-a99d-62b58deab425/long_5ba8fc8b-04a4-446f-a99d-62b58deab425.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/5ba8fc8b-04a4-446f-a99d-62b58deab425/long_5ba8fc8b-04a4-446f-a99d-62b58deab425.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/sunflower.webp",
+    "thumbnailUrl": "/templates/sunflower.webp",
     "likeCount": 12,
     "viewCount": 71
   },
@@ -320,8 +325,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/1557dc9e-59be-40be-a2d1-858eb4152abc/long_1557dc9e-59be-40be-a2d1-858eb4152abc.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/1557dc9e-59be-40be-a2d1-858eb4152abc/long_1557dc9e-59be-40be-a2d1-858eb4152abc.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/silk_ribbon_pink.webp",
+    "thumbnailUrl": "/templates/silk_ribbon_pink.webp",
     "likeCount": 11,
     "viewCount": 65
   },
@@ -333,8 +338,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/ddcb6880-b730-40b7-b95b-4104c1d8c971/long_ddcb6880-b730-40b7-b95b-4104c1d8c971.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/ddcb6880-b730-40b7-b95b-4104c1d8c971/long_ddcb6880-b730-40b7-b95b-4104c1d8c971.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/chateau_blue.webp",
+    "thumbnailUrl": "/templates/chateau_blue.webp",
     "likeCount": 10,
     "viewCount": 52
   },
@@ -346,8 +351,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/0ff5ab5f-dde3-4798-85ab-59dbd629c7aa/long_0ff5ab5f-dde3-4798-85ab-59dbd629c7aa.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/0ff5ab5f-dde3-4798-85ab-59dbd629c7aa/long_0ff5ab5f-dde3-4798-85ab-59dbd629c7aa.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/porcelain_blue.webp",
+    "thumbnailUrl": "/templates/porcelain_blue.webp",
     "likeCount": 9,
     "viewCount": 64
   },
@@ -359,8 +364,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/5592f05c-7056-4ce7-9003-92e2454dadde/long_5592f05c-7056-4ce7-9003-92e2454dadde.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/5592f05c-7056-4ce7-9003-92e2454dadde/long_5592f05c-7056-4ce7-9003-92e2454dadde.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/porcelain_red.webp",
+    "thumbnailUrl": "/templates/porcelain_red.webp",
     "likeCount": 11,
     "viewCount": 100
   },
@@ -372,8 +377,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/0ddfdf72-cdb4-4a57-8dde-43a09def7fdf/long_0ddfdf72-cdb4-4a57-8dde-43a09def7fdf.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/0ddfdf72-cdb4-4a57-8dde-43a09def7fdf/long_0ddfdf72-cdb4-4a57-8dde-43a09def7fdf.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/porcelain_v2_pink.webp",
+    "thumbnailUrl": "/templates/porcelain_v2_pink.webp",
     "likeCount": 9,
     "viewCount": 49
   },
@@ -385,8 +390,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/eea9e7bb-3c7f-414e-9525-74d4f4a9d103/long_eea9e7bb-3c7f-414e-9525-74d4f4a9d103.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/eea9e7bb-3c7f-414e-9525-74d4f4a9d103/long_eea9e7bb-3c7f-414e-9525-74d4f4a9d103.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/porcelain_v2_green.webp",
+    "thumbnailUrl": "/templates/porcelain_v2_green.webp",
     "likeCount": 11,
     "viewCount": 78
   },
@@ -398,8 +403,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/c554c6f7-1105-4ce4-8b37-8e24921ec837/long_c554c6f7-1105-4ce4-8b37-8e24921ec837.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/c554c6f7-1105-4ce4-8b37-8e24921ec837/long_c554c6f7-1105-4ce4-8b37-8e24921ec837.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-61.jpg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-61.jpg",
     "likeCount": 11,
     "viewCount": 88
   },
@@ -411,8 +416,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/fb4cd6a2-61be-451c-a2e2-8aeb9a8c415d/long_fb4cd6a2-61be-451c-a2e2-8aeb9a8c415d.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/fb4cd6a2-61be-451c-a2e2-8aeb9a8c415d/long_fb4cd6a2-61be-451c-a2e2-8aeb9a8c415d.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-39.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-39.jpeg",
     "likeCount": 9,
     "viewCount": 43
   },
@@ -424,8 +429,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/f9f1a356-96a8-473c-b83e-32ef2b525a3a/long_f9f1a356-96a8-473c-b83e-32ef2b525a3a.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/f9f1a356-96a8-473c-b83e-32ef2b525a3a/long_f9f1a356-96a8-473c-b83e-32ef2b525a3a.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-40.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-40.jpeg",
     "likeCount": 9,
     "viewCount": 56
   },
@@ -437,8 +442,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/cbb0cfb6-a823-4966-abed-9fb9aee38610/long_cbb0cfb6-a823-4966-abed-9fb9aee38610.jpg",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/cbb0cfb6-a823-4966-abed-9fb9aee38610/long_cbb0cfb6-a823-4966-abed-9fb9aee38610.jpg?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-16.jpg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-16.jpg",
     "likeCount": 9,
     "viewCount": 79
   },
@@ -450,8 +455,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/03feb3d1-a100-4972-a64a-879c038d14d4/long_03feb3d1-a100-4972-a64a-879c038d14d4.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/03feb3d1-a100-4972-a64a-879c038d14d4/long_03feb3d1-a100-4972-a64a-879c038d14d4.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-1.webp",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-1.webp",
     "likeCount": 11,
     "viewCount": 106
   },
@@ -463,8 +468,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/8cde8307-2139-4447-951b-45f552019b0d/long_8cde8307-2139-4447-951b-45f552019b0d.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/8cde8307-2139-4447-951b-45f552019b0d/long_8cde8307-2139-4447-951b-45f552019b0d.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-2.webp",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-2.webp",
     "likeCount": 11,
     "viewCount": 47
   },
@@ -476,8 +481,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/dcdb503f-a949-4ac8-83c9-0f73c3f3fec3/long_dcdb503f-a949-4ac8-83c9-0f73c3f3fec3.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/dcdb503f-a949-4ac8-83c9-0f73c3f3fec3/long_dcdb503f-a949-4ac8-83c9-0f73c3f3fec3.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-5.webp",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-5.webp",
     "likeCount": 12,
     "viewCount": 58
   },
@@ -489,8 +494,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/6df56fe1-85c0-4b6e-9559-bdb416304d00/long_6df56fe1-85c0-4b6e-9559-bdb416304d00.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/6df56fe1-85c0-4b6e-9559-bdb416304d00/long_6df56fe1-85c0-4b6e-9559-bdb416304d00.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-38.png",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-38.png",
     "likeCount": 10,
     "viewCount": 61
   },
@@ -502,8 +507,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/c7187f03-8cf8-430a-addd-dbbaa70f53df/long_c7187f03-8cf8-430a-addd-dbbaa70f53df.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/c7187f03-8cf8-430a-addd-dbbaa70f53df/long_c7187f03-8cf8-430a-addd-dbbaa70f53df.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-44.jpg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-44.jpg",
     "likeCount": 11,
     "viewCount": 37
   },
@@ -515,8 +520,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/9ba03f1b-5918-4164-b9e6-85a9db05224b/long_9ba03f1b-5918-4164-b9e6-85a9db05224b.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/9ba03f1b-5918-4164-b9e6-85a9db05224b/long_9ba03f1b-5918-4164-b9e6-85a9db05224b.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-46.jpg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-46.jpg",
     "likeCount": 10,
     "viewCount": 42
   },
@@ -528,8 +533,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/cfc4c65e-7983-499f-949e-67a72f0e3cc3/long_cfc4c65e-7983-499f-949e-67a72f0e3cc3.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/cfc4c65e-7983-499f-949e-67a72f0e3cc3/long_cfc4c65e-7983-499f-949e-67a72f0e3cc3.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-47.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-47.jpeg",
     "likeCount": 9,
     "viewCount": 36
   },
@@ -541,8 +546,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/327261ec-0cc6-42ca-a60d-932980dbdd82/long_327261ec-0cc6-42ca-a60d-932980dbdd82.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/327261ec-0cc6-42ca-a60d-932980dbdd82/long_327261ec-0cc6-42ca-a60d-932980dbdd82.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-23.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-23.jpeg",
     "likeCount": 10,
     "viewCount": 51
   },
@@ -554,8 +559,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/95ab57bc-41aa-4ff3-b61d-d99a62f1fb7b/long_95ab57bc-41aa-4ff3-b61d-d99a62f1fb7b.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/95ab57bc-41aa-4ff3-b61d-d99a62f1fb7b/long_95ab57bc-41aa-4ff3-b61d-d99a62f1fb7b.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-114.png",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-114.png",
     "likeCount": 23,
     "viewCount": 285
   },
@@ -567,8 +572,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Mới",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/a3f77c89-9ccb-416c-a84a-13ef8ddd9657/long_a3f77c89-9ccb-416c-a84a-13ef8ddd9657.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/a3f77c89-9ccb-416c-a84a-13ef8ddd9657/long_a3f77c89-9ccb-416c-a84a-13ef8ddd9657.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/double_phoenix_green.webp",
+    "thumbnailUrl": "/templates/double_phoenix_green.webp",
     "likeCount": 11,
     "viewCount": 93
   },
@@ -580,8 +585,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/ce1dea7d-0138-4364-8a33-7ab8fd95c5fd/long_ce1dea7d-0138-4364-8a33-7ab8fd95c5fd.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/ce1dea7d-0138-4364-8a33-7ab8fd95c5fd/long_ce1dea7d-0138-4364-8a33-7ab8fd95c5fd.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-42.jpg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-42.jpg",
     "likeCount": 16,
     "viewCount": 215
   },
@@ -593,8 +598,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/40bc54e4-1581-4e01-ad97-6162ac1a5743/long_40bc54e4-1581-4e01-ad97-6162ac1a5743.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/40bc54e4-1581-4e01-ad97-6162ac1a5743/long_40bc54e4-1581-4e01-ad97-6162ac1a5743.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-17.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-17.jpeg",
     "likeCount": 19,
     "viewCount": 264
   },
@@ -606,8 +611,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/97041aaf-a789-4dea-a1a7-eefea0af5879/long_97041aaf-a789-4dea-a1a7-eefea0af5879.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/97041aaf-a789-4dea-a1a7-eefea0af5879/long_97041aaf-a789-4dea-a1a7-eefea0af5879.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-36.jpeg",
+    "thumbnailUrl": "/templates/clean/clean_cine_thiep-cuoi-36.jpeg",
     "likeCount": 24,
     "viewCount": 505
   },
@@ -619,8 +624,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/448f3260-a1a5-45f2-8ade-86a2065a1888/long_448f3260-a1a5-45f2-8ade-86a2065a1888.jpg",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/448f3260-a1a5-45f2-8ade-86a2065a1888/long_448f3260-a1a5-45f2-8ade-86a2065a1888.jpg?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/song_hy_red.webp",
+    "thumbnailUrl": "/templates/song_hy_red.webp",
     "likeCount": 25,
     "viewCount": 330
   },
@@ -632,8 +637,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/23da9a74-eb25-47f0-b726-b50fe6f1b235/long_23da9a74-eb25-47f0-b726-b50fe6f1b235.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/23da9a74-eb25-47f0-b726-b50fe6f1b235/long_23da9a74-eb25-47f0-b726-b50fe6f1b235.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/song_hy_green.webp",
+    "thumbnailUrl": "/templates/song_hy_green.webp",
     "likeCount": 22,
     "viewCount": 321
   },
@@ -645,8 +650,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/c3a4b54b-dbe8-4386-87ec-e30dd918e8fe/long_c3a4b54b-dbe8-4386-87ec-e30dd918e8fe.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/c3a4b54b-dbe8-4386-87ec-e30dd918e8fe/long_c3a4b54b-dbe8-4386-87ec-e30dd918e8fe.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/chateau_green.webp",
+    "thumbnailUrl": "/templates/chateau_green.webp",
     "likeCount": 8,
     "viewCount": 102
   },
@@ -658,8 +663,8 @@ export const ZENLOVE_TEMPLATES: ZenLoveTemplate[] = [
     "templateType": "free",
     "tag": "Hot",
     "description": "Mẫu thiệp cưới online đẹp tinh tế cho cặp đôi gửi lời mời qua link Zalo, Facebook.",
-    "longThumbnailUrl": "https://cdn-resource.zenlove.me/templates/1c312850-dfbb-463a-98a7-729d5b8d7df6/long_1c312850-dfbb-463a-98a7-729d5b8d7df6.webp",
-    "thumbnailUrl": "https://cdn-resource.zenlove.me/templates/1c312850-dfbb-463a-98a7-729d5b8d7df6/long_1c312850-dfbb-463a-98a7-729d5b8d7df6.webp?crop=0,0,804,1440",
+    "longThumbnailUrl": "/templates/co_ba_red.webp",
+    "thumbnailUrl": "/templates/co_ba_red.webp",
     "likeCount": 12,
     "viewCount": 208
   }
