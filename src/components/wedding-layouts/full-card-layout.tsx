@@ -80,6 +80,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
         template.bgTexture.toLowerCase() === '#0c0a09' ||
         template.bgTexture.toLowerCase() === '#09090b')
   );
+  const isCineloveMovie = template.id === 'cine-thiep-cuoi-39' || template.layoutType === 'cinelove_movie';
 
   const containerBg = isDark
     ? '#0c0a09'
@@ -480,7 +481,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                 </div>
 
                 {/* 7-column Calendar strip */}
-                <div className="max-w-[240px] mx-auto grid grid-cols-7 gap-1 text-[11px] font-mono text-stone-700">
+                <div className="max-w-[240px] mx-auto grid grid-cols-7 gap-1 text-[11px] font-mono text-stone-700 items-center justify-items-center">
                   <span>1</span>
                   <span>2</span>
                   <span>3</span>
@@ -489,8 +490,15 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                   <span>6</span>
                   <span>7</span>
                   <span>8</span>
-                  <span className="w-6 h-6 rounded-full border-2 border-rose-500 font-bold text-rose-600 flex items-center justify-center mx-auto shadow-xs">
-                    {targetDay}
+                  <span className="relative w-7 h-7 flex items-center justify-center font-bold">
+                    <img
+                      src="/templates/cinelove/calendar_heart.png"
+                      alt="Wedding Heart"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none scale-125"
+                    />
+                    <span className="relative z-10 text-[11px] font-bold text-white drop-shadow-xs">
+                      {targetDay}
+                    </span>
                   </span>
                   <span>10</span>
                   <span>11</span>
@@ -734,9 +742,489 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
       {/* 2. MAIN WEDDING INVITATION CONTENT SECTIONS (Kinetic Reveal Upon Scroll)  */}
       {/* ========================================================================= */}
       <div className="max-w-md mx-auto px-4 pt-8 pb-32 space-y-12" style={{ backgroundColor: containerBg }}>
+        {isCineloveMovie ? (
+          <>
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 1: ARCH PORTRAITS (CÔ DÂU & CHÚ RỂ)                      */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3.5 items-end">
+                {/* Chú rể Arch */}
+                <div className="space-y-2 text-center">
+                  <div className="aspect-[3/4] rounded-t-full overflow-hidden border-2 border-stone-200/90 shadow-xl bg-stone-100">
+                    <img
+                      src={data.groom.avatarUrl || '/templates/cinelove/groom_arch.png'}
+                      alt="Chú rể"
+                      className="w-full h-full object-cover select-none"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-serif uppercase tracking-wider text-stone-700 font-bold block">
+                      Chú rể {data.groom.shortName || data.groom.fullName || 'MINH TRÍ'}
+                    </span>
+                    <span className="text-[10px] font-mono text-stone-400">
+                      {(data.groom as any).birthDate || '06.05.1998'}
+                    </span>
+                  </div>
+                </div>
 
-        {/* Elegant Couple Headline Header */}
-        <motion.div {...scrollReveal} className="text-center pt-2 pb-2 space-y-2">
+                {/* Cô dâu Arch */}
+                <div className="space-y-2 text-center">
+                  <div className="aspect-[3/4] rounded-t-full overflow-hidden border-2 border-stone-200/90 shadow-xl bg-stone-100">
+                    <img
+                      src={data.bride.avatarUrl || '/templates/cinelove/bride_arch.png'}
+                      alt="Cô dâu"
+                      className="w-full h-full object-cover select-none"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-serif uppercase tracking-wider text-stone-700 font-bold block">
+                      Cô dâu {data.bride.shortName || data.bride.fullName || 'THANH HẰNG'}
+                    </span>
+                    <span className="text-[10px] font-mono text-stone-400">
+                      {(data.bride as any).birthDate || '20.08.2001'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 2: OUR LOVE STORY NOTEBOOK CARD                          */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="relative bg-[#fffdfa] border border-stone-200/90 rounded-2xl p-6 sm:p-7 shadow-xl overflow-hidden">
+                {/* Left Binder Holes */}
+                <div className="absolute left-2.5 top-0 bottom-0 flex flex-col justify-around py-5 pointer-events-none">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="w-2.5 h-2.5 rounded-full bg-stone-200 shadow-inner border border-stone-300" />
+                  ))}
+                </div>
+
+                <div className="pl-4 text-center space-y-3">
+                  <div className="font-serif font-black text-lg tracking-[0.2em] text-stone-800 uppercase">
+                    OUR LOVE STORY
+                  </div>
+                  <p className="font-serif italic text-xs text-stone-600 leading-relaxed px-2">
+                    &ldquo;{data.loveStory?.quotes || 'Tình yêu không phải là tìm một ai đó hoàn hảo, mà là học cách nhìn thấy những điều tuyệt vời từ một người không hoàn hảo.'}&rdquo;
+                  </p>
+                  <div className="w-12 h-px bg-stone-300 mx-auto my-1" />
+                  <p className="font-serif text-[12px] text-stone-700 leading-relaxed text-justify indent-4">
+                    {data.loveStory?.content || 'Chúng mình gặp nhau vào một ngày mùa thu Hà Nội, khi những cơn gió đầu mùa vừa se lạnh. Từ hai người xa lạ, chúng mình đã cùng nhau đi qua những năm tháng thanh xuân, cùng sẻ chia những vui buồn và nhận ra rằng: đối phương chính là mảnh ghép trọn vẹn nhất cho cuộc đời mình...'}
+                  </p>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 3: FAMILY DETAILS (NHÀ TRAI & NHÀ GÁI)                   */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white/95 border border-stone-200/90 rounded-2xl p-5 shadow-xl">
+                <div className="grid grid-cols-2 gap-4 text-center divide-x divide-stone-200">
+                  {/* Nhà Trai */}
+                  <div className="space-y-1 text-xs">
+                    <span className="font-serif font-bold tracking-wider text-rose-900 block text-xs sm:text-sm mb-2">
+                      NHÀ TRAI
+                    </span>
+                    <p className="text-stone-500 text-[10.5px]">ÔNG: <strong className="text-stone-800">{data.groom.fatherName || 'NGUYỄN VĂN AN'}</strong></p>
+                    <p className="text-stone-500 text-[10.5px]">BÀ: <strong className="text-stone-800">{data.groom.motherName || 'TRẦN THỊ MAI'}</strong></p>
+                    <p className="text-stone-400 text-[10px] italic">Hà Nội</p>
+                    <div className="pt-2 border-t border-stone-100 mt-2">
+                      <span className="text-[10px] uppercase font-mono text-stone-400 block">{data.groom.birthOrder || 'TRƯỞNG NAM'}</span>
+                      <p className="font-serif font-bold text-sm text-stone-900 mt-0.5">{data.groom.fullName || 'MINH TRÍ'}</p>
+                    </div>
+                  </div>
+
+                  {/* Nhà Gái */}
+                  <div className="space-y-1 text-xs pl-4">
+                    <span className="font-serif font-bold tracking-wider text-rose-900 block text-xs sm:text-sm mb-2">
+                      NHÀ GÁI
+                    </span>
+                    <p className="text-stone-500 text-[10.5px]">ÔNG: <strong className="text-stone-800">{data.bride.fatherName || 'LÊ VĂN BÌNH'}</strong></p>
+                    <p className="text-stone-500 text-[10.5px]">BÀ: <strong className="text-stone-800">{data.bride.motherName || 'NGUYỄN THỊ HOA'}</strong></p>
+                    <p className="text-stone-400 text-[10px] italic">Quảng Ninh</p>
+                    <div className="pt-2 border-t border-stone-100 mt-2">
+                      <span className="text-[10px] uppercase font-mono text-stone-400 block">{data.bride.birthOrder || 'ÚT NỮ'}</span>
+                      <p className="font-serif font-bold text-sm text-stone-900 mt-0.5">{data.bride.fullName || 'THANH HẰNG'}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 4: FORMAL INVITATION & BIG DATE WIDGET                   */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-6 shadow-xl text-center space-y-4">
+                <span className="font-serif text-[11px] uppercase tracking-[0.25em] text-stone-500 font-semibold block">
+                  TRÂN TRỌNG KÍNH MỜI
+                </span>
+                <div className="text-base font-serif font-bold text-stone-900">
+                  {guestName || 'Quý Khách & Người Thương'}
+                </div>
+                <p className="text-xs text-stone-600 font-serif italic">
+                  Đến tham dự lễ thành hôn và chung vui cùng gia đình chúng mình
+                </p>
+
+                {/* Big Date Widget */}
+                <div className="py-3 border-y border-stone-200 my-3">
+                  <div className="text-[11px] font-serif uppercase tracking-widest text-stone-500 mb-1">
+                    Thứ Ba
+                  </div>
+                  <div className="flex items-center justify-center gap-6 font-serif">
+                    <div className="text-sm font-bold text-stone-700">Tháng {targetMonth}</div>
+                    <div className="text-5xl sm:text-6xl font-black text-rose-900 px-3 tracking-tight">
+                      {targetDay < 10 ? `0${targetDay}` : targetDay}
+                    </div>
+                    <div className="text-sm font-bold text-stone-700">Năm {targetYear}</div>
+                  </div>
+                  <div className="text-[10px] text-stone-400 font-mono mt-1">
+                    (Tức ngày 20 tháng 10 năm Ất Tỵ)
+                  </div>
+                </div>
+
+                {/* Time & Venue */}
+                <div className="space-y-1.5 text-xs text-stone-700">
+                  <div className="font-bold text-rose-900 text-sm">
+                    VÀO LÚC: {mainCeremony?.time || '11:00'}
+                  </div>
+                  <div className="font-serif font-black text-sm uppercase text-stone-900">
+                    {mainCeremony?.venueName || 'TRUNG TÂM TIỆC CƯỚI TRỐNG ĐỒNG PALACE'}
+                  </div>
+                  <div className="text-[11px] text-stone-500 max-w-xs mx-auto">
+                    {mainCeremony?.address || 'Số 72 Quán Sứ, Trần Hưng Đạo, Hoàn Kiếm, Hà Nội'}
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
+                  <a
+                    href={getMapsUrl(mainCeremony || { venueName: 'Trống Đồng Palace', address: '72 Quán Sứ, Hoàn Kiếm, Hà Nội' })}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold shadow-md transition-all"
+                  >
+                    <span>📍</span>
+                    <span>Xem chỉ đường Google Maps</span>
+                  </a>
+                  <a
+                    href={getGoogleCalendarUrl()}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-rose-800 hover:bg-rose-900 text-white text-xs font-semibold shadow-md transition-all"
+                  >
+                    <span>📅</span>
+                    <span>Thêm vào lịch</span>
+                  </a>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 5: FULL-WIDTH ROMANCE PHOTO                              */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-stone-200/90 relative">
+                <img
+                  src="/templates/cinelove/couple_walking.png"
+                  alt="Khoảnh khắc ngọt ngào"
+                  className="w-full h-auto object-cover select-none"
+                />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent p-4 text-center">
+                  <p className="font-cursive text-white text-lg sm:text-xl drop-shadow-md">
+                    &ldquo;You are my today and all of my tomorrows.&rdquo;
+                  </p>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 6: WEDDING TIMELINE                                      */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-6 shadow-xl space-y-5">
+                <div className="text-center space-y-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-rose-800 font-bold block">
+                    PROGRAM
+                  </span>
+                  <h3 className="font-serif font-bold text-lg text-stone-900 uppercase">
+                    TIMELINE TIỆC CƯỚI
+                  </h3>
+                </div>
+
+                <div className="space-y-4 max-w-xs mx-auto">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-lg shadow-xs shrink-0">
+                      📸
+                    </div>
+                    <div>
+                      <span className="font-mono font-bold text-xs text-rose-900">10:30</span>
+                      <h4 className="font-serif font-bold text-xs uppercase text-stone-800">Đón khách &amp; Chụp ảnh</h4>
+                      <p className="text-[11px] text-stone-500">Chụp hình lưu niệm cùng cô dâu, chú rể</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-lg shadow-xs shrink-0">
+                      💍
+                    </div>
+                    <div>
+                      <span className="font-mono font-bold text-xs text-rose-900">10:45</span>
+                      <h4 className="font-serif font-bold text-xs uppercase text-stone-800">Lễ Thành Hôn</h4>
+                      <p className="text-[11px] text-stone-500">Nghi thức trao nhẫn &amp; cắt bánh cưới</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-lg shadow-xs shrink-0">
+                      🥂
+                    </div>
+                    <div>
+                      <span className="font-mono font-bold text-xs text-rose-900">11:00</span>
+                      <h4 className="font-serif font-bold text-xs uppercase text-stone-800">Khai Tiệc Mừng</h4>
+                      <p className="text-[11px] text-stone-500">Thưởng thức tiệc mặn &amp; âm nhạc</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 7: RSVP FORM                                             */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-6 shadow-xl space-y-4">
+                <div className="text-center space-y-1">
+                  <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-rose-900 font-bold block">
+                    RSVP INVITATION
+                  </span>
+                  <h3 className="text-lg font-serif font-bold text-stone-900">
+                    Xác Nhận Tham Dự
+                  </h3>
+                  <p className="text-xs text-stone-500">
+                    Để chuẩn bị chu đáo nhất, kính mong bạn phản hồi trước ngày {mainCeremony?.dateSolar || '01.12.2025'}
+                  </p>
+                </div>
+
+                {rsvpSent ? (
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-center text-xs font-semibold space-y-1">
+                    <span className="text-2xl block">🎉</span>
+                    <p>Cảm ơn bạn rất nhiều!</p>
+                    <p className="font-normal opacity-90">Phản hồi của bạn đã được chuyển tới cô dâu &amp; chú rể.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={onSendRSVP} className="space-y-3.5 text-xs">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setRsvpSide('nha_trai')}
+                        className={`flex-1 py-2 rounded-xl border font-bold transition-all ${
+                          rsvpSide === 'nha_trai'
+                            ? 'bg-rose-900 text-white border-rose-900 shadow-md'
+                            : 'bg-stone-50 text-stone-700 border-stone-200'
+                        }`}
+                      >
+                        Khách Nhà Trai
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRsvpSide('nha_gai')}
+                        className={`flex-1 py-2 rounded-xl border font-bold transition-all ${
+                          rsvpSide === 'nha_gai'
+                            ? 'bg-rose-900 text-white border-rose-900 shadow-md'
+                            : 'bg-stone-50 text-stone-700 border-stone-200'
+                        }`}
+                      >
+                        Khách Nhà Gái
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="Họ và tên của bạn..."
+                      className="w-full p-3 rounded-xl bg-stone-50 border border-stone-200 text-stone-900 placeholder:text-stone-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400"
+                    />
+
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-stone-50 border border-stone-200">
+                      <span className="text-stone-600">Số lượng người tham dự:</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setRsvpCount(Math.max(1, rsvpCount - 1))}
+                          className="w-7 h-7 rounded-lg bg-stone-200 text-stone-800 font-bold hover:bg-stone-300"
+                        >
+                          -
+                        </button>
+                        <span className="w-6 text-center font-bold text-sm text-rose-900">
+                          {rsvpCount}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setRsvpCount(rsvpCount + 1)}
+                          className="w-7 h-7 rounded-lg bg-stone-200 text-stone-800 font-bold hover:bg-stone-300"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-xl font-bold text-white bg-rose-900 hover:bg-rose-800 active:scale-95 transition-all shadow-md text-xs cursor-pointer"
+                    >
+                      Gửi Phản Hồi Tham Dự 💌
+                    </button>
+                  </form>
+                )}
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 8: HỘP MỪNG CƯỚI (PINK RIBBON GIFT BOX + VIETQR)          */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-6 shadow-xl space-y-4 text-center">
+                <div className="w-14 h-14 mx-auto mb-1">
+                  <img
+                    src="/templates/cinelove/gift_box_icon.png"
+                    alt="Hộp yêu thương"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-serif font-bold text-lg text-stone-900 uppercase">
+                    HỘP MỪNG CƯỚI
+                  </h3>
+                  <p className="text-xs text-stone-500 max-w-xs mx-auto">
+                    Gửi gắm lời chúc và món quà yêu thương đến cô dâu, chú rể
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <VietQRGiftBox
+                    groomBank={data.groom.bank}
+                    brideBank={data.bride.bank}
+                    primaryColor="#881337"
+                  />
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 9: GUESTBOOK (SỔ LƯU BÚT)                                */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="bg-white border border-stone-200/90 rounded-2xl p-6 shadow-xl space-y-4">
+                <div className="text-center space-y-1">
+                  <span className="text-[10px] uppercase tracking-[0.25em] font-mono font-bold text-rose-900">
+                    GUESTBOOK
+                  </span>
+                  <h3 className="font-serif font-bold text-lg text-stone-900 uppercase">
+                    GỬI LỜI CHÚC PHÚC
+                  </h3>
+                </div>
+
+                <form onSubmit={onAddWish} className="space-y-3">
+                  <input
+                    type="text"
+                    required
+                    value={newWishName}
+                    onChange={(e) => setNewWishName(e.target.value)}
+                    placeholder="Tên của bạn..."
+                    className="w-full p-3 rounded-xl bg-stone-50 border border-stone-200 text-stone-900 placeholder:text-stone-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400"
+                  />
+                  <textarea
+                    required
+                    rows={2}
+                    value={newWishContent}
+                    onChange={(e) => setNewWishContent(e.target.value)}
+                    placeholder="Gửi lời chúc phúc trăm năm tới cô dâu & chú rể..."
+                    className="w-full p-3 rounded-xl bg-stone-50 border border-stone-200 text-stone-900 placeholder:text-stone-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-xl text-xs font-bold text-white bg-rose-900 hover:bg-rose-800 active:scale-95 transition-all shadow-md cursor-pointer"
+                  >
+                    Gửi Lời Chúc Mừng 💌
+                  </button>
+                </form>
+
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  {wishes.map((w, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-xl bg-stone-50 border border-stone-200 text-xs shadow-xs"
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <strong className="font-serif text-rose-900">{w.name}</strong>
+                        <span className="text-[10px] font-mono text-stone-400">{w.time}</span>
+                      </div>
+                      <p className="text-stone-700 text-[11px] leading-relaxed">{w.content}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.section>
+
+            {/* ========================================================================= */}
+            {/* CINELOVE SECTION 10: FOOTER COUNTDOWN & SIGNATURE                         */}
+            {/* ========================================================================= */}
+            <motion.section {...scrollReveal}>
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-stone-200/90 relative min-h-[380px] flex flex-col justify-between p-6 text-center text-white">
+                <img
+                  src="/templates/cinelove/footer_countdown_bg.png"
+                  alt="Footer background"
+                  className="absolute inset-0 w-full h-full object-cover select-none"
+                />
+                <div className="absolute inset-0 bg-black/45 pointer-events-none" />
+
+                <div className="relative z-10 pt-2 space-y-1">
+                  <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-white/85 font-semibold block">
+                    COUNTDOWN
+                  </span>
+                  <h3 className="font-serif font-black text-xl text-white drop-shadow-md uppercase">
+                    NGÀY CHUNG ĐÔI
+                  </h3>
+                </div>
+
+                {/* 4 White Glass Countdown Boxes */}
+                <div className="relative z-10 grid grid-cols-4 gap-2 max-w-[280px] mx-auto my-auto py-4">
+                  <div className="bg-white/85 backdrop-blur-md rounded-xl p-2 text-stone-900 text-center shadow-lg border border-white/40">
+                    <span className="block font-mono font-black text-lg leading-tight">{heroCountdown.days}</span>
+                    <span className="block text-[9px] uppercase font-sans font-bold tracking-tight text-stone-600">ngày</span>
+                  </div>
+                  <div className="bg-white/85 backdrop-blur-md rounded-xl p-2 text-stone-900 text-center shadow-lg border border-white/40">
+                    <span className="block font-mono font-black text-lg leading-tight">{heroCountdown.hours}</span>
+                    <span className="block text-[9px] uppercase font-sans font-bold tracking-tight text-stone-600">giờ</span>
+                  </div>
+                  <div className="bg-white/85 backdrop-blur-md rounded-xl p-2 text-stone-900 text-center shadow-lg border border-white/40">
+                    <span className="block font-mono font-black text-lg leading-tight">{heroCountdown.minutes}</span>
+                    <span className="block text-[9px] uppercase font-sans font-bold tracking-tight text-stone-600">phút</span>
+                  </div>
+                  <div className="bg-white/85 backdrop-blur-md rounded-xl p-2 text-stone-900 text-center shadow-lg border border-white/40">
+                    <span className="block font-mono font-black text-lg leading-tight">{heroCountdown.seconds}</span>
+                    <span className="block text-[9px] uppercase font-sans font-bold tracking-tight text-stone-600">giây</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 pb-2 space-y-2">
+                  <div className="font-cursive text-2xl text-amber-200 drop-shadow-md">
+                    Forever starts here
+                  </div>
+                  <p className="text-[11px] text-white/90 italic font-serif max-w-xs mx-auto leading-relaxed">
+                    {data.thankYouMessage || 'Cảm ơn bạn đã luôn đồng hành và là một phần trong câu chuyện hạnh phúc của chúng mình! ❤️'}
+                  </p>
+                </div>
+              </div>
+            </motion.section>
+          </>
+        ) : (
+          <>
+            {/* Elegant Couple Headline Header */}
+            <motion.div {...scrollReveal} className="text-center pt-2 pb-2 space-y-2">
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[10px] tracking-[0.3em] uppercase font-mono font-bold border"
             style={{
@@ -1377,6 +1865,8 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             {data.groom.shortName} &amp; {data.bride.shortName}
           </p>
         </motion.div>
+          </>
+        )}
       </div>
 
       {/* ========================================================================= */}
