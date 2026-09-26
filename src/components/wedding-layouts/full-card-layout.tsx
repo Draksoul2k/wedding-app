@@ -223,14 +223,8 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   const renderFloatingFooter = () => (
     <div className="space-y-1.5 max-w-[320px] mx-auto pb-2 w-full">
       <div className="flex flex-col gap-1 items-center">
-        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
-          <strong>Huy:</strong> Chúc hai bạn trăm năm hạnh phúc!
-        </div>
-        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
-          <strong>Chanh:</strong> Chúc mừng hạnh phúc trăm năm!
-        </div>
-        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
-          <strong>Linh:</strong> ✨ Đồng tâm đồng lòng, xây đắp tổ ấm thịnh vượng!
+        <div className="px-3 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] shadow-sm max-w-[90%] truncate">
+          ✨ <strong>Linh:</strong> Chúc hai bạn trăm năm hạnh phúc!
         </div>
       </div>
 
@@ -471,41 +465,16 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                 </div>
               </div>
 
-              {/* Tagline & Monthly Calendar Grid */}
-              <div className="mt-1 select-none">
-                <div className="font-cursive text-xl text-stone-900 leading-tight">
-                  Our wedding day
-                </div>
-                <div className="font-cursive text-2xl text-stone-900 font-bold mb-1">
-                  Tháng {targetMonth}
-                </div>
-
-                {/* 7-column Calendar strip */}
-                <div className="max-w-[240px] mx-auto grid grid-cols-7 gap-1 text-[11px] font-mono text-stone-700 items-center justify-items-center">
-                  <span>1</span>
-                  <span>2</span>
-                  <span>3</span>
-                  <span>4</span>
-                  <span>5</span>
-                  <span>6</span>
-                  <span>7</span>
-                  <span>8</span>
-                  <span className="relative w-7 h-7 flex items-center justify-center font-bold">
-                    <img
-                      src="/templates/cinelove/calendar_heart.png"
-                      alt="Wedding Heart"
-                      className="absolute inset-0 w-full h-full object-contain pointer-events-none scale-125"
-                    />
-                    <span className="relative z-10 text-[11px] font-bold text-white drop-shadow-xs">
-                      {targetDay}
-                    </span>
-                  </span>
-                  <span>10</span>
-                  <span>11</span>
-                  <span>12</span>
-                  <span>13</span>
-                  <span>14</span>
-                </div>
+              {/* Solar Date subtitle */}
+              <div
+                onClick={() => onEditField?.('date')}
+                className="mt-3 text-xs font-serif font-semibold tracking-widest uppercase select-none cursor-pointer"
+                style={{
+                  color: isDark ? '#e4e4e7' : (data.typography?.color || '#27272a'),
+                  textShadow: '0 1px 3px rgba(255,255,255,0.9)'
+                }}
+              >
+                {targetDateStr.split('-').reverse().join(' · ')}
               </div>
             </div>
 

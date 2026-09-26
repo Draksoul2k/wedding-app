@@ -53,6 +53,10 @@ function CreateInvitationContent() {
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    loadZenLoveFont(data.typography?.fontFamily || 'The Nautigal');
+  }, []);
+
   const updateTypography = (field: string, value: any) => {
     if (field === 'fontFamily' && typeof value === 'string') {
       loadZenLoveFont(value);
@@ -165,14 +169,18 @@ function CreateInvitationContent() {
 
   const handleSelectTemplate = (tmpl: TemplateConfig) => {
     // Template-specific design: Font, Colors, Transform, Default Names
-    let font = 'Aquarelle';
-    let color = '#111827';
+    let font = 'The Nautigal';
+    let color = tmpl.primaryColor || '#111827';
     let size = 42;
     let transform = 'none';
-    let brideDefault = 'Thanh Hằng';
-    let groomDefault = 'Minh Trí';
+    let brideDefault = 'Thanh Trúc';
+    let groomDefault = 'Gia Khang';
 
-    if (tmpl.category === 'truyen_thong' || ['cine-thiep-cuoi-47', 'chibi_red', 'baroque_v2_darkred'].includes(tmpl.id)) {
+    if (tmpl.source === 'zenlove') {
+      font = tmpl.category === 'truyen_thong' ? 'Viaoda Libre' : 'The Nautigal';
+      color = tmpl.primaryColor || '#8a1528';
+      size = 44;
+    } else if (tmpl.category === 'truyen_thong' || ['cine-thiep-cuoi-47', 'chibi_red', 'baroque_v2_darkred'].includes(tmpl.id)) {
       font = 'Charmonman';
       color = '#fef08a';
       size = 30;
@@ -215,6 +223,8 @@ function CreateInvitationContent() {
       brideDefault = 'Mỹ Châu';
       groomDefault = 'Hoàng Hải';
     }
+
+    loadZenLoveFont(font);
 
     setData((prev) => ({
       ...prev,

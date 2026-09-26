@@ -75,12 +75,13 @@ export function getCraftTemplate(slugOrId?: string | null): CraftTree | null {
   const key = slugOrId.toLowerCase().trim();
   if (CRAFT_REGISTRY[key]) return CRAFT_REGISTRY[key];
 
-  // Match numbers (e.g. "thiep-cuoi-130" matching "130")
+  // Match numbers (e.g. "thiep-cuoi-130" matching "thiep-cuoi-130-pre")
   const numMatch = key.match(/\d+/);
   if (numMatch) {
     const num = numMatch[0];
+    const regex = new RegExp(`(?:^|-)${num}(?:-|$)`);
     for (const [slug, tree] of Object.entries(CRAFT_REGISTRY)) {
-      if (slug.includes(`-${num}-`) || slug.endsWith(`-${num}`) || slug === num) {
+      if (regex.test(slug)) {
         return tree;
       }
     }
