@@ -11,7 +11,6 @@ import { TraditionalLayout } from './wedding-layouts/traditional-layout';
 import { EditorialMagazineLayout } from './wedding-layouts/editorial-magazine-layout';
 import { FullCardLayout } from './wedding-layouts/full-card-layout';
 import { BotanicalGardenLayout } from './wedding-layouts/botanical-garden-layout';
-import { FloatingWishesStream } from './floating-wishes-stream';
 
 interface WeddingViewProps {
   data: WeddingInvitationData;
@@ -373,50 +372,36 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
         )}
       </main>
 
-      {/* ZenLove-Style Floating Live Wishes Stream with Heart Reactions */}
-      {isOpen && !isLivePreview && (
-        <FloatingWishesStream
-          primaryColor={activeColor}
-          activeAccent={activeAccent}
-          wishes={wishes}
-        />
-      )}
-
-
-      {/* Floating Interactive Music Disc Player */}
+      {/* Sleek Floating Music Disc Player (Top-Right, never collides with bottom buttons) */}
       {data.enableMusic && (
-        <div className="fixed bottom-6 right-6 z-50 pointer-events-auto">
+        <div className="fixed top-4 right-4 z-50 pointer-events-auto">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               toggleMusic();
             }}
-            className={`group relative flex items-center gap-2.5 px-3.5 py-2.5 rounded-full shadow-2xl backdrop-blur-md border transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full shadow-2xl backdrop-blur-md border transition-all cursor-pointer ${
               isPlayingMusic
-                ? 'bg-rose-600 text-white border-rose-400 shadow-rose-600/40 ring-4 ring-rose-400/25'
-                : 'bg-stone-900/90 text-white border-white/20 hover:bg-stone-900 shadow-stone-950/50 hover:scale-105 active:scale-95'
+                ? 'bg-rose-600/90 text-white border-rose-400 shadow-rose-600/40 ring-2 ring-rose-400/30'
+                : 'bg-black/60 text-white/90 border-white/20 hover:bg-black/80'
             }`}
             title={isPlayingMusic ? 'Bấm để tạm dừng nhạc cưới' : 'Bấm để phát nhạc cưới'}
           >
             <span
-              className={`text-lg inline-block ${isPlayingMusic ? 'animate-spin' : ''}`}
+              className={`text-sm inline-block ${isPlayingMusic ? 'animate-spin' : ''}`}
               style={{ animationDuration: '3.5s' }}
             >
               🎵
             </span>
-            <span className="text-xs font-bold font-sans hidden sm:inline max-w-[130px] truncate">
-              {isPlayingMusic ? (data.musicTitle?.split('-')[0]?.trim() || 'Đang phát') : 'Bật nhạc'}
+            <span className="text-[11px] font-medium font-sans">
+              {isPlayingMusic ? 'Đang phát' : 'Nhạc'}
             </span>
-            {isPlayingMusic ? (
-              <span className="flex items-end gap-0.5 h-3.5">
+            {isPlayingMusic && (
+              <span className="flex items-end gap-0.5 h-2.5">
                 <span className="w-0.5 h-full bg-white rounded-full animate-pulse" />
                 <span className="w-0.5 h-2 bg-white rounded-full animate-pulse delay-75" />
-                <span className="w-0.5 h-3 bg-white rounded-full animate-pulse delay-150" />
-              </span>
-            ) : (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white font-bold hidden sm:inline">
-                Play ▶
+                <span className="w-0.5 h-1.5 bg-white rounded-full animate-pulse delay-150" />
               </span>
             )}
           </button>

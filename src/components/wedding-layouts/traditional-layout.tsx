@@ -123,9 +123,21 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
           <span className="text-xs text-amber-800 uppercase tracking-widest font-semibold block">
             HÔN LỄ THÀNH HÔN
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-wide" style={{ color: activeColor }}>
-            {data.groom.shortName} <span className="text-amber-600 font-light">&amp;</span> {data.bride.shortName}
-          </h1>
+          <div className="flex flex-col items-center justify-center font-serif py-1">
+            <span className="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase" style={{ color: activeColor }}>
+              {data.groom.shortName}
+            </span>
+            <div className="flex items-center justify-center gap-2.5 my-1">
+              <span className="w-8 h-px bg-amber-600/40" />
+              <span className="italic text-base sm:text-lg font-light text-amber-600">
+                &amp;
+              </span>
+              <span className="w-8 h-px bg-amber-600/40" />
+            </div>
+            <span className="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase" style={{ color: activeColor }}>
+              {data.bride.shortName}
+            </span>
+          </div>
           <p className="text-xs text-stone-500 uppercase tracking-widest">
             {data.ceremonies[0]?.dateSolar} (Âm lịch: {data.ceremonies[0]?.dateLunar})
           </p>

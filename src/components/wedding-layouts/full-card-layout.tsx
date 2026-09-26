@@ -199,10 +199,22 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             💍
           </div>
 
-          {/* Majestic Couple Names */}
-          <h1 className="text-3xl sm:text-4xl font-serif font-black tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] leading-tight">
-            {data.groom.shortName} <span className="font-light italic text-amber-300">&amp;</span> {data.bride.shortName}
-          </h1>
+          {/* Majestic Couple Names - Symmetrically Stacked so names never break words awkwardly */}
+          <div className="flex flex-col items-center justify-center font-serif text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.85)] py-0.5">
+            <span className="text-2xl sm:text-3xl font-black tracking-wider uppercase leading-tight">
+              {data.groom.shortName}
+            </span>
+            <div className="flex items-center justify-center gap-2.5 my-1">
+              <span className="w-8 h-px bg-amber-300/50" />
+              <span className="font-serif italic text-base sm:text-lg font-light text-amber-300">
+                &amp;
+              </span>
+              <span className="w-8 h-px bg-amber-300/50" />
+            </div>
+            <span className="text-2xl sm:text-3xl font-black tracking-wider uppercase leading-tight">
+              {data.bride.shortName}
+            </span>
+          </div>
 
           {/* Wedding Date in Solar & Lunar */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md bg-black/50 border border-amber-400/40 text-amber-200 shadow-xl">
@@ -264,7 +276,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
       {/* ========================================================================= */}
       {/* 2. MAIN WEDDING INVITATION CONTENT SECTIONS (Kinetic Reveal Upon Scroll)  */}
       {/* ========================================================================= */}
-      <div className="max-w-md mx-auto px-4 py-8 space-y-12" style={{ backgroundColor: containerBg }}>
+      <div className="max-w-md mx-auto px-4 pt-8 pb-32 space-y-12" style={{ backgroundColor: containerBg }}>
 
         {/* Section 1: Thư Báo Hỷ & Lời Ngỏ Yêu Thương */}
         {data.loveStory && (

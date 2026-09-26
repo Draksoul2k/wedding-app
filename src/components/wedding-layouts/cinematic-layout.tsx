@@ -73,9 +73,19 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
             THE GREATEST LOVE STORY
           </span>
 
-          <h1 className="text-3xl sm:text-4xl font-serif tracking-wider font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-300 drop-shadow-lg">
-            {data.groom.shortName} <span className="text-amber-400 font-light">&</span> {data.bride.shortName}
-          </h1>
+          <div className="flex flex-col items-center justify-center font-serif tracking-wider font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-300 drop-shadow-lg py-1">
+            <span className="text-2xl sm:text-3xl uppercase leading-tight">
+              {data.groom.shortName}
+            </span>
+            <div className="flex items-center justify-center gap-2.5 my-1">
+              <span className="w-8 h-px bg-amber-400/40" />
+              <span className="text-amber-400 font-light italic text-base sm:text-lg">&amp;</span>
+              <span className="w-8 h-px bg-amber-400/40" />
+            </div>
+            <span className="text-2xl sm:text-3xl uppercase leading-tight">
+              {data.bride.shortName}
+            </span>
+          </div>
 
           <div className="flex items-center justify-center gap-3 text-xs tracking-widest text-stone-300 uppercase font-mono">
             <span>{data.ceremonies[0]?.dateSolar}</span>
