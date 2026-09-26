@@ -545,16 +545,19 @@ function CreateInvitationContent() {
 
       {/* Cinelove Studio 3-Column Workspace */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* 1. Left Tool Rail (64px) */}
-        <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-2.5 gap-1 shrink-0 z-30 select-none">
+        {/* 1. Left Tool Rail (64px) - Cinelove Exact Tools */}
+        <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-2.5 gap-0.5 shrink-0 z-30 select-none overflow-y-auto no-scrollbar">
           {[
-            { id: 'template', label: 'Mẫu thiệp', icon: '🎨', step: 1 },
-            { id: 'photos', label: 'Hình ảnh', icon: '🖼️', step: 4 },
             { id: 'text', label: 'Văn bản', icon: 'T', step: 2 },
-            { id: 'schedule', label: 'Lịch trình', icon: '💒', step: 3 },
+            { id: 'photos', label: 'Hình ảnh', icon: '🖼️', step: 4 },
+            { id: 'block', label: 'Block', icon: '🏠', step: 3 },
+            { id: 'shape', label: 'Hình dạng', icon: '%', step: 1 },
+            { id: 'bg', label: 'Nền', icon: '▨', step: 1 },
             { id: 'music', label: 'Âm nhạc', icon: '🎵', step: 1 },
-            { id: 'gift', label: 'Mừng cưới', icon: '🧧', step: 5 },
-            { id: 'settings', label: 'Cài đặt', icon: '⚙️', step: 1 },
+            { id: 'utility', label: 'Tiện ích', icon: '📅', step: 5 },
+            { id: 'template', label: 'Preset', icon: '📐', step: 1 },
+            { id: 'color', label: 'Màu', icon: '🎨', step: 1 },
+            { id: 'effects', label: 'Hiệu ứng', icon: '✨', step: 1 },
           ].map((tool) => {
             const isActive = activeDrawerTool === tool.id;
             return (
@@ -569,17 +572,18 @@ function CreateInvitationContent() {
                     setActiveStep(tool.step as any);
                     if (tool.id === 'music') setStep1SubTab('music');
                     if (tool.id === 'template') setStep1SubTab('template');
+                    if (tool.id === 'photos') setPhotoSubTab('gallery');
                   }
                 }}
-                className={`w-13 py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
+                className={`w-13 py-1.5 px-0.5 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-sky-50 text-sky-600 font-bold'
+                    ? 'bg-sky-50 text-sky-600 font-bold shadow-2xs'
                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                 }`}
                 title={tool.label}
               >
                 <span className="text-base leading-none">{tool.icon}</span>
-                <span className="text-[10px] leading-tight text-center truncate max-w-full">
+                <span className="text-[9px] leading-tight text-center truncate max-w-full">
                   {tool.label}
                 </span>
               </button>
@@ -594,13 +598,16 @@ function CreateInvitationContent() {
             <div className="p-3.5 border-b border-gray-200 flex items-center justify-between bg-gray-50/70">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-xs text-gray-800 uppercase tracking-wider">
-                  {activeDrawerTool === 'template' && '🎨 Chọn Mẫu Thiệp'}
+                  {activeDrawerTool === 'text' && 'T Văn Bản & Dâu Rể'}
                   {activeDrawerTool === 'photos' && '🖼️ Ảnh Bìa & Album Cưới'}
-                  {activeDrawerTool === 'text' && 'T Nội Dung & Dâu Rể'}
-                  {activeDrawerTool === 'schedule' && '💒 Lịch Trình Hôn Lễ'}
+                  {activeDrawerTool === 'block' && '🏠 Khối Nội Dung & Lịch Trình'}
+                  {activeDrawerTool === 'shape' && '% Hình Dạng & Họa Tiết'}
+                  {activeDrawerTool === 'bg' && '▨ Nền Thiệp & Giấy Mỹ Thuật'}
                   {activeDrawerTool === 'music' && '🎵 Âm Nhạc Nền Thiệp'}
-                  {activeDrawerTool === 'gift' && '🧧 Hộp Mừng Cưới VietQR'}
-                  {activeDrawerTool === 'settings' && '⚙️ Cài Đặt Giao Diện'}
+                  {activeDrawerTool === 'utility' && '📅 Tiện Ích: Mừng Cưới & RSVP'}
+                  {activeDrawerTool === 'template' && '📐 Preset: Bộ Mẫu Thiệp'}
+                  {activeDrawerTool === 'color' && '🎨 Tông Màu Chủ Đạo'}
+                  {activeDrawerTool === 'effects' && '✨ Hiệu Ứng Chuyển Động'}
                 </span>
               </div>
               <button
@@ -2245,30 +2252,25 @@ function CreateInvitationContent() {
               className="transition-transform duration-200 origin-center"
               style={{ transform: `scale(${canvasZoom})` }}
             >
-              <div className="w-[375px] h-[670px] bg-black rounded-[42px] p-2.5 shadow-2xl ring-8 ring-stone-900/10 flex flex-col relative overflow-hidden">
-                {/* Dynamic Island Mockup */}
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-40 pointer-events-none" />
-
-                {/* Mobile Screen Container */}
-                <div
-                  ref={phoneScrollRef}
-                  className="flex-1 bg-white rounded-[34px] overflow-y-auto relative no-scrollbar"
-                >
-                  <WeddingView
-                    data={data}
-                    isLivePreview={true}
-                    onEditField={(field) => {
-                      setIsTypographyOpen(true);
-                      if (field === 'couple') setActiveDrawerTool('text');
-                      if (field === 'date') setActiveDrawerTool('schedule');
-                    }}
-                  />
-                </div>
+              {/* Cinelove Studio Flat Card (No bulky phone bezels) */}
+              <div
+                ref={phoneScrollRef}
+                className="w-[380px] h-[670px] bg-white rounded-2xl shadow-2xl border border-gray-300/80 overflow-y-auto relative no-scrollbar"
+              >
+                <WeddingView
+                  data={data}
+                  isLivePreview={true}
+                  onEditField={(field) => {
+                    setIsTypographyOpen(true);
+                    if (field === 'couple') setActiveDrawerTool('text');
+                    if (field === 'date') setActiveDrawerTool('utility');
+                  }}
+                />
               </div>
             </div>
           </div>
 
-          {/* Bottom Slide Strip (Cinelove Slide Bar) */}
+          {/* Bottom Slide Strip (Cinelove Studio Bar) */}
           <div className="w-full bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 py-2 flex items-center gap-3 z-30 shrink-0">
             {/* Quick Replace Photo Button */}
             <button
@@ -2278,20 +2280,20 @@ function CreateInvitationContent() {
                 setActiveStep(4);
                 setPhotoSubTab('gallery');
               }}
-              className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center gap-1.5 shadow-xs whitespace-nowrap cursor-pointer shrink-0"
+              className="px-3.5 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center gap-1.5 shadow-xs whitespace-nowrap cursor-pointer shrink-0"
             >
               <span>Thay ảnh nhanh</span>
               <span className="text-[10px]">⌄</span>
             </button>
 
-            {/* Slide Thumbnails List */}
+            {/* Slide Thumbnails List with Centered Image Icon (Cinelove Exact) */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 flex-1">
               {[
-                { id: 1, label: 'Bìa', icon: '📷', targetScroll: 0, img: data.heroPhoto || initialTemplate.frameAsset },
-                { id: 2, label: 'Dâu & Rể', icon: '💍', targetScroll: 750, img: data.galleryImages[0] || initialTemplate.frameAsset },
-                { id: 3, label: 'Lịch trình', icon: '💒', targetScroll: 1350, img: data.galleryImages[1] || initialTemplate.frameAsset },
-                { id: 4, label: 'Album', icon: '📸', targetScroll: 2100, img: data.galleryImages[2] || initialTemplate.frameAsset },
-                { id: 5, label: 'Mừng cưới', icon: '🧧', targetScroll: 2800, img: data.galleryImages[3] || initialTemplate.frameAsset },
+                { id: 1, label: 'Trang bìa', targetScroll: 0, img: data.heroPhoto || initialTemplate.frameAsset },
+                { id: 2, label: 'Lịch cưới', targetScroll: 750, img: data.galleryImages[0] || initialTemplate.frameAsset },
+                { id: 3, label: 'Dâu & Rể', targetScroll: 1350, img: data.galleryImages[1] || initialTemplate.frameAsset },
+                { id: 4, label: 'Lịch trình', targetScroll: 2050, img: data.galleryImages[2] || initialTemplate.frameAsset },
+                { id: 5, label: 'Mừng cưới', targetScroll: 2750, img: data.galleryImages[3] || initialTemplate.frameAsset },
               ].map((slide) => (
                 <button
                   key={slide.id}
@@ -2302,16 +2304,20 @@ function CreateInvitationContent() {
                       phoneScrollRef.current.scrollTo({ top: slide.targetScroll, behavior: 'smooth' });
                     }
                   }}
-                  className={`rounded-lg overflow-hidden border-2 transition-all flex items-center gap-2 p-1 bg-gray-50 hover:bg-white shrink-0 cursor-pointer ${
-                    activeSlide === slide.id ? 'border-sky-500 ring-2 ring-sky-200 shadow-xs' : 'border-gray-200'
+                  className={`group relative w-12 h-12 rounded-lg overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                    activeSlide === slide.id
+                      ? 'border-sky-500 ring-2 ring-sky-300 shadow-sm scale-105'
+                      : 'border-gray-200 hover:border-gray-400'
                   }`}
+                  title={slide.label}
                 >
-                  <div className="w-8 h-10 rounded bg-stone-200 overflow-hidden shrink-0">
-                    <img src={slide.img} alt={slide.label} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="text-left pr-2">
-                    <span className="text-[9px] font-bold text-gray-400 block uppercase">Slide {slide.id}</span>
-                    <span className="text-xs font-semibold text-gray-800">{slide.label}</span>
+                  <img src={slide.img} alt={slide.label} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/25 flex items-center justify-center transition-opacity group-hover:bg-black/10">
+                    <svg className="w-4 h-4 text-white drop-shadow-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
                   </div>
                 </button>
               ))}
@@ -2319,8 +2325,20 @@ function CreateInvitationContent() {
           </div>
         </div>
 
-        {/* 4. Right Inspector Panel: "Kiểu chữ" (300px) */}
-        <div className="w-[300px] bg-white border-l border-gray-200 flex flex-col shrink-0 overflow-y-auto text-xs text-gray-800 select-none z-20">
+        {/* 4. Right Inspector Panel: "Kiểu chữ" (310px) */}
+        <div className="w-[310px] bg-white border-l border-gray-200 flex flex-col shrink-0 overflow-y-auto text-xs text-gray-800 select-none z-20">
+          {/* Cinelove Blue Note Notification */}
+          <div className="m-3 p-3 bg-[#e8f4fd] border border-[#d0e7fb] rounded-xl flex items-start justify-between text-xs">
+            <div className="flex items-start gap-2">
+              <span className="text-[#1d9bf0] font-bold text-sm">🔷</span>
+              <div>
+                <strong className="block text-[11px] font-bold text-[#0f1419]">Note:</strong>
+                <span className="text-[11px] text-[#536471]">Bạn đang sử dụng template của gói Basic</span>
+              </div>
+            </div>
+            <button type="button" className="text-gray-400 hover:text-gray-600 text-xs cursor-pointer">✕</button>
+          </div>
+
           {/* Accordion Header: Kiểu chữ */}
           <div
             className="p-3.5 border-b border-gray-200 flex items-center justify-between font-bold text-gray-900 cursor-pointer bg-gray-50/50"
@@ -2330,7 +2348,6 @@ function CreateInvitationContent() {
               <span className="text-[10px] text-gray-400">{isTypographyOpen ? '⌵' : '❯'}</span>
               <span className="text-sm">Kiểu chữ</span>
             </span>
-            <span className="text-[10px] text-sky-600 font-normal">Căn chỉnh nhanh</span>
           </div>
 
           {isTypographyOpen && (
