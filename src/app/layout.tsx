@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
+import { Poppins, Dancing_Script, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 
@@ -7,6 +7,18 @@ const poppins = Poppins({
   variable: '--font-poppins',
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
+
+const dancingScript = Dancing_Script({
+  variable: '--font-cursive',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '600', '700'],
+});
+
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '600', '700', '900'],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${poppins.variable} ${dancingScript.variable} ${playfair.variable} antialiased`}>
         {children}
         <Toaster />
       </body>
