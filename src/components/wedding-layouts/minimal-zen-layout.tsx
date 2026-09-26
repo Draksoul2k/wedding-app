@@ -56,7 +56,9 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
           WEDDING INVITATION
         </span>
         <h1 className="text-3xl sm:text-4xl font-serif tracking-wide text-stone-900 font-light">
-          {data.groom.shortName} <span className="text-stone-400 italic text-2xl">&amp;</span> {data.bride.shortName}
+          {data.groom.shortName || data.groom.fullName || 'Chú Rể'}{' '}
+          <span className="text-stone-400 italic text-2xl">&amp;</span>{' '}
+          {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
         </h1>
         <div className="w-8 h-[1px] bg-stone-300 mx-auto my-2" />
         <p className="text-xs font-serif text-stone-500 italic">

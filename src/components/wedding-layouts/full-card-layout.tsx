@@ -174,9 +174,9 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative z-10 pt-5 px-4 text-center"
+          className="relative z-10 pt-4 px-4 text-center space-y-2"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full backdrop-blur-md bg-black/40 border border-white/20 text-white/90 shadow-lg">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full backdrop-blur-md bg-black/50 border border-white/20 text-white/90 shadow-lg">
             <span className="text-[10px] tracking-[0.3em] uppercase font-mono font-bold text-amber-300">
               SAVE THE DATE
             </span>
@@ -184,6 +184,17 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             <span className="text-[10px] tracking-wider uppercase font-serif text-white/90">
               LỄ THÀNH HÔN
             </span>
+          </div>
+
+          {/* Prominent Live Dynamic Couple Names Pill */}
+          <div>
+            <div className="inline-block px-4 py-1.5 rounded-2xl backdrop-blur-md bg-black/60 border border-amber-400/40 text-white shadow-xl">
+              <span className="text-sm sm:text-base font-serif font-black tracking-wider uppercase">
+                {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
+                <span className="text-amber-300 font-light italic">&amp;</span>{' '}
+                {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
+              </span>
+            </div>
           </div>
         </motion.div>
 
@@ -231,11 +242,11 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             ✦ HAPPY WEDDING ✦
           </div>
           <h1 className={`text-2xl sm:text-3xl font-serif font-black tracking-wide ${headingColor}`}>
-            {data.groom.shortName}{' '}
+            {data.groom.shortName || data.groom.fullName || 'Chú Rể'}{' '}
             <span className="font-serif italic font-light" style={{ color: activeAccent || activeColor }}>
               &amp;
             </span>{' '}
-            {data.bride.shortName}
+            {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
           </h1>
           <p className={`text-xs font-mono tracking-wider ${mutedTextColor}`}>
             {mainCeremony?.dateSolar} {mainCeremony?.dateLunar ? `(${mainCeremony?.dateLunar})` : ''}

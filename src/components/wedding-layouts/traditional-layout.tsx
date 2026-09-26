@@ -51,14 +51,22 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   return (
     <div className="bg-[#fff9f5] text-stone-900 min-h-screen font-serif selection:bg-red-200">
       {/* Traditional Oriental Banner */}
-      <div className="bg-gradient-to-r from-red-800 via-rose-700 to-red-800 text-amber-200 py-3 text-center px-4 shadow-md border-b-2 border-amber-400">
-        <div className="flex items-center justify-center gap-3">
+      <div className="bg-gradient-to-r from-red-800 via-rose-700 to-red-800 text-amber-200 py-3.5 text-center px-4 shadow-md border-b-2 border-amber-400">
+        <div className="flex items-center justify-center gap-2">
           <span className="text-xl">🏮</span>
           <span className="text-xs uppercase tracking-[0.3em] font-bold">
             囍 THIỆP HỒNG BÁO HỶ 囍
           </span>
           <span className="text-xl">🏮</span>
         </div>
+        <h1 className="text-xl sm:text-2xl font-serif font-black text-amber-100 mt-1 tracking-wide">
+          {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
+          <span className="text-amber-300 font-light italic">&amp;</span>{' '}
+          {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
+        </h1>
+        <p className="text-[10px] text-amber-300/80 font-mono tracking-wider mt-0.5">
+          {data.ceremonies[0]?.dateSolar} ({data.ceremonies[0]?.dateLunar})
+        </p>
       </div>
 
       {/* Hero Section: Authentic ChungDoi Template Card */}

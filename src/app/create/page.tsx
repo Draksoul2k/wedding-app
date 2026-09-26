@@ -14,8 +14,18 @@ function CreateInvitationContent() {
   const variantParam = searchParams.get('variant');
   const phoneScrollRef = useRef<HTMLDivElement>(null);
 
+  const initialTemplate = templateParam
+    ? TEMPLATES.find((t) => t.id === templateParam) || TEMPLATES[0]
+    : TEMPLATES[0];
+
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4 | 5>(1);
-  const [data, setData] = useState<WeddingInvitationData>(DEFAULT_WEDDING_DATA);
+  const [data, setData] = useState<WeddingInvitationData>(() => ({
+    ...DEFAULT_WEDDING_DATA,
+    templateId: initialTemplate.id,
+    themeName: initialTemplate.name,
+    primaryColor: initialTemplate.primaryColor,
+    heroPhoto: initialTemplate.frameAsset
+  }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
 
@@ -159,17 +169,27 @@ function CreateInvitationContent() {
 
   // Helper to update nested data
   const updateGroom = (field: string, value: string) => {
-    setData((prev) => ({
-      ...prev,
-      groom: { ...prev.groom, [field]: value }
-    }));
+    setData((prev) => {
+      const nextGroom = { ...prev.groom, [field]: value };
+      // If user updates fullName and shortName was still default "Thanh Tùng", sync shortName
+      if (field === 'fullName' && (!prev.groom.shortName || prev.groom.shortName === 'Thanh Tùng')) {
+        const words = value.trim().split(/\s+/);
+        nextGroom.shortName = words[words.length - 1] || value;
+      }
+      return { ...prev, groom: nextGroom };
+    });
   };
 
   const updateBride = (field: string, value: string) => {
-    setData((prev) => ({
-      ...prev,
-      bride: { ...prev.bride, [field]: value }
-    }));
+    setData((prev) => {
+      const nextBride = { ...prev.bride, [field]: value };
+      // If user updates fullName and shortName was still default "Lan Anh", sync shortName
+      if (field === 'fullName' && (!prev.bride.shortName || prev.bride.shortName === 'Lan Anh')) {
+        const words = value.trim().split(/\s+/);
+        nextBride.shortName = words.slice(-2).join(' ') || value;
+      }
+      return { ...prev, bride: nextBride };
+    });
   };
 
   const updateGroomBank = (field: string, value: string) => {

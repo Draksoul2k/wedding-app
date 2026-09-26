@@ -79,7 +79,8 @@ export const EditorialMagazineLayout: React.FC<EditorialMagazineLayoutProps> = (
             COVER STORY • A LIFELONG PROMISE
           </span>
           <h1 className="text-3xl sm:text-4xl font-serif font-black tracking-tight leading-tight">
-            {data.groom.shortName.toUpperCase()} &amp; {data.bride.shortName.toUpperCase()}
+            {(data.groom.shortName || data.groom.fullName || 'CHÚ RỂ').toUpperCase()} &amp;{' '}
+            {(data.bride.shortName || data.bride.fullName || 'CÔ DÂU').toUpperCase()}
           </h1>
           <p className="text-xs text-stone-300 font-serif italic max-w-xs">
             &ldquo;Tình yêu không chỉ là nhìn nhau, mà là cùng nhau nhìn về một hướng.&rdquo;

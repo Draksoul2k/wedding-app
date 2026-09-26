@@ -51,55 +51,49 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
   return (
     <div className="bg-stone-950 text-stone-100 min-h-screen font-sans selection:bg-amber-400 selection:text-black">
       {/* Cinematic Top Marquee */}
-      <div className="bg-black/90 border-b border-amber-500/20 py-3 text-center px-4">
-        <span className="text-[10px] tracking-[0.4em] uppercase text-amber-400 font-semibold block">
+      <div className="bg-black/95 border-b border-amber-500/30 py-3 text-center px-4">
+        <span className="text-[10px] tracking-[0.4em] uppercase text-amber-400 font-mono font-bold block">
           ★ A CINEMATIC WEDDING INVITATION ★
         </span>
-        <p className="text-[9px] tracking-[0.2em] text-stone-400 uppercase mt-0.5">
-          PREMIERING WORLDWIDE • AUTUMN 2026
+        <h1 className="text-2xl sm:text-3xl font-serif font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-300 py-1">
+          {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
+          <span className="text-amber-400 font-light italic text-xl">&amp;</span>{' '}
+          {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
+        </h1>
+        <p className="text-[9px] tracking-[0.25em] text-stone-400 uppercase font-mono">
+          {data.ceremonies[0]?.dateSolar || 'AUTUMN 2026'} • PREMIERING WORLDWIDE
         </p>
       </div>
 
-      {/* Movie Poster Hero Section */}
-      <div className="relative w-full overflow-hidden bg-black">
-        <img
-          src={displayPhoto}
-          alt="Wedding Poster"
-          className="w-full h-auto block select-none shadow-xl"
-        />
+      {/* Movie Poster Hero Section - Framed Aspect Card */}
+      <div className="p-4 bg-gradient-to-b from-stone-950 via-black to-stone-950 text-center">
+        <div className="relative max-w-[300px] mx-auto aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/40 bg-stone-900 group">
+          <img
+            src={displayPhoto}
+            alt="Wedding Poster"
+            className="w-full h-full object-cover object-top select-none filter brightness-95"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
-        {/* Floating Poster Typography */}
-        <div className="relative z-10 text-center space-y-3">
-          <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono tracking-[0.3em] uppercase bg-black/60 border border-amber-400/40 text-amber-300 backdrop-blur-md">
-            THE GREATEST LOVE STORY
-          </span>
-
-          <div className="flex flex-col items-center justify-center font-serif tracking-wider font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-300 drop-shadow-lg py-1">
-            <span className="text-2xl sm:text-3xl uppercase leading-tight">
-              {data.groom.shortName}
+          {/* Floating Movie Badge on Poster */}
+          <div className="absolute bottom-3 left-3 right-3 text-center space-y-1">
+            <span className="inline-block px-3 py-0.5 rounded-full text-[9px] font-mono tracking-[0.25em] uppercase bg-black/70 border border-amber-400/40 text-amber-300 backdrop-blur-xs">
+              THE GREATEST LOVE STORY
             </span>
-            <div className="flex items-center justify-center gap-2.5 my-1">
-              <span className="w-8 h-px bg-amber-400/40" />
-              <span className="text-amber-400 font-light italic text-base sm:text-lg">&amp;</span>
-              <span className="w-8 h-px bg-amber-400/40" />
+            <div className="text-base font-serif font-bold text-white drop-shadow-md">
+              {data.groom.shortName || data.groom.fullName} &amp; {data.bride.shortName || data.bride.fullName}
             </div>
-            <span className="text-2xl sm:text-3xl uppercase leading-tight">
-              {data.bride.shortName}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 text-xs tracking-widest text-stone-300 uppercase font-mono">
-            <span>{data.ceremonies[0]?.dateSolar}</span>
-            <span className="text-amber-400">•</span>
-            <span>{data.ceremonies[0]?.time}</span>
-          </div>
-
-          {data.loveStory?.quotes && (
-            <p className="text-[11px] text-stone-400 italic max-w-xs mx-auto leading-relaxed">
-              &ldquo;{data.loveStory.quotes}&rdquo;
+            <p className="text-[10px] text-stone-300 font-mono">
+              {data.ceremonies[0]?.dateSolar} • {data.ceremonies[0]?.time}
             </p>
-          )}
+          </div>
         </div>
+
+        {data.loveStory?.quotes && (
+          <p className="text-[11px] text-stone-400 italic max-w-xs mx-auto leading-relaxed mt-3">
+            &ldquo;{data.loveStory.quotes}&rdquo;
+          </p>
+        )}
       </div>
 
       {/* Digital Countdown Timer */}
