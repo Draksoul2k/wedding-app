@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { WeddingInvitationData } from '@/types/wedding';
 import { TEMPLATES, TemplateLayoutType, findTemplate } from '@/constants/templates';
 import { FallingEffect } from './falling-effect';
@@ -11,6 +11,8 @@ import { TraditionalLayout } from './wedding-layouts/traditional-layout';
 import { EditorialMagazineLayout } from './wedding-layouts/editorial-magazine-layout';
 import { FullCardLayout } from './wedding-layouts/full-card-layout';
 import { BotanicalGardenLayout } from './wedding-layouts/botanical-garden-layout';
+import { getCraftTemplate } from '@/constants/craft-templates';
+import { ZenLoveCanvasRenderer } from '@/components/canvas/zenlove-canvas-renderer';
 
 interface WeddingViewProps {
   data: WeddingInvitationData;
@@ -56,6 +58,11 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
 
   // Current layout determined cleanly by template
   const currentLayout: TemplateLayoutType = template.layoutType || 'full_long_card';
+
+  // Authentic Craft.js Canvas Tree (ZenLove / Cinelove direct rendering)
+  const craftTree = useMemo(() => {
+    return getCraftTemplate(data.templateId || template.slug || template.id);
+  }, [data.templateId, template.slug, template.id]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -279,120 +286,130 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
 
       {/* Main Invitation Container */}
       <main className="max-w-md mx-auto shadow-2xl relative overflow-hidden bg-white">
-        {/* Dynamic Multi-Layout Rendering Engine */}
-        {(currentLayout === 'cinelove_movie' || currentLayout === 'full_long_card') && (
-          <FullCardLayout
+        {/* Authentic ZenLove / Cinelove Multi-Layer Canvas Engine */}
+        {craftTree ? (
+          <ZenLoveCanvasRenderer
+            craftTree={craftTree}
             data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            guestName={guestName}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
             onEditField={onEditField}
           />
-        )}
+        ) : (
+          <>
+            {/* Fallback Multi-Layout Rendering Engine */}
+            {(currentLayout === 'cinelove_movie' || currentLayout === 'full_long_card') && (
+              <FullCardLayout
+                data={data}
+                template={template}
+                activeColor={activeColor}
+                activeAccent={activeAccent}
+                guestName={guestName}
+                onOpenLightbox={(idx) => setLightboxIndex(idx)}
+                rsvpSent={rsvpSent}
+                onSendRSVP={handleSendRSVP}
+                rsvpSide={rsvpSide}
+                setRsvpSide={setRsvpSide}
+                rsvpCount={rsvpCount}
+                setRsvpCount={setRsvpCount}
+                wishes={wishes}
+                newWishName={newWishName}
+                setNewWishName={setNewWishName}
+                newWishContent={newWishContent}
+                setNewWishContent={setNewWishContent}
+                onAddWish={handleAddWish}
+                onEditField={onEditField}
+              />
+            )}
 
-        {currentLayout === 'zenlove_minimal' && (
-          <MinimalZenLayout
-            data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
-          />
-        )}
+            {currentLayout === 'zenlove_minimal' && (
+              <MinimalZenLayout
+                data={data}
+                template={template}
+                activeColor={activeColor}
+                activeAccent={activeAccent}
+                onOpenLightbox={(idx) => setLightboxIndex(idx)}
+                rsvpSent={rsvpSent}
+                onSendRSVP={handleSendRSVP}
+                rsvpSide={rsvpSide}
+                setRsvpSide={setRsvpSide}
+                rsvpCount={rsvpCount}
+                setRsvpCount={setRsvpCount}
+                wishes={wishes}
+                newWishName={newWishName}
+                setNewWishName={setNewWishName}
+                newWishContent={newWishContent}
+                setNewWishContent={setNewWishContent}
+                onAddWish={handleAddWish}
+              />
+            )}
 
-        {currentLayout === 'chungdoi_traditional' && (
-          <TraditionalLayout
-            data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
-            onEditField={onEditField}
-          />
-        )}
+            {currentLayout === 'chungdoi_traditional' && (
+              <TraditionalLayout
+                data={data}
+                template={template}
+                activeColor={activeColor}
+                activeAccent={activeAccent}
+                onOpenLightbox={(idx) => setLightboxIndex(idx)}
+                rsvpSent={rsvpSent}
+                onSendRSVP={handleSendRSVP}
+                rsvpSide={rsvpSide}
+                setRsvpSide={setRsvpSide}
+                rsvpCount={rsvpCount}
+                setRsvpCount={setRsvpCount}
+                wishes={wishes}
+                newWishName={newWishName}
+                setNewWishName={setNewWishName}
+                newWishContent={newWishContent}
+                setNewWishContent={setNewWishContent}
+                onAddWish={handleAddWish}
+                onEditField={onEditField}
+              />
+            )}
 
-        {currentLayout === 'chungdoi_magazine' && (
-          <EditorialMagazineLayout
-            data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
-          />
-        )}
+            {currentLayout === 'chungdoi_magazine' && (
+              <EditorialMagazineLayout
+                data={data}
+                template={template}
+                activeColor={activeColor}
+                activeAccent={activeAccent}
+                onOpenLightbox={(idx) => setLightboxIndex(idx)}
+                rsvpSent={rsvpSent}
+                onSendRSVP={handleSendRSVP}
+                rsvpSide={rsvpSide}
+                setRsvpSide={setRsvpSide}
+                rsvpCount={rsvpCount}
+                setRsvpCount={setRsvpCount}
+                wishes={wishes}
+                newWishName={newWishName}
+                setNewWishName={setNewWishName}
+                newWishContent={newWishContent}
+                setNewWishContent={setNewWishContent}
+                onAddWish={handleAddWish}
+              />
+            )}
 
-        {currentLayout === 'botanical_garden' && (
-          <BotanicalGardenLayout
-            data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
-          />
+            {currentLayout === 'botanical_garden' && (
+              <BotanicalGardenLayout
+                data={data}
+                template={template}
+                activeColor={activeColor}
+                activeAccent={activeAccent}
+                onOpenLightbox={(idx) => setLightboxIndex(idx)}
+                rsvpSent={rsvpSent}
+                onSendRSVP={handleSendRSVP}
+                rsvpSide={rsvpSide}
+                setRsvpSide={setRsvpSide}
+                rsvpCount={rsvpCount}
+                setRsvpCount={setRsvpCount}
+                wishes={wishes}
+                newWishName={newWishName}
+                setNewWishName={setNewWishName}
+                newWishContent={newWishContent}
+                setNewWishContent={setNewWishContent}
+                onAddWish={handleAddWish}
+              />
+            )}
+          </>
         )}
-
       </main>
 
       {/* Sleek Floating Music Disc Player (Top-Right, never collides with bottom buttons) */}

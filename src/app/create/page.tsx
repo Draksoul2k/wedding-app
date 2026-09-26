@@ -7,6 +7,7 @@ import { TEMPLATES, ALL_TEMPLATES, findTemplate, VIETNAMESE_BANKS, DEFAULT_WEDDI
 import { POPULAR_WEDDING_SONGS, findSongByQuery, WeddingSong } from '@/constants/songs';
 import { WeddingInvitationData } from '@/types/wedding';
 import { WeddingView } from '@/components/wedding-view';
+import { POPULAR_WEDDING_FONTS, loadZenLoveFont } from '@/lib/zenlove-fonts';
 
 const CURATED_STUDIO_PHOTOS = [
   { id: 'p1', title: 'Rượu Vang Đỏ Thảm Đỏ', tag: 'Cinelove 61', url: '/templates/clean/clean_cine_thiep-cuoi-61.jpg' },
@@ -53,6 +54,9 @@ function CreateInvitationContent() {
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
 
   const updateTypography = (field: string, value: any) => {
+    if (field === 'fontFamily' && typeof value === 'string') {
+      loadZenLoveFont(value);
+    }
     setData((prev) => ({
       ...prev,
       typography: {
@@ -2463,19 +2467,21 @@ function CreateInvitationContent() {
               <div className="flex items-center justify-between">
                 <span className="text-gray-500 font-medium">Font</span>
                 <select
-                  value={data.typography?.fontFamily || 'Aquarelle'}
+                  value={data.typography?.fontFamily || 'The Nautigal'}
                   onChange={(e) => updateTypography('fontFamily', e.target.value)}
                   className="px-2.5 py-1.5 bg-gray-50 rounded-lg border border-gray-200 text-xs font-semibold text-gray-800 focus:outline-none focus:ring-1 focus:ring-sky-500 max-w-[170px] cursor-pointer"
                 >
-                  <option value="Aquarelle">Aquarelle (Cinelove Thư pháp)</option>
-                  <option value="Dancing Script">Dancing Script (Chữ ký mềm)</option>
-                  <option value="Viaoda Libre">Viaoda Libre (ZenLove Cổ điển)</option>
-                  <option value="The Nautigal">The Nautigal (Thư pháp nghệ thuật)</option>
-                  <option value="Cormorant Garamond">Cormorant Garamond (Lãng mạn)</option>
-                  <option value="Playfair Display">Playfair Display (Hoàng gia)</option>
-                  <option value="Lora">Lora (Vogue Thanh lịch)</option>
-                  <option value="Pattaya">Pattaya (Bút lông mềm)</option>
-                  <option value="Montserrat">Montserrat (Hiện đại)</option>
+                  <optgroup label="ZenLove & Cinelove Nghệ Thuật">
+                    {POPULAR_WEDDING_FONTS.map((f) => (
+                      <option key={f.id} value={f.name}>{f.label}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Font Quốc Tế / Google Fonts">
+                    <option value="Dancing Script">Dancing Script (Chữ ký mềm)</option>
+                    <option value="Playfair Display">Playfair Display (Hoàng gia)</option>
+                    <option value="Montserrat">Montserrat (Hiện đại)</option>
+                    <option value="Aquarelle">Aquarelle (Cinelove)</option>
+                  </optgroup>
                 </select>
               </div>
 
