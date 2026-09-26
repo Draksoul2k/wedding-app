@@ -45,6 +45,7 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   setNewWishContent,
   onAddWish,
 }) => {
+  const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
@@ -277,35 +278,78 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
       </div>
 
       {/* Gallery */}
-      {data.galleryImages && data.galleryImages.length > 0 && (
-        <div className="px-6 py-10 bg-red-50/40 border-t border-b border-red-100">
-          <div className="text-center mb-6">
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-bold">
-              KHOẢNH KHẮC
-            </span>
-            <h2 className="text-xl font-bold text-red-900 mt-0.5">
-              Album Ảnh Cưới
-            </h2>
-          </div>
+      {data.galleryImages && data.galleryImages.length > 0 && (() => {
+        const totalImages = data.galleryImages.length;
+        const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+        const hasMore = totalImages > 5;
+        const remainingCount = totalImages - 5;
 
-          <div className="grid grid-cols-2 gap-3">
-            {data.galleryImages.map((img, i) => (
-              <div
-                key={i}
-                onClick={() => onOpenLightbox(i)}
-                className="aspect-[3/4] rounded-xl overflow-hidden cursor-pointer group shadow-sm border-2 border-white bg-stone-100"
-              >
-                <img
-                  src={img}
-                  alt={`Album ${i + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
+        return (
+          <div className="px-6 py-10 bg-red-50/40 border-t border-b border-red-100">
+            <div className="text-center mb-6">
+              <span className="text-xs uppercase tracking-widest text-amber-800 font-bold">
+                KHOẢNH KHẮC
+              </span>
+              <h2 className="text-xl font-bold text-red-900 mt-0.5">
+                Album Ảnh Cưới
+              </h2>
+              <p className="text-xs text-stone-500 mt-0.5 font-sans">
+                {totalImages} bức ảnh ghi dấu ngày hạnh phúc
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {displayImages.map((img, i) => {
+                const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => onOpenLightbox(i)}
+                    className="aspect-[3/4] rounded-xl overflow-hidden cursor-pointer group shadow-sm border-2 border-white bg-stone-100 relative"
+                  >
+                    <img
+                      src={img}
+                      alt={`Album ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    {isFifthWhenCollapsed ? (
+                      <div
+                        className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white text-center p-2 gap-1 cursor-pointer hover:bg-black/70 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAllPhotos(true);
+                        }}
+                      >
+                        <span className="text-xl font-bold text-amber-300">+{remainingCount}</span>
+                        <span className="text-[10px] font-semibold">Xem thêm ảnh</span>
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-[11px] font-sans px-2 py-0.5 bg-black/60 rounded-full">
+                          🔍 Phóng to
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {hasMore && (
+              <div className="mt-5 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="px-6 py-2.5 rounded-full border border-red-300 bg-white text-red-800 font-serif text-xs font-bold shadow-xs hover:bg-red-50 active:scale-95 transition-all inline-flex items-center gap-2"
+                >
+                  <span>{showAllPhotos ? '↑ Thu gọn bớt ảnh' : `📸 Xem thêm ${remainingCount} ảnh cưới khác ↓`}</span>
+                </button>
               </div>
-            ))}
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* VietQR */}
       {data.enableVietQR && (

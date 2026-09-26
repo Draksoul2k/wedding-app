@@ -45,6 +45,7 @@ export const EditorialMagazineLayout: React.FC<EditorialMagazineLayoutProps> = (
   setNewWishContent,
   onAddWish,
 }) => {
+  const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
@@ -231,37 +232,74 @@ export const EditorialMagazineLayout: React.FC<EditorialMagazineLayoutProps> = (
       </div>
 
       {/* Lookbook Gallery */}
-      {data.galleryImages && data.galleryImages.length > 0 && (
-        <div className="px-6 py-10 bg-stone-100 border-t border-stone-200">
-          <div className="text-center mb-6">
-            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-stone-400">
-              LOOKBOOK SPREAD
-            </span>
-            <h2 className="text-2xl font-serif font-bold text-stone-900 mt-1">
-              Bộ Ảnh Thời Trang
-            </h2>
-          </div>
+      {data.galleryImages && data.galleryImages.length > 0 && (() => {
+          const totalImages = data.galleryImages.length;
+          const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+          const hasMore = totalImages > 5;
+          const remainingCount = totalImages - 5;
 
-          <div className="grid grid-cols-2 gap-3">
-            {data.galleryImages.map((img, i) => (
-              <div
-                key={i}
-                onClick={() => onOpenLightbox(i)}
-                className={`overflow-hidden rounded-xl bg-stone-200 cursor-pointer group shadow-xs ${
-                  i % 3 === 0 ? 'col-span-2 aspect-[16/9]' : 'aspect-[3/4]'
-                }`}
-              >
-                <img
-                  src={img}
-                  alt={`Lookbook ${i + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
+          return (
+            <div className="px-6 py-10 bg-stone-100 border-t border-stone-200">
+              <div className="text-center mb-6">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-stone-400">
+                  LOOKBOOK SPREAD
+                </span>
+                <h2 className="text-2xl font-serif font-bold text-stone-900 mt-1">
+                  Bộ Ảnh Thời Trang
+                </h2>
+                <p className="text-xs text-stone-500 mt-0.5 font-mono">
+                  {totalImages} editorial shots • Vol. 2026
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+
+              <div className="grid grid-cols-2 gap-3">
+                {displayImages.map((img, i) => {
+                  const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => onOpenLightbox(i)}
+                      className={`overflow-hidden rounded-xl bg-stone-200 cursor-pointer group shadow-xs relative ${
+                        i % 3 === 0 ? 'col-span-2 aspect-[16/9]' : 'aspect-[3/4]'
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Lookbook ${i + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      {isFifthWhenCollapsed ? (
+                        <div
+                          className="absolute inset-0 bg-stone-900/75 flex flex-col items-center justify-center text-white text-center p-2 gap-1 cursor-pointer hover:bg-stone-900/85 transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllPhotos(true);
+                          }}
+                        >
+                          <span className="text-2xl font-mono font-bold text-white">+{remainingCount}</span>
+                          <span className="text-[10px] font-mono tracking-widest uppercase">VIEW EDITORIAL</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {hasMore && (
+                <div className="mt-5 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowAllPhotos(!showAllPhotos)}
+                    className="px-6 py-2.5 rounded-full border border-stone-900 bg-white text-stone-900 font-mono text-xs font-bold uppercase tracking-wider shadow-sm hover:bg-stone-900 hover:text-white active:scale-95 transition-all inline-flex items-center gap-2"
+                  >
+                    <span>{showAllPhotos ? '↑ COLLAPSE SPREAD' : `📸 XEM THÊM ${remainingCount} ẢNH LOOKBOOK ↓`}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
       {/* VietQR */}
       {data.enableVietQR && (

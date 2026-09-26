@@ -45,6 +45,7 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
   setNewWishContent,
   onAddWish,
 }) => {
+  const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
@@ -240,35 +241,72 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
       </div>
 
       {/* Gallery */}
-      {data.galleryImages && data.galleryImages.length > 0 && (
-        <div className="px-6 py-10 bg-white">
-          <div className="text-center mb-6">
-            <span className="text-xs uppercase tracking-widest text-stone-400 font-mono">
-              ALBUM
-            </span>
-            <h2 className="text-xl font-serif text-stone-900 mt-1">
-              Khoảnh Khắc Đẹp
-            </h2>
-          </div>
+      {data.galleryImages && data.galleryImages.length > 0 && (() => {
+        const totalImages = data.galleryImages.length;
+        const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+        const hasMore = totalImages > 5;
+        const remainingCount = totalImages - 5;
 
-          <div className="grid grid-cols-2 gap-2.5">
-            {data.galleryImages.map((img, i) => (
-              <div
-                key={i}
-                onClick={() => onOpenLightbox(i)}
-                className="aspect-[3/4] rounded-xl overflow-hidden cursor-pointer group bg-stone-100 shadow-2xs"
-              >
-                <img
-                  src={img}
-                  alt={`Album ${i + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
+        return (
+          <div className="px-6 py-10 bg-white">
+            <div className="text-center mb-6">
+              <span className="text-xs uppercase tracking-widest text-stone-400 font-mono">
+                ALBUM
+              </span>
+              <h2 className="text-xl font-serif text-stone-900 mt-1">
+                Khoảnh Khắc Đẹp
+              </h2>
+              <p className="text-xs text-stone-400 mt-0.5">
+                {totalImages} bức ảnh ghi lại từng khoảnh khắc
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              {displayImages.map((img, i) => {
+                const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => onOpenLightbox(i)}
+                    className="aspect-[3/4] rounded-xl overflow-hidden cursor-pointer group bg-stone-100 shadow-2xs relative"
+                  >
+                    <img
+                      src={img}
+                      alt={`Album ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    {isFifthWhenCollapsed ? (
+                      <div
+                        className="absolute inset-0 bg-stone-900/70 flex flex-col items-center justify-center text-white text-center p-2 gap-1 cursor-pointer hover:bg-stone-900/80 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAllPhotos(true);
+                        }}
+                      >
+                        <span className="text-xl font-bold font-mono text-amber-200">+{remainingCount}</span>
+                        <span className="text-[10px] font-medium">Xem thêm</span>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+
+            {hasMore && (
+              <div className="mt-5 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="px-6 py-2 rounded-full border border-stone-300 bg-stone-50 text-stone-700 text-xs font-medium shadow-2xs hover:bg-stone-100 active:scale-95 transition-all inline-flex items-center gap-1.5"
+                >
+                  <span>{showAllPhotos ? '↑ Thu gọn bớt ảnh' : `📸 Xem thêm ${remainingCount} ảnh khác ↓`}</span>
+                </button>
               </div>
-            ))}
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* VietQR */}
       {data.enableVietQR && (

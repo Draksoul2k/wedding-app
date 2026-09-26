@@ -7,8 +7,6 @@ import { TEMPLATES, VIETNAMESE_BANKS, DEFAULT_WEDDING_DATA, TemplateConfig } fro
 import { POPULAR_WEDDING_SONGS, findSongByQuery, WeddingSong } from '@/constants/songs';
 import { WeddingInvitationData } from '@/types/wedding';
 import { WeddingView } from '@/components/wedding-view';
-import { AutoScrollController } from '@/components/auto-scroll-controller';
-import { FloatingWishesStream } from '@/components/floating-wishes-stream';
 
 function CreateInvitationContent() {
   const searchParams = useSearchParams();
@@ -1793,25 +1791,12 @@ function CreateInvitationContent() {
             {/* iPhone Dynamic Island Mockup Notch */}
             <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-40 pointer-events-none" />
 
-            {/* Auto-Scroll Controller attached to this phone container */}
-            <AutoScrollController
-              scrollContainerRef={phoneScrollRef}
-              activeColor={data.primaryColor}
-              defaultActive={false}
-              className="absolute top-5 right-4 z-40 flex items-center gap-1.5 pointer-events-auto"
-            />
-
             {/* Mobile Screen Container */}
             <div
               ref={phoneScrollRef}
               className="flex-1 bg-white rounded-[38px] overflow-y-auto relative no-scrollbar"
             >
               <WeddingView data={data} isLivePreview={true} />
-
-              {/* Floating live wishes stream with heart reactions */}
-              <FloatingWishesStream
-                primaryColor={data.primaryColor}
-              />
             </div>
           </div>
           <span className="text-[11px] text-gray-400 mt-3 font-medium">

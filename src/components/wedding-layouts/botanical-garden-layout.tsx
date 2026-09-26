@@ -46,6 +46,7 @@ export const BotanicalGardenLayout: React.FC<BotanicalGardenLayoutProps> = ({
   setNewWishContent,
   onAddWish,
 }) => {
+  const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayPhoto = data.heroPhoto || data.galleryImages?.[0] || template.frameAsset;
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-25';
@@ -259,40 +260,78 @@ export const BotanicalGardenLayout: React.FC<BotanicalGardenLayoutProps> = ({
       </div>
 
       {/* Romantic Photo Gallery */}
-      {data.galleryImages && data.galleryImages.length > 0 && (
-        <div className="py-10 bg-[#F4F1EA]">
-          <div className="text-center px-4 mb-6">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-700 font-sans font-semibold">
-              PHOTO GALLERY
-            </span>
-            <h2 className="text-2xl font-serif text-emerald-950 mt-1">
-              Album Ảnh Kỷ Niệm
-            </h2>
-          </div>
+      {data.galleryImages && data.galleryImages.length > 0 && (() => {
+        const totalImages = data.galleryImages.length;
+        const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+        const hasMore = totalImages > 5;
+        const remainingCount = totalImages - 5;
 
-          <div className="px-4 max-w-sm mx-auto grid grid-cols-2 gap-3">
-            {data.galleryImages.map((img, i) => (
-              <div
-                key={i}
-                onClick={() => onOpenLightbox(i)}
-                className="aspect-[3/4] rounded-2xl overflow-hidden border-2 border-white shadow-sm cursor-pointer group bg-stone-100 relative"
-              >
-                <img
-                  src={img}
-                  alt={`Khoảnh khắc cưới ${i + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-xs font-sans bg-emerald-900/80 px-2 py-1 rounded-full">
-                    Xem ảnh
-                  </span>
-                </div>
+        return (
+          <div className="py-10 bg-[#F4F1EA]">
+            <div className="text-center px-4 mb-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-700 font-sans font-semibold">
+                PHOTO GALLERY
+              </span>
+              <h2 className="text-2xl font-serif text-emerald-950 mt-1">
+                Album Ảnh Kỷ Niệm
+              </h2>
+              <p className="text-xs text-stone-500 mt-0.5 font-sans">
+                {totalImages} khoảnh khắc ngọt ngào bên nhau
+              </p>
+            </div>
+
+            <div className="px-4 max-w-sm mx-auto grid grid-cols-2 gap-3">
+              {displayImages.map((img, i) => {
+                const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => onOpenLightbox(i)}
+                    className="aspect-[3/4] rounded-2xl overflow-hidden border-2 border-white shadow-sm cursor-pointer group bg-stone-100 relative"
+                  >
+                    <img
+                      src={img}
+                      alt={`Khoảnh khắc cưới ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    {isFifthWhenCollapsed ? (
+                      <div
+                        className="absolute inset-0 bg-emerald-950/75 flex flex-col items-center justify-center text-white text-center p-2 gap-1 cursor-pointer hover:bg-emerald-950/85 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAllPhotos(true);
+                        }}
+                      >
+                        <span className="text-xl font-bold text-amber-200">+{remainingCount}</span>
+                        <span className="text-[10px] font-sans font-medium">Xem thêm ảnh</span>
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-xs font-sans bg-emerald-900/80 px-2 py-1 rounded-full">
+                          Xem ảnh
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {hasMore && (
+              <div className="mt-5 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="px-6 py-2.5 rounded-full border border-emerald-300 bg-white text-emerald-900 font-sans text-xs font-bold shadow-xs hover:bg-emerald-50 active:scale-95 transition-all inline-flex items-center gap-2"
+                >
+                  <span>{showAllPhotos ? '↑ Thu gọn bớt ảnh' : `🌸 Xem thêm ${remainingCount} ảnh cưới khác ↓`}</span>
+                </button>
               </div>
-            ))}
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* VietQR Wedding Gift */}
       {data.enableVietQR && (

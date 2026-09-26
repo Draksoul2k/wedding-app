@@ -45,6 +45,7 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
   setNewWishContent,
   onAddWish,
 }) => {
+  const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
@@ -232,55 +233,93 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
       </div>
 
       {/* 35mm Filmstrip Photo Gallery */}
-      {data.galleryImages && data.galleryImages.length > 0 && (
-        <div className="py-10 bg-black/90 border-t border-b border-stone-800">
-          <div className="text-center px-4 mb-6">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-amber-400 font-mono">
-              PHOTO REEL
-            </span>
-            <h2 className="text-2xl font-serif font-bold text-stone-100 mt-1">
-              Thước Phim Kỷ Niệm
-            </h2>
-          </div>
+      {data.galleryImages && data.galleryImages.length > 0 && (() => {
+        const totalImages = data.galleryImages.length;
+        const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+        const hasMore = totalImages > 5;
+        const remainingCount = totalImages - 5;
 
-          {/* Filmstrip Wrapper with Sprocket Holes */}
-          <div className="relative px-3">
-            {/* Top Sprockets */}
-            <div className="flex justify-between gap-2 overflow-hidden mb-2 px-2">
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="w-3.5 h-3.5 rounded-xs bg-stone-800 shrink-0" />
-              ))}
+        return (
+          <div className="py-10 bg-black/90 border-t border-b border-stone-800">
+            <div className="text-center px-4 mb-6">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-amber-400 font-mono font-bold">
+                PHOTO REEL
+              </span>
+              <h2 className="text-2xl font-serif font-bold text-stone-100 mt-1">
+                Thước Phim Kỷ Niệm
+              </h2>
+              <p className="text-xs text-stone-400 mt-0.5 font-mono">
+                {totalImages} frames ghi dấu câu chuyện tình yêu
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {data.galleryImages.map((img, i) => (
-                <div
-                  key={i}
-                  onClick={() => onOpenLightbox(i)}
-                  className="aspect-[3/4] rounded-lg overflow-hidden border border-stone-800 cursor-pointer relative group bg-stone-900"
+            {/* Filmstrip Wrapper with Sprocket Holes */}
+            <div className="relative px-3">
+              {/* Top Sprockets */}
+              <div className="flex justify-between gap-2 overflow-hidden mb-2 px-2">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div key={i} className="w-3.5 h-3.5 rounded-xs bg-stone-800 shrink-0" />
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {displayImages.map((img, i) => {
+                  const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => onOpenLightbox(i)}
+                      className="aspect-[3/4] rounded-lg overflow-hidden border border-stone-800 cursor-pointer relative group bg-stone-900"
+                    >
+                      <img
+                        src={img}
+                        alt={`Film frame ${i + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
+                        loading="lazy"
+                      />
+                      {isFifthWhenCollapsed ? (
+                        <div
+                          className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white text-center p-2 gap-1 cursor-pointer hover:bg-black/90 transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllPhotos(true);
+                          }}
+                        >
+                          <span className="text-2xl font-mono font-bold text-amber-400">+{remainingCount}</span>
+                          <span className="text-[10px] font-mono tracking-wider">MORE FRAMES</span>
+                        </div>
+                      ) : (
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-amber-300 font-mono text-xs">VIEW FRAME {i + 1}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Bottom Sprockets */}
+              <div className="flex justify-between gap-2 overflow-hidden mt-2 px-2">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div key={i} className="w-3.5 h-3.5 rounded-xs bg-stone-800 shrink-0" />
+                ))}
+              </div>
+            </div>
+
+            {hasMore && (
+              <div className="mt-5 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="px-6 py-2.5 rounded-full border border-amber-500/40 bg-stone-900 text-amber-300 font-mono text-xs font-bold shadow-md hover:bg-stone-800 active:scale-95 transition-all inline-flex items-center gap-2"
                 >
-                  <img
-                    src={img}
-                    alt={`Film frame ${i + 1}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-amber-300 font-mono text-xs">VIEW FRAME {i + 1}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Sprockets */}
-            <div className="flex justify-between gap-2 overflow-hidden mt-2 px-2">
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="w-3.5 h-3.5 rounded-xs bg-stone-800 shrink-0" />
-              ))}
-            </div>
+                  <span>{showAllPhotos ? '↑ COLLAPSE FRAMES' : `🎬 XEM THÊM ${remainingCount} FRAME KHÁC ↓`}</span>
+                </button>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* VIP VietQR Gifting */}
       {data.enableVietQR && (

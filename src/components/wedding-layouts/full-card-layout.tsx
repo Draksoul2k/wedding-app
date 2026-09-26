@@ -158,10 +158,10 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           />
         </motion.div>
 
-        {/* Ambient Gradient Overlays for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/85 pointer-events-none" />
+        {/* Subtle Ambient Gradient Overlays for Readability of Badges */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
         <div
-          className="absolute inset-x-0 bottom-0 h-36 pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-28 pointer-events-none"
           style={{
             background: isDark
               ? 'linear-gradient(to top, #0c0a09, transparent)'
@@ -187,78 +187,28 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           </div>
         </motion.div>
 
-        {/* Centerpiece Hero Typography */}
-        <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 px-6 text-center space-y-3"
-        >
-          {/* Couple Monogram Badge */}
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-md bg-white/15 border border-white/30 text-amber-200 text-lg shadow-xl mb-1">
-            💍
-          </div>
-
-          {/* Majestic Couple Names - Symmetrically Stacked so names never break words awkwardly */}
-          <div className="flex flex-col items-center justify-center font-serif text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.85)] py-0.5">
-            <span className="text-2xl sm:text-3xl font-black tracking-wider uppercase leading-tight">
-              {data.groom.shortName}
-            </span>
-            <div className="flex items-center justify-center gap-2.5 my-1">
-              <span className="w-8 h-px bg-amber-300/50" />
-              <span className="font-serif italic text-base sm:text-lg font-light text-amber-300">
-                &amp;
-              </span>
-              <span className="w-8 h-px bg-amber-300/50" />
-            </div>
-            <span className="text-2xl sm:text-3xl font-black tracking-wider uppercase leading-tight">
-              {data.bride.shortName}
-            </span>
-          </div>
-
-          {/* Wedding Date in Solar & Lunar */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md bg-black/50 border border-amber-400/40 text-amber-200 shadow-xl">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase">
-              {mainCeremony?.dateSolar}
-            </span>
-            {mainCeremony?.dateLunar && (
-              <>
-                <span className="opacity-40">•</span>
-                <span className="text-[11px] font-sans opacity-90">
-                  {mainCeremony?.dateLunar}
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Personalized Guest Greeting Badge */}
-          {guestName && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="mt-2"
-            >
-              <div className="inline-block px-4 py-1.5 rounded-xl bg-amber-400/20 backdrop-blur-md border border-amber-300/40 text-amber-100 text-xs font-serif shadow-lg">
-                Kính mời: <strong className="text-white text-sm tracking-wide">{guestName}</strong>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* Bottom Hero Actions & Bouncing Scroll Indicator */}
+        {/* Bottom Hero Actions & Bouncing Scroll Indicator (Artwork remains clean & unobstructed) */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="relative z-10 pb-6 px-4 text-center"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="relative z-10 pb-6 px-4 text-center space-y-2"
         >
+          {/* Personalized Guest Greeting Badge if provided */}
+          {guestName && (
+            <div>
+              <div className="inline-block px-4 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-amber-200 text-xs font-serif shadow-lg">
+                Kính mời: <strong className="text-white text-xs tracking-wide">{guestName}</strong>
+              </div>
+            </div>
+          )}
+
           {/* Animated Scroll Down Indicator */}
-          <div className="flex flex-col items-center justify-center gap-1 text-white/80 animate-bounce">
-            <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-medium">
+          <div className="flex flex-col items-center justify-center gap-1 text-white/90 animate-bounce">
+            <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-medium drop-shadow-md">
               Vuốt xuống để mở thiệp
             </span>
-            <span className="text-sm leading-none">↓</span>
+            <span className="text-sm leading-none drop-shadow-md">↓</span>
           </div>
         </motion.div>
       </div>
@@ -267,6 +217,30 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
       {/* 2. MAIN WEDDING INVITATION CONTENT SECTIONS (Kinetic Reveal Upon Scroll)  */}
       {/* ========================================================================= */}
       <div className="max-w-md mx-auto px-4 pt-8 pb-32 space-y-12" style={{ backgroundColor: containerBg }}>
+
+        {/* Elegant Couple Headline Header */}
+        <motion.div {...scrollReveal} className="text-center pt-2 pb-2 space-y-2">
+          <div
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[10px] tracking-[0.3em] uppercase font-mono font-bold border"
+            style={{
+              borderColor: activeColor + '40',
+              backgroundColor: activeColor + '10',
+              color: activeAccent || activeColor
+            }}
+          >
+            ✦ HAPPY WEDDING ✦
+          </div>
+          <h1 className={`text-2xl sm:text-3xl font-serif font-black tracking-wide ${headingColor}`}>
+            {data.groom.shortName}{' '}
+            <span className="font-serif italic font-light" style={{ color: activeAccent || activeColor }}>
+              &amp;
+            </span>{' '}
+            {data.bride.shortName}
+          </h1>
+          <p className={`text-xs font-mono tracking-wider ${mutedTextColor}`}>
+            {mainCeremony?.dateSolar} {mainCeremony?.dateLunar ? `(${mainCeremony?.dateLunar})` : ''}
+          </p>
+        </motion.div>
 
         {/* Section 1: Thư Báo Hỷ & Lời Ngỏ Yêu Thương */}
         {data.loveStory && (
