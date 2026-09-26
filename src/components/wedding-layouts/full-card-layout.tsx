@@ -69,19 +69,21 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 
   const dressCodeColors = data.dressCode?.colors || defaultColors;
 
-  // Determine dark vs light theme
-  const isDark =
-    (template.bgTexture &&
+  // Determine dark vs light theme based on background texture
+  const isDark = Boolean(
+    template.bgTexture &&
       (template.bgTexture.toLowerCase().includes('0f0f10') ||
-        template.bgTexture.toLowerCase().includes('#000') ||
-        template.bgTexture.toLowerCase().includes('#1c1917') ||
-        template.bgTexture.toLowerCase().includes('#09090b') ||
-        template.bgTexture.toLowerCase().includes('#0f172a'))) ||
-    template.primaryColor === '#1c1917' ||
-    template.primaryColor === '#0f172a' ||
-    template.primaryColor === '#18181b';
+        template.bgTexture.toLowerCase() === '#000' ||
+        template.bgTexture.toLowerCase() === '#000000' ||
+        template.bgTexture.toLowerCase() === '#0c0a09' ||
+        template.bgTexture.toLowerCase() === '#09090b')
+  );
 
-  const containerBg = isDark ? '#0c0a09' : (template.bgTexture || '#faf8f5');
+  const containerBg = isDark
+    ? '#0c0a09'
+    : (template.bgTexture && template.bgTexture.startsWith('#') && !template.bgTexture.includes('0f0f10')
+        ? template.bgTexture
+        : '#faf8f5');
   const cardBg = isDark ? '#1a1816' : (template.cardBg || '#ffffff');
   const cardBorder = isDark ? 'border-stone-800' : 'border-stone-200/90 shadow-lg';
   const textColor = isDark ? 'text-stone-100' : 'text-stone-800';

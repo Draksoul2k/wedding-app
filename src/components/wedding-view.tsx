@@ -278,12 +278,13 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
       {/* Main Invitation Container */}
       <main className="max-w-md mx-auto shadow-2xl relative overflow-hidden bg-white">
         {/* Dynamic Multi-Layout Rendering Engine */}
-        {currentLayout === 'cinelove_movie' && (
-          <CinematicLayout
+        {(currentLayout === 'cinelove_movie' || currentLayout === 'full_long_card') && (
+          <FullCardLayout
             data={data}
             template={template}
             activeColor={activeColor}
             activeAccent={activeAccent}
+            guestName={guestName}
             onOpenLightbox={(idx) => setLightboxIndex(idx)}
             rsvpSent={rsvpSent}
             onSendRSVP={handleSendRSVP}
@@ -388,28 +389,6 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
           />
         )}
 
-        {currentLayout === 'full_long_card' && (
-          <FullCardLayout
-            data={data}
-            template={template}
-            activeColor={activeColor}
-            activeAccent={activeAccent}
-            guestName={guestName}
-            onOpenLightbox={(idx) => setLightboxIndex(idx)}
-            rsvpSent={rsvpSent}
-            onSendRSVP={handleSendRSVP}
-            rsvpSide={rsvpSide}
-            setRsvpSide={setRsvpSide}
-            rsvpCount={rsvpCount}
-            setRsvpCount={setRsvpCount}
-            wishes={wishes}
-            newWishName={newWishName}
-            setNewWishName={setNewWishName}
-            newWishContent={newWishContent}
-            setNewWishContent={setNewWishContent}
-            onAddWish={handleAddWish}
-          />
-        )}
       </main>
 
       {/* Sleek Floating Music Disc Player (Top-Right, never collides with bottom buttons) */}
