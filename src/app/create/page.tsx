@@ -1596,8 +1596,8 @@ function CreateInvitationContent() {
                       📸 2. Album Ảnh Cưới Pre-Wedding ({data.galleryImages.length} ảnh)
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-600">
-                    Tải lên các khoảnh khắc ngọt ngào của hai bạn. Khách mời có thể bấm vào ảnh để phóng to toàn màn hình.
+                  <p className="text-[11px] text-gray-600 leading-relaxed">
+                    Tải lên không giới hạn ảnh cưới (5, 10, 20 ảnh tuỳ ý). Trên thiệp mời, ban đầu hệ thống sẽ xếp gọn 5 ảnh đẹp nhất và kèm nút <strong>[Xem thêm ảnh]</strong> để khách mời bấm mở rộng toàn bộ album.
                   </p>
 
                   <input

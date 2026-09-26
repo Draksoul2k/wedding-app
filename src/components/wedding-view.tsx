@@ -158,24 +158,64 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
       {/* Falling particles effect */}
       <FallingEffect type={data.fallingEffect} />
 
-      {/* Lightbox Modal for Gallery Images */}
+      {/* Lightbox Modal for Gallery Images with Prev/Next Navigation */}
       {lightboxIndex !== null && data.galleryImages && data.galleryImages[lightboxIndex] && (
         <div
           onClick={() => setLightboxIndex(null)}
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-3 sm:p-4 backdrop-blur-md cursor-zoom-out select-none"
         >
+          {/* Close button */}
           <button
             onClick={() => setLightboxIndex(null)}
-            className="absolute top-4 right-4 text-white text-3xl font-light hover:text-rose-400 z-50 p-2"
+            className="absolute top-4 right-4 text-white text-3xl font-light hover:text-amber-400 z-50 p-3"
           >
             ✕
           </button>
-          <img
-            src={data.galleryImages[lightboxIndex]}
-            alt="Ảnh cưới phóng to"
-            className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
-          />
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 text-xs px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md">
+
+          {/* Previous Arrow */}
+          {data.galleryImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((prev) =>
+                  prev !== null ? (prev === 0 ? data.galleryImages.length - 1 : prev - 1) : 0
+                );
+              }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center text-2xl backdrop-blur-md active:scale-95 transition-all shadow-xl"
+              title="Ảnh trước"
+            >
+              ‹
+            </button>
+          )}
+
+          {/* Next Arrow */}
+          {data.galleryImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((prev) =>
+                  prev !== null ? (prev === data.galleryImages.length - 1 ? 0 : prev + 1) : 0
+                );
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center text-2xl backdrop-blur-md active:scale-95 transition-all shadow-xl"
+              title="Ảnh tiếp theo"
+            >
+              ›
+            </button>
+          )}
+
+          <div
+            className="max-w-full max-h-[85vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={data.galleryImages[lightboxIndex]}
+              alt={`Ảnh cưới ${lightboxIndex + 1}`}
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+            />
+          </div>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/90 text-xs px-4 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-md font-mono">
             {lightboxIndex + 1} / {data.galleryImages.length}
           </div>
         </div>

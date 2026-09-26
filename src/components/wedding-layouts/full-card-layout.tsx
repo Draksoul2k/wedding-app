@@ -51,7 +51,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 }) => {
   const [showRsvpModal, setShowRsvpModal] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
-  const [showOriginalArtModal, setShowOriginalArtModal] = useState(false);
+  const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const mainCeremony = data.ceremonies[0];
@@ -251,20 +251,10 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="relative z-10 pb-6 px-4 text-center space-y-3"
+          className="relative z-10 pb-6 px-4 text-center"
         >
-          {/* Button to view the full uncropped original graphic */}
-          <button
-            type="button"
-            onClick={() => setShowOriginalArtModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/25 text-white/90 transition-all active:scale-95 shadow-md"
-          >
-            <span>🖼️</span>
-            <span>Xem bức vẽ gốc toàn cảnh</span>
-          </button>
-
           {/* Animated Scroll Down Indicator */}
-          <div className="flex flex-col items-center justify-center gap-1 text-white/80 animate-bounce pt-1">
+          <div className="flex flex-col items-center justify-center gap-1 text-white/80 animate-bounce">
             <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-medium">
               Vuốt xuống để mở thiệp
             </span>
@@ -588,48 +578,103 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
         </motion.section>
 
         {/* Section 7: Album Kỷ Niệm (Gallery) */}
-        {data.galleryImages && data.galleryImages.length > 0 && (
-          <motion.section {...scrollReveal} className="space-y-4">
-            <div className="text-center space-y-1">
-              <span
-                className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
-                style={{ color: activeAccent || activeColor }}
-              >
-                GALLERY
-              </span>
-              <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
-                Khoảnh Khắc Ngọt Ngào
-              </h3>
-            </div>
+        {data.galleryImages && data.galleryImages.length > 0 && (() => {
+          const totalImages = data.galleryImages.length;
+          const displayImages = showAllPhotos ? data.galleryImages : data.galleryImages.slice(0, 5);
+          const hasMore = totalImages > 5;
+          const remainingCount = totalImages - 5;
 
-            <div className="grid grid-cols-2 gap-3">
-              {data.galleryImages.map((img, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: (i % 2) * 0.1 }}
-                  onClick={() => onOpenLightbox && onOpenLightbox(i)}
-                  className={`aspect-[3/4] rounded-2xl overflow-hidden border cursor-pointer relative group shadow-lg ${cardBorder}`}
-                  style={{ backgroundColor: isDark ? '#1c1917' : '#f5f5f4' }}
+          return (
+            <motion.section {...scrollReveal} className="space-y-4">
+              <div className="text-center space-y-1">
+                <span
+                  className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
+                  style={{ color: activeAccent || activeColor }}
                 >
-                  <img
-                    src={img}
-                    alt={`Ảnh cưới ${i + 1}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-white text-xs font-semibold px-2.5 py-1 bg-black/60 backdrop-blur-xs rounded-full">
-                      🔍 Phóng to
+                  GALLERY
+                </span>
+                <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
+                  Khoảnh Khắc Ngọt Ngào
+                </h3>
+                <p className={`text-xs ${mutedTextColor}`}>
+                  {totalImages} bức ảnh kỷ niệm ngày trọng đại
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {displayImages.map((img, i) => {
+                  const isFirstAndOdd = i === 0 && (displayImages.length === 5 || displayImages.length % 2 !== 0);
+                  const isFifthWhenCollapsed = !showAllPhotos && hasMore && i === 4;
+
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45, delay: (i % 4) * 0.08 }}
+                      onClick={() => onOpenLightbox && onOpenLightbox(i)}
+                      className={`${
+                        isFirstAndOdd ? 'col-span-2 aspect-[16/10]' : 'aspect-[3/4]'
+                      } rounded-2xl overflow-hidden border cursor-pointer relative group shadow-lg ${cardBorder}`}
+                      style={{ backgroundColor: isDark ? '#1c1917' : '#f5f5f4' }}
+                    >
+                      <img
+                        src={img}
+                        alt={`Ảnh cưới ${i + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+
+                      {/* Interactive overlay on 5th photo when collapsed */}
+                      {isFifthWhenCollapsed ? (
+                        <div
+                          className="absolute inset-0 bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center text-white text-center p-2 gap-1 group-hover:bg-black/70 transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllPhotos(true);
+                          }}
+                        >
+                          <span className="text-2xl font-mono font-bold text-amber-300">
+                            +{remainingCount}
+                          </span>
+                          <span className="text-[11px] font-semibold tracking-wide">
+                            Xem thêm ảnh
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-white text-xs font-semibold px-2.5 py-1 bg-black/60 backdrop-blur-xs rounded-full">
+                            🔍 Phóng to
+                          </span>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Expand / Collapse Button */}
+              {hasMore && (
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowAllPhotos(!showAllPhotos)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold text-white shadow-lg active:scale-95 transition-all hover:brightness-110"
+                    style={{ backgroundColor: activeColor }}
+                  >
+                    <span>📸</span>
+                    <span>
+                      {showAllPhotos
+                        ? 'Thu gọn bớt ảnh ↑'
+                        : `Xem thêm ${remainingCount} ảnh cưới khác ↓`}
                     </span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-        )}
+                  </button>
+                </div>
+              )}
+            </motion.section>
+          );
+        })()}
 
         {/* Section 8: Hộp Mừng Cưới & VietQR Trực Tiếp */}
         {data.enableVietQR && (
@@ -881,37 +926,6 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
       {/* 4. MODALS (Original Art Lightbox, Quick RSVP, Quick VietQR)                */}
       {/* ========================================================================= */}
 
-      {/* Original Artwork Full High-Res Modal */}
-      {showOriginalArtModal && (
-        <div
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto"
-          onClick={() => setShowOriginalArtModal(false)}
-        >
-          <div className="flex justify-between items-center text-white pt-2 px-2">
-            <span className="text-xs font-mono text-amber-300 font-bold tracking-wider">
-              BỨC VẼ GỐC NGUYÊN BẢN
-            </span>
-            <button
-              onClick={() => setShowOriginalArtModal(false)}
-              className="text-stone-300 hover:text-white text-2xl font-bold p-2"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center my-4" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={template.frameAsset}
-              alt="Bức vẽ gốc"
-              className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl border border-stone-800"
-            />
-          </div>
-
-          <p className="text-center text-stone-400 text-xs pb-2">
-            Chạm bất kỳ đâu để đóng
-          </p>
-        </div>
-      )}
 
       {/* RSVP Quick Modal */}
       {showRsvpModal && (
