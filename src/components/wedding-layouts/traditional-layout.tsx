@@ -51,30 +51,11 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
 
   return (
     <div className="bg-[#fff9f5] text-stone-900 min-h-screen font-serif selection:bg-red-200">
-      {/* Traditional Oriental Banner */}
-      <div className="bg-gradient-to-r from-red-800 via-rose-700 to-red-800 text-amber-200 py-3.5 text-center px-4 shadow-md border-b-2 border-amber-400">
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-xl">🏮</span>
-          <span className="text-xs uppercase tracking-[0.3em] font-bold">
-            囍 THIỆP HỒNG BÁO HỶ 囍
-          </span>
-          <span className="text-xl">🏮</span>
-        </div>
-        <h1 className="text-xl sm:text-2xl font-serif font-black text-amber-100 mt-1 tracking-wide">
-          {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
-          <span className="text-amber-300 font-light italic">&amp;</span>{' '}
-          {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
-        </h1>
-        <p className="text-[10px] text-amber-300/80 font-mono tracking-wider mt-0.5">
-          {data.ceremonies[0]?.dateSolar} ({data.ceremonies[0]?.dateLunar})
-        </p>
-      </div>
-
-      {/* Hero Section: Authentic ChungDoi Template Card */}
-      <div className="px-5 pt-8 pb-4 text-center">
+      {/* Hero Section: Authentic Traditional Wedding Card with Live Name Emblem */}
+      <div className="px-4 pt-6 pb-4 text-center">
         {/* Authentic ChungDoi Template Card */}
         <div
-          className="relative max-w-xs mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 p-1 bg-white"
+          className="relative max-w-xs mx-auto rounded-2xl overflow-hidden shadow-2xl border-2 p-1 bg-white"
           style={{ borderColor: activeColor }}
         >
           <img
@@ -83,14 +64,29 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
             className="w-full h-auto object-cover rounded-xl shadow-inner"
             loading="eager"
           />
+
           {/* Top Double Happiness Badge */}
           <div
-            className="absolute top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5"
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5 z-10"
             style={{ backgroundColor: activeColor, borderColor: activeAccent }}
           >
             <span>囍</span>
             <span>TRĂM NĂM HẠNH PHÚC</span>
             <span>囍</span>
+          </div>
+
+          {/* Live Editable Couple Name Emblem inside the Traditional Circle (Covers any static mock text) */}
+          <div className="absolute top-[47%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-full bg-[#82131d] border border-amber-400/60 shadow-xl flex flex-col items-center justify-center p-3 text-center z-10">
+            <span className="text-amber-300 text-xs font-serif mb-0.5">囍</span>
+            <div className="font-cursive text-amber-100 text-2xl leading-tight select-none">
+              <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
+              <div className="text-xs text-amber-300/80 font-serif italic my-0.5">và</div>
+              <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
+            </div>
+            <div className="w-16 h-[1px] bg-amber-400/40 my-1" />
+            <span className="text-[10px] font-mono text-amber-200/90 tracking-widest uppercase">
+              {data.ceremonies[0]?.dateSolar?.split('-').reverse().join(' . ')}
+            </span>
           </div>
         </div>
 

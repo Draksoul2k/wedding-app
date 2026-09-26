@@ -1070,6 +1070,11 @@ export const DEFAULT_WEDDING_DATA = {
   musicTrackUrl: '/audio/anh-nang-cua-anh.mp3',
   musicTitle: 'Ánh Nắng Của Anh - Đức Phúc (Bản Có Lời)',
   fallingEffect: 'petals' as const,
+  typography: {
+    fontFamily: 'Charmonman',
+    fontSize: 42,
+    color: '#111827',
+  },
 
   groom: {
     fullName: 'Trần Minh Trí',

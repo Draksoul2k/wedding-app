@@ -192,16 +192,36 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
         <div className="relative z-20 px-6 pt-2 pb-2 text-center mt-auto flex flex-col items-center justify-center">
           <div
             onClick={() => onEditField?.('couple')}
-            className={`group select-none transition-all duration-200 rounded-3xl p-3 ${
-              onEditField ? 'cursor-pointer hover:bg-black/5 hover:ring-2 hover:ring-rose-400/60' : ''
+            className={`group relative select-none transition-all duration-200 rounded-2xl p-3 ${
+              onEditField
+                ? 'cursor-pointer border-2 border-dashed border-sky-400 bg-sky-500/10 shadow-lg ring-4 ring-sky-400/20'
+                : ''
             }`}
-            title={onEditField ? 'Nhấp để chỉnh sửa tên cô dâu & chú rể' : undefined}
+            title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
           >
+            {/* Corner Selection Nodes matching Cinelove Editor */}
+            {onEditField && (
+              <>
+                <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
+                <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
+                <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
+                <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white border-2 border-sky-500 rounded-xs shadow-xs pointer-events-none" />
+
+                {/* Floating Cinelove Action Pill */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white/95 text-stone-800 text-[10px] font-sans font-bold px-3 py-1 rounded-full shadow-lg border border-sky-200 flex items-center gap-1.5 whitespace-nowrap">
+                  <span>✎ Chạm để đổi tên &amp; kiểu chữ</span>
+                </div>
+              </>
+            )}
+
             <div
               className="font-cursive leading-tight text-center tracking-wide"
               style={{
-                fontSize: '44px',
-                color: isDark ? '#ffffff' : '#111827',
+                fontSize: `${data.typography?.fontSize || 42}px`,
+                color: data.typography?.color || (isDark ? '#ffffff' : '#111827'),
+                fontFamily: data.typography?.fontFamily
+                  ? `'${data.typography.fontFamily}', 'Charmonman', 'Dancing Script', cursive`
+                  : undefined,
                 textShadow: isDark
                   ? '0 2px 12px rgba(0,0,0,0.9)'
                   : '0 1px 3px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.7)'
@@ -211,11 +231,6 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
               <div className="text-2xl opacity-75 my-0.5 italic font-serif">&amp;</div>
               <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
             </div>
-            {onEditField && (
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-sans font-semibold px-2.5 py-0.5 rounded-full bg-black/75 text-white mt-1.5 inline-block shadow-md">
-                ✎ Nhấp để chỉnh sửa tên
-              </span>
-            )}
           </div>
 
           {/* Wedding Solar Date */}

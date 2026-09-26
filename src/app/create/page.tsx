@@ -1801,12 +1801,107 @@ function CreateInvitationContent() {
           </div>
         </div>
 
-        {/* Right Column: Live Mockup Preview (Split View) */}
+        {/* Right Column: Live Mockup Preview & Cinelove Visual Editor */}
         <div
           className={`flex-1 flex flex-col items-center justify-center ${
             showMobilePreview ? 'flex' : 'hidden lg:flex'
           }`}
         >
+          {/* Cinelove Interactive Typography & Design Quick Toolbar */}
+          <div className="w-full max-w-[390px] mb-2.5 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-stone-200/90 shadow-md flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs">✍️</span>
+              <span className="text-[11px] font-bold text-stone-800">Kiểu chữ:</span>
+              <select
+                value={data.typography?.fontFamily || 'Charmonman'}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    typography: {
+                      ...data.typography,
+                      fontFamily: e.target.value
+                    }
+                  })
+                }
+                className="text-[11px] font-medium py-1 px-1.5 rounded-lg border border-stone-300 bg-stone-50 text-stone-800 cursor-pointer"
+              >
+                <option value="Charmonman">Aquarelle (Thư pháp mềm)</option>
+                <option value="Dancing Script">Dancing Script (Viết tay)</option>
+                <option value="Charm">Charm (Quý phái)</option>
+                <option value="Pattaya">Pattaya (Chữ ký)</option>
+                <option value="Playfair Display">Playfair (Sang trọng)</option>
+              </select>
+            </div>
+
+            {/* Font Size +/- */}
+            <div className="flex items-center gap-0.5 bg-stone-100 p-0.5 rounded-lg border border-stone-200">
+              <button
+                type="button"
+                onClick={() =>
+                  setData({
+                    ...data,
+                    typography: {
+                      ...data.typography,
+                      fontSize: Math.max(28, (data.typography?.fontSize || 42) - 2)
+                    }
+                  })
+                }
+                className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
+                title="Giảm cỡ chữ"
+              >
+                -
+              </button>
+              <span className="text-[10px] font-mono font-bold px-1 text-stone-800 min-w-[20px] text-center">
+                {data.typography?.fontSize || 42}
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setData({
+                    ...data,
+                    typography: {
+                      ...data.typography,
+                      fontSize: Math.min(60, (data.typography?.fontSize || 42) + 2)
+                    }
+                  })
+                }
+                className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold text-stone-600 hover:bg-white cursor-pointer"
+                title="Tăng cỡ chữ"
+              >
+                +
+              </button>
+            </div>
+
+            {/* Text Color Swatches */}
+            <div className="flex items-center gap-1">
+              {[
+                { label: 'Đen', hex: '#111827' },
+                { label: 'Vàng Gold', hex: '#d4af37' },
+                { label: 'Đỏ Rượu', hex: '#991b1b' },
+                { label: 'Trắng', hex: '#ffffff' },
+              ].map((c) => (
+                <button
+                  key={c.hex}
+                  type="button"
+                  onClick={() =>
+                    setData({
+                      ...data,
+                      typography: {
+                        ...data.typography,
+                        color: c.hex
+                      }
+                    })
+                  }
+                  className={`w-4 h-4 rounded-full border border-stone-400 transition-transform cursor-pointer ${
+                    (data.typography?.color || '#111827') === c.hex ? 'scale-125 ring-2 ring-rose-400' : 'hover:scale-110'
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                  title={`Màu ${c.label}`}
+                />
+              ))}
+            </div>
+          </div>
+
           <div className="w-full max-w-[390px] h-[780px] bg-black rounded-[48px] p-3 shadow-2xl ring-8 ring-stone-800/10 flex flex-col relative overflow-hidden">
             {/* iPhone Dynamic Island Mockup Notch */}
             <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-40 pointer-events-none" />
@@ -1826,8 +1921,39 @@ function CreateInvitationContent() {
               />
             </div>
           </div>
-          <span className="text-[11px] text-gray-400 mt-3 font-medium">
-            📱 Xem trước trực tiếp trên giao diện Smartphone
+
+          {/* Cinelove Section Navigation Bar */}
+          <div className="w-full max-w-[390px] mt-2.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar py-1">
+            {[
+              { label: 'Ảnh bìa', step: 1, icon: '📷', targetScroll: 0 },
+              { label: 'Dâu & Rể', step: 2, icon: '💍', targetScroll: 750 },
+              { label: 'Lịch trình', step: 3, icon: '💒', targetScroll: 1350 },
+              { label: 'Album', step: 4, icon: '📸', targetScroll: 2100 },
+              { label: 'Mừng cưới', step: 5, icon: '🧧', targetScroll: 2800 },
+            ].map((tab, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setActiveStep(tab.step as any);
+                  if (phoneScrollRef.current) {
+                    phoneScrollRef.current.scrollTo({ top: tab.targetScroll, behavior: 'smooth' });
+                  }
+                }}
+                className={`px-2 py-1 rounded-xl text-[10px] font-bold border transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
+                  activeStep === tab.step
+                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                    : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <span className="text-[11px] text-gray-400 mt-2 font-medium">
+            📱 Bấm vào chữ trên màn hình hoặc dùng thanh công cụ để chỉnh sửa trực tiếp
           </span>
         </div>
         {/* MODAL XEM LỜI BÀI HÁT (LYRICS MODAL) */}

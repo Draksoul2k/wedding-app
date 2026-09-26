@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Charmonman:wght@400;700&family=Dancing+Script:wght@400;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Pattaya&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese');
 
 :root {
   --background: #ffffff;
@@ -25,14 +25,16 @@ body {
   font-family: var(--font-poppins), 'Poppins', Arial, Helvetica, sans-serif;
 }
 
-/* Calligraphy & Wedding Typography Classes */
+/* Calligraphy & Wedding Typography Classes with Full Vietnamese Diacritics Support */
 .font-cursive,
-.font-calligraphy {
-  font-family: 'Great Vibes', 'Dancing Script', 'Alex Brush', cursive !important;
+.font-calligraphy,
+.font-aquarelle {
+  font-family: 'Charmonman', 'Dancing Script', 'Charm', 'Pattaya', cursive !important;
 }
 
+.font-serif,
 .font-playfair,
 .font-serif-wedding {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'Playfair Display', 'Lora', Georgia, serif !important;
 }
 

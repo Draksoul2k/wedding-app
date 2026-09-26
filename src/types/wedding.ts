@@ -79,6 +79,13 @@ export interface WeddingInvitationData {
   enableRSVP: boolean;
   thankYouMessage: string;
 
+  // Typography & Kiểu chữ trực tiếp (Cinelove Editor)
+  typography?: {
+    fontFamily?: string;
+    fontSize?: number;
+    color?: string;
+  };
+
   // Dress Code gợi ý trang phục
   dressCode?: {
     enabled: boolean;
