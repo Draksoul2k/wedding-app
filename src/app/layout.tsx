@@ -46,6 +46,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Ephesis&family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Monsieur+La+Doulaise&family=The+Nautigal:wght@400;700&family=Viaoda+Libre&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className={`${poppins.variable} ${dancingScript.variable} ${playfair.variable} ${charmonman.variable} ${lora.variable} antialiased`}>
         {children}
         <Toaster />

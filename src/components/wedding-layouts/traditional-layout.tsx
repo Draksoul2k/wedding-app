@@ -86,16 +86,18 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
             title={onEditField ? 'Nhấp để sửa tên và kiểu chữ' : undefined}
           >
             <div
-              className="inline-block px-3 py-0.5 rounded-lg transition-all font-bold tracking-wider uppercase select-none drop-shadow-sm hover:ring-2 hover:ring-sky-400"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-lg transition-all font-bold tracking-wider select-none drop-shadow-sm hover:ring-2 hover:ring-sky-400"
               style={{
-                fontFamily: data.typography?.fontFamily || 'var(--font-heading)',
+                fontFamily: data.typography?.fontFamily || "'Viaoda Libre', serif",
                 color: data.typography?.color || '#b91c1c',
                 fontSize: `${Math.min(Math.max(data.typography?.fontSize || 22, 16), 28)}px`,
                 letterSpacing: `${data.typography?.letterSpacing || 1}px`,
                 textTransform: (data.typography?.textTransform || 'uppercase') as any
               }}
             >
-              {data.groom.shortName || data.groom.fullName || 'Chú Rể'} & {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
+              <span>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</span>
+              <span className="font-normal opacity-85 lowercase text-[1.25em] -translate-y-0.5" style={{ fontFamily: "'The Nautigal', cursive" }}>&amp;</span>
+              <span>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</span>
             </div>
           </div>
         </div>
