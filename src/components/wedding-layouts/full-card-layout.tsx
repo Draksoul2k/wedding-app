@@ -173,40 +173,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           }}
         />
 
-        {/* Dynamic Cursive Calligraphy Couple Names positioned directly over the bridal dress area (Matching Cinelove Aquarelle Typography) */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10 my-auto px-4 text-center pointer-events-none flex flex-col items-center justify-center pt-32 sm:pt-40"
-        >
-          <div
-            className="px-6 py-3 rounded-3xl shadow-sm border border-white/50 max-w-[280px]"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.88)',
-              backdropFilter: 'blur(4px)',
-            }}
-          >
-            <p
-              className="text-3xl sm:text-4xl text-stone-900 leading-tight tracking-wide select-none"
-              style={{ fontFamily: 'var(--font-cursive), "Dancing Script", cursive' }}
-            >
-              {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
-            </p>
-            <p
-              className="text-xl sm:text-2xl text-stone-700 my-0.5 select-none"
-              style={{ fontFamily: 'var(--font-cursive), "Dancing Script", cursive' }}
-            >
-              &amp;
-            </p>
-            <p
-              className="text-3xl sm:text-4xl text-stone-900 leading-tight tracking-wide select-none"
-              style={{ fontFamily: 'var(--font-cursive), "Dancing Script", cursive' }}
-            >
-              {data.groom.shortName || data.groom.fullName || 'Chú Rể'}
-            </p>
-          </div>
-        </motion.div>
+
 
         {/* Bottom Hero Actions & Bouncing Scroll Indicator (Artwork remains clean & unobstructed) */}
         <motion.div
