@@ -166,18 +166,9 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
     if (['cine-thiep-cuoi-39', 'cine-thiep-cuoi-46', 'cine-thiep-cuoi-16', 'cine-thiep-cuoi-36', 'cine-thiep-cuoi-38'].includes(tid)) {
       return 'calendar'; // ZenLove Image 1
     }
-    if (['cine-thiep-cuoi-2', 'cine-thiep-cuoi-114', 'cine-thiep-cuoi-5'].includes(tid)) {
-      return 'magazine'; // Vogue Fashion Editorial
-    }
-    if (['cine-thiep-cuoi-1', 'cine-thiep-cuoi-44', 'cine-thiep-cuoi-41'].includes(tid)) {
-      return 'ticket'; // Cinema VIP Ticket Pass
-    }
-    if (['cine-thiep-cuoi-23', 'cine-thiep-cuoi-42', 'cine-thiep-cuoi-17'].includes(tid)) {
-      return 'polaroid'; // Polaroid card taped
-    }
     const hash = tid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    const variants: ('calendar' | 'countdown' | 'polaroid' | 'magazine' | 'ticket' | 'traditional')[] = [
-      'calendar', 'countdown', 'polaroid', 'magazine', 'ticket', 'traditional'
+    const variants: ('calendar' | 'countdown' | 'polaroid' | 'ticket' | 'traditional')[] = [
+      'calendar', 'countdown', 'polaroid', 'ticket', 'traditional'
     ];
     return variants[hash % variants.length];
   }, [template.id, template.category]);
@@ -546,61 +537,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           </div>
         )}
 
-        {/* ========================================================================= */}
-        {/* VARIANT 4: MAGAZINE (Vogue Editorial High-Fashion)                       */}
-        {/* ========================================================================= */}
-        {heroVariant === 'magazine' && (
-          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
-            {/* Vogue Masthead */}
-            <div className="pt-5 border-b border-white/30 pb-2">
-              <div className="font-serif text-4xl sm:text-5xl font-black tracking-[0.2em] text-white drop-shadow-md uppercase">
-                V O G U E
-              </div>
-              <div className="flex justify-between text-[9px] font-mono tracking-widest text-white/90 uppercase px-2 pt-1">
-                <span>WEDDING ISSUE</span>
-                <span>VOL. 2026</span>
-                <span>SPECIAL EDITION</span>
-              </div>
-            </div>
 
-            {/* Magazine Headline & Couple Names */}
-            <div className="my-auto py-2">
-              <div
-                onClick={() => onEditField?.('couple')}
-                className={`group relative select-none inline-block ${
-                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
-                }`}
-              >
-                <div className={`px-4 py-2 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}>
-                  {renderSelectionHandles()}
-                  <div
-                    className="font-serif font-black uppercase tracking-wider leading-tight text-white drop-shadow-lg"
-                    style={{
-                      fontSize: `${data.typography?.fontSize || 38}px`,
-                      textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95)'
-                    }}
-                  >
-                    <div>{data.bride.shortName || 'BẢO TRÂM'}</div>
-                    <div className="text-sm font-sans tracking-[0.3em] font-normal opacity-85 my-1">LOVES</div>
-                    <div>{data.groom.shortName || 'TUẤN KHANG'}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-2 text-xs font-serif italic text-white/95 drop-shadow-md">
-                “A True Love Story Never Ends”
-              </div>
-
-              {/* Barcode & Issue Info Badge */}
-              <div className="mt-3 inline-flex items-center gap-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20 text-white">
-                <span className="font-mono text-base tracking-widest">||| | |||| | ||</span>
-                <span className="text-[10px] font-mono uppercase tracking-wider">{targetDateStr}</span>
-              </div>
-            </div>
-
-            {renderFloatingFooter()}
-          </div>
-        )}
 
         {/* ========================================================================= */}
         {/* VARIANT 5: TICKET (Cinema VIP Pass / Boarding Pass)                       */}

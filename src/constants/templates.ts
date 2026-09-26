@@ -98,10 +98,16 @@ export const TEMPLATES: TemplateConfig[] = ALL_TEMPLATES;
 export function findTemplate(idOrSlug?: string | null): TemplateConfig {
   if (!idOrSlug) return ALL_TEMPLATES[0];
 
-  const directMatch = ALL_TEMPLATES.find((t) => t.id === idOrSlug || (t.slug && t.slug === idOrSlug));
+  const clean = idOrSlug.toLowerCase().trim().replace(/^cine-/, '');
+
+  const directMatch = ALL_TEMPLATES.find(
+    (t) => t.id === clean || (t.slug && t.slug === clean) || t.id === idOrSlug || (t.slug && t.slug === idOrSlug)
+  );
   if (directMatch) return directMatch;
 
-  const zenMatch = ZENLOVE_TEMPLATES.find((t) => t.slug === idOrSlug || t.id === idOrSlug);
+  const zenMatch = ZENLOVE_TEMPLATES.find(
+    (t) => t.slug === clean || t.id === clean || t.slug === idOrSlug || t.id === idOrSlug
+  );
   if (zenMatch) {
     return zenLoveToTemplateConfig(zenMatch);
   }
@@ -161,7 +167,7 @@ export const DEFAULT_WEDDING_DATA = {
     fatherName: 'Trần Anh Tài',
     motherName: 'Phạm Thu Hương',
     address: 'Phường Bãi Cháy, TP. Hạ Long, Tỉnh Quảng Ninh',
-    avatarUrl: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg',
+    avatarUrl: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/Ny0yMDI0MDIwODEyMjE1OS1odGZncF8xNzY1NDc0MDU2Xzc3cg.jpg',
     bank: {
       bankCode: 'MB',
       bankName: 'MBBank',
@@ -178,7 +184,7 @@ export const DEFAULT_WEDDING_DATA = {
     fatherName: 'Lê Văn Hải',
     motherName: 'Nguyễn Mai Thu',
     address: 'Quận Ba Đình, TP. Hà Nội',
-    avatarUrl: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg',
+    avatarUrl: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/OC0yMDI0MDIwODEyMjE1OS1ib3F0bi0xXzE3NjU0NzUyNzNfMTEw.jpg',
     bank: {
       bankCode: 'VCB',
       bankName: 'Vietcombank',

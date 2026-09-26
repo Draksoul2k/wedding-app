@@ -80,6 +80,7 @@ export interface WeddingInvitationData {
   enableRSVP: boolean;
   thankYouMessage: string;
   customTextNodes?: Record<string, string>;
+  customPhotoNodes?: Record<string, string>;
 
   // Typography & Kiểu chữ trực tiếp (Cinelove Editor)
   typography?: {

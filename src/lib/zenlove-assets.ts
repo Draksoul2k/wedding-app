@@ -1,5 +1,6 @@
 /**
  * Resolve ZenLove CDN Asset URLs
+ * Handles stickers, background textures, characters, and template images.
  */
 export function resolveZenLoveAsset(keyOrUrl?: string | null): string {
   if (!keyOrUrl) return '';
@@ -11,8 +12,13 @@ export function resolveZenLoveAsset(keyOrUrl?: string | null): string {
     return trimmed;
   }
 
-  // If local static path
-  if (trimmed.startsWith('/templates/') || trimmed.startsWith('/themes/') || trimmed.startsWith('/images/')) {
+  // Only genuinely local static assets from public folder stay local
+  if (
+    trimmed.startsWith('/audio/') ||
+    trimmed.startsWith('/icons/') ||
+    trimmed.startsWith('/logo') ||
+    trimmed.startsWith('/favicon')
+  ) {
     return trimmed;
   }
 

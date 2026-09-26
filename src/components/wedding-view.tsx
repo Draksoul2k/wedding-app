@@ -61,7 +61,11 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   // Current layout determined cleanly by template
   const currentLayout: TemplateLayoutType = template.layoutType || 'full_long_card';
 
-  // Authentic Craft.js Canvas Tree (supports all 143 ZenLove templates dynamically)
+  // Authentic Craft.js Canvas Tree (supports all 144 ZenLove templates dynamically)
+  const [isLoadingCraft, setIsLoadingCraft] = useState<boolean>(() => {
+    return !getCraftTemplate(data.templateId || template.slug || template.id);
+  });
+
   const [asyncCraftTree, setAsyncCraftTree] = useState<CraftTree | null>(() => {
     return getCraftTemplate(data.templateId || template.slug || template.id);
   });
@@ -72,11 +76,17 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
     const initial = getCraftTemplate(slug);
     if (initial) {
       setAsyncCraftTree(initial);
+      setIsLoadingCraft(false);
       return;
     }
-    fetchCraftTemplate(slug).then((tree) => {
-      if (tree) setAsyncCraftTree(tree);
-    });
+    setIsLoadingCraft(true);
+    fetchCraftTemplate(slug)
+      .then((tree) => {
+        if (tree) setAsyncCraftTree(tree);
+      })
+      .finally(() => {
+        setIsLoadingCraft(false);
+      });
   }, [data.templateId, template.slug, template.id]);
 
   const craftTree = asyncCraftTree || getCraftTemplate(data.templateId || template.slug || template.id);
@@ -304,7 +314,12 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
       {/* Main Invitation Container */}
       <main className="max-w-md mx-auto shadow-2xl relative overflow-hidden bg-white">
         {/* Authentic ZenLove / Cinelove Multi-Layer Canvas Engine */}
-        {craftTree ? (
+        {isLoadingCraft && !craftTree ? (
+          <div className="min-h-[500px] flex flex-col items-center justify-center p-8 bg-[#faf8f5] text-stone-500 space-y-3">
+            <div className="w-10 h-10 border-3 border-rose-300 border-t-rose-600 rounded-full animate-spin" />
+            <span className="text-xs font-serif italic text-stone-600">Đang tải thiết kế mẫu thiệp chuẩn...</span>
+          </div>
+        ) : craftTree ? (
           <ZenLoveCanvasRenderer
             craftTree={craftTree}
             data={data}

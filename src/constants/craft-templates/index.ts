@@ -5,6 +5,7 @@ import henUocData from './hen-uoc.json';
 import mocAmData from './moc-am.json';
 import thiepCuoi2Data from './thiep-cuoi-2.json';
 import thiepCuoi39Data from './thiep-cuoi-39-pre.json';
+import { resolveCraftTemplateSlug } from './manifest';
 
 export interface CraftNode {
   type: {
@@ -19,7 +20,7 @@ export interface CraftNode {
 
 export type CraftTree = Record<string, CraftNode>;
 
-// Pre-cached popular templates in client memory
+// Pre-cached popular templates in client memory for instant 0ms render
 const CRAFT_CACHE = new Map<string, CraftTree>([
   ['hong-phong', hongPhongData as unknown as CraftTree],
   ['sen-ngay-hy', senNgayHyData as unknown as CraftTree],
@@ -37,45 +38,31 @@ const CRAFT_CACHE = new Map<string, CraftTree>([
  */
 export function getCraftTemplate(slugOrId?: string | null): CraftTree | null {
   if (!slugOrId) return null;
-  const key = slugOrId.toLowerCase().trim().replace(/^cine-/, '');
-
-  if (CRAFT_CACHE.has(key)) return CRAFT_CACHE.get(key)!;
-
-  // Match numbers (e.g. "thiep-cuoi-130" matching "thiep-cuoi-130-pre")
-  const numMatch = key.match(/\d+/);
-  if (numMatch) {
-    const num = numMatch[0];
-    const regex = new RegExp(`(?:^|-)${num}(?:-|$)`);
-    for (const [slug, tree] of CRAFT_CACHE.entries()) {
-      if (regex.test(slug)) {
-        return tree;
-      }
-    }
+  const targetKey = resolveCraftTemplateSlug(slugOrId);
+  if (targetKey && CRAFT_CACHE.has(targetKey)) {
+    return CRAFT_CACHE.get(targetKey)!;
   }
-
-  // Try matching partial
-  for (const [slug, tree] of CRAFT_CACHE.entries()) {
-    if (key.includes(slug) || slug.includes(key)) {
-      return tree;
-    }
+  const clean = slugOrId.toLowerCase().trim().replace(/^cine-/, '');
+  if (CRAFT_CACHE.has(clean)) {
+    return CRAFT_CACHE.get(clean)!;
   }
-
   return null;
 }
 
 /**
- * Async fetcher with caching that loads any of the 143 templates from API
+ * Async fetcher with caching that loads any of the 144 templates from API
  */
 export async function fetchCraftTemplate(slugOrId: string): Promise<CraftTree | null> {
   const cached = getCraftTemplate(slugOrId);
   if (cached) return cached;
 
-  const key = slugOrId.toLowerCase().trim().replace(/^cine-/, '');
+  const targetKey = resolveCraftTemplateSlug(slugOrId) || slugOrId.toLowerCase().trim().replace(/^cine-/, '');
   try {
-    const res = await fetch(`/api/craft-template?slug=${encodeURIComponent(key)}`);
+    const res = await fetch(`/api/craft-template?slug=${encodeURIComponent(targetKey)}`);
     if (!res.ok) return null;
     const tree: CraftTree = await res.json();
-    CRAFT_CACHE.set(key, tree);
+    CRAFT_CACHE.set(targetKey, tree);
+    CRAFT_CACHE.set(slugOrId.toLowerCase().trim(), tree);
     return tree;
   } catch (e) {
     console.error('Failed to fetch craft template:', e);
