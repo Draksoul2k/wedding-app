@@ -3,7 +3,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { WeddingInvitationData } from '@/types/wedding';
 import { CraftTree, CraftNode } from '@/constants/craft-templates';
-import { resolveZenLoveAsset, getCleanWeddingPhoto } from '@/lib/zenlove-assets';
+import {
+  resolveZenLoveAsset,
+  getCleanWeddingPhoto,
+  isWatermarkedAsset,
+  isDecorativeAsset,
+} from '@/lib/zenlove-assets';
 import { getFontCssUrl } from '@/lib/zenlove-fonts';
 
 interface ZenLoveCanvasRendererProps {
@@ -21,7 +26,9 @@ const CarouselWidget: React.FC<{
   imgList: Array<{ id: string; imageKey: string; alt?: string }>;
   data: WeddingInvitationData;
   borderRadius?: number[];
-}> = ({ id, imgList, data, borderRadius }) => {
+  width?: number;
+  height?: number;
+}> = ({ id, imgList, data, borderRadius, width = 500, height = 650 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -34,7 +41,8 @@ const CarouselWidget: React.FC<{
 
   const currentItem = imgList[currentIndex] || imgList[0];
   const customPhoto = data.customPhotoNodes?.[`${id}_${currentIndex}`] || data.customPhotoNodes?.[id];
-  const imgSrc = customPhoto || resolveZenLoveAsset(currentItem?.imageKey) || getCleanWeddingPhoto(`${id}_${currentIndex}`);
+  const isWm = isWatermarkedAsset(currentItem?.imageKey);
+  const imgSrc = customPhoto || (!isWm ? resolveZenLoveAsset(currentItem?.imageKey) : null) || getCleanWeddingPhoto(`${id}_${currentIndex}`, width, height);
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-stone-100 shadow-sm">
@@ -47,9 +55,10 @@ const CarouselWidget: React.FC<{
           borderRadius: Array.isArray(borderRadius)
             ? `${borderRadius[0]}px ${borderRadius[1]}px ${borderRadius[2]}px ${borderRadius[3]}px`
             : undefined,
+          objectPosition: 'center center',
         }}
         onError={(e) => {
-          e.currentTarget.src = getCleanWeddingPhoto(`${id}_${currentIndex}`);
+          e.currentTarget.src = getCleanWeddingPhoto(`${id}_${currentIndex}`, width, height);
         }}
       />
       {/* Dots Indicator */}
@@ -143,7 +152,8 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
   const BRIDE_NAMES = new Set([
     'diệu nhi', 'lệ quyên', 'ngọc lan', 'lan nhi', 'quỳnh anh', 'ngọc oanh', 'thanh trúc',
     'thanh hằng', 'mỹ châu', 'phương nga', 'bảo trâm', 'cô dâu', 'thu trang', 'lan anh',
-    'hồng ngọc', 'mai anh', 'huyền my', 'thùy linh', 'ngọc trâm', 'thảo vy', 'mỹ mai', 'đỗ mỹ mai'
+    'hồng ngọc', 'mai anh', 'huyền my', 'thùy linh', 'ngọc trâm', 'thảo vy', 'mỹ mai', 'đỗ mỹ mai',
+    'ngọc anh'
   ]);
 
   const isGroomNameNode = (text: string): boolean => {
@@ -270,7 +280,16 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                 displayText = data.groom.shortName || data.groom.fullName || 'Chú Rể';
               } else if (isBride) {
                 displayText = data.bride.shortName || data.bride.fullName || 'Cô Dâu';
-              } else if (isCoupleCombinedNode(rawText) && (rawText.includes('Anh Tú') || rawText.includes('Diệu Nhi') || rawText.includes('Vũ Thanh Thành') || rawText.includes('Gia Khang') || rawText.includes('Thanh Trúc'))) {
+              } else if (
+                isCoupleCombinedNode(rawText) &&
+                (rawText.includes('Anh Tú') ||
+                  rawText.includes('Diệu Nhi') ||
+                  rawText.includes('Vũ Thanh Thành') ||
+                  rawText.includes('Gia Khang') ||
+                  rawText.includes('Thanh Trúc') ||
+                  rawText.includes('Mạnh Đức') ||
+                  rawText.includes('Ngọc Anh'))
+              ) {
                 displayText = `${data.groom.shortName || 'Chú Rể'} & ${data.bride.shortName || 'Cô Dâu'}`;
               }
             }
@@ -355,33 +374,64 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 3. PHOTO BOX RENDERING (Couple Portraits)
+          // 3. PHOTO BOX RENDERING (Couple Portraits and Decorative Shapes/Envelopes)
           if (type === 'PhotoBox') {
             const rawImg = p.imgKey;
             const customPhoto = data.customPhotoNodes?.[id];
-            const imgSrc = customPhoto || resolveZenLoveAsset(rawImg) || getCleanWeddingPhoto(id);
+            const width = typeof p.width === 'number' ? p.width : 500;
+            const height = typeof p.height === 'number' ? p.height : 500;
+            const isDecorative = isDecorativeAsset(rawImg);
+            const isWatermarked = isWatermarkedAsset(rawImg);
+
+            let imgSrc = customPhoto;
+            if (!imgSrc) {
+              if (isDecorative) {
+                // Genuine SVG, sticker, envelope, wax seal, frame
+                imgSrc = resolveZenLoveAsset(rawImg);
+              } else if (isWatermarked) {
+                // Watermarked demo couple photo: substitute with exact aspect ratio clean photo
+                imgSrc = getCleanWeddingPhoto(id, width, height);
+              } else {
+                imgSrc = resolveZenLoveAsset(rawImg) || getCleanWeddingPhoto(id, width, height);
+              }
+            }
 
             return (
               <div
                 key={id}
                 onClick={(e) => handleNodeClick(id, node, e)}
-                style={posStyle}
-                className={`overflow-hidden transition-all bg-stone-100/50 ${
+                style={{
+                  ...posStyle,
+                  backgroundColor: p.backgroundColor || undefined,
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                    : undefined,
+                  padding: Array.isArray(p.padding)
+                    ? `${p.padding[0]}px ${p.padding[1]}px ${p.padding[2]}px ${p.padding[3]}px`
+                    : undefined,
+                }}
+                className={`overflow-hidden transition-all ${
                   isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
                 } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
               >
                 <img
                   src={imgSrc}
                   alt={p.alt || 'Ảnh cưới'}
-                  className="w-full h-full object-cover block select-none pointer-events-none"
+                  className="w-full h-full block select-none pointer-events-none"
                   style={{
+                    objectFit: isDecorative ? 'contain' : 'cover',
+                    objectPosition: 'center center',
                     borderRadius: Array.isArray(p.borderRadius)
                       ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
                       : undefined,
                   }}
                   loading="lazy"
                   onError={(e) => {
-                    e.currentTarget.src = getCleanWeddingPhoto(id);
+                    if (isDecorative) {
+                      e.currentTarget.style.display = 'none';
+                    } else {
+                      e.currentTarget.src = getCleanWeddingPhoto(id, width, height);
+                    }
                   }}
                 />
               </div>
@@ -392,6 +442,8 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           if (type === 'CarouselBox') {
             const imgList: Array<{ id: string; imageKey: string; alt?: string }> = p.imgList || [];
             if (imgList.length === 0) return null;
+            const width = typeof p.width === 'number' ? p.width : 460;
+            const height = typeof p.height === 'number' ? p.height : 640;
 
             return (
               <div
@@ -412,6 +464,8 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                   imgList={imgList}
                   data={data}
                   borderRadius={p.borderRadius}
+                  width={width}
+                  height={height}
                 />
               </div>
             );
@@ -421,6 +475,10 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           if (type === 'PhotoGalleryBox') {
             const photos: Array<{ id: string; imageKey: string; alt?: string }> = p.photos || [];
             if (photos.length === 0) return null;
+            const width = typeof p.width === 'number' ? p.width : 500;
+            const height = typeof p.height === 'number' ? p.height : 450;
+            const itemWidth = Math.round(width / 2);
+            const itemHeight = Math.round(height / 2);
 
             return (
               <div
@@ -439,15 +497,18 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                 <div className="w-full h-full grid grid-cols-2 gap-2 p-1 overflow-hidden bg-transparent">
                   {photos.slice(0, 4).map((item, idx) => {
                     const customPhoto = data.customPhotoNodes?.[`${id}_${idx}`];
-                    const imgSrc = customPhoto || resolveZenLoveAsset(item.imageKey) || getCleanWeddingPhoto(`${id}_${idx}`);
+                    const isWm = isWatermarkedAsset(item.imageKey);
+                    const imgSrc = customPhoto || (!isWm ? resolveZenLoveAsset(item.imageKey) : null) || getCleanWeddingPhoto(`${id}_${idx}`, itemWidth, itemHeight);
+
                     return (
                       <div key={item.id || idx} className="w-full h-full rounded-lg overflow-hidden bg-stone-100 shadow-xs relative">
                         <img
                           src={imgSrc}
                           alt={item.alt || 'Ảnh cưới'}
                           className="w-full h-full object-cover block select-none pointer-events-none hover:scale-105 transition-transform duration-500"
+                          style={{ objectPosition: 'center center' }}
                           onError={(e) => {
-                            e.currentTarget.src = getCleanWeddingPhoto(`${id}_${idx}`);
+                            e.currentTarget.src = getCleanWeddingPhoto(`${id}_${idx}`, itemWidth, itemHeight);
                           }}
                         />
                       </div>
@@ -600,23 +661,37 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             const displayMonth = targetMonth || '12';
             const displayYear = targetYear || '2026';
             const displayDayNum = parseInt(targetDay || '29', 10);
+            const isNoStyle = p.calendarType === 'NO_STYLE';
+            const highlightColor = p.themeColor || data.primaryColor || '#8a1528';
 
             return (
               <div
                 key={id}
                 style={posStyle}
-                className="p-4 rounded-2xl flex flex-col justify-between text-center"
+                className={`flex flex-col justify-between text-center ${
+                  isNoStyle ? 'p-1' : 'p-4 rounded-2xl'
+                }`}
               >
-                <div className="text-xs uppercase font-bold tracking-widest mb-2" style={{ color: p.color || '#8a1528' }}>
-                  Tháng {displayMonth} / {displayYear}
-                </div>
+                {!isNoStyle && (
+                  <>
+                    <div className="text-xs uppercase font-bold tracking-widest mb-2" style={{ color: p.color || highlightColor }}>
+                      Tháng {displayMonth} / {displayYear}
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 text-[11px] font-mono opacity-85 mb-1" style={{ color: p.color || '#444444' }}>
+                      <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span className="font-bold text-rose-600">CN</span>
+                    </div>
+                  </>
+                )}
                 <div className="grid grid-cols-7 gap-1 text-[11px] font-mono opacity-85" style={{ color: p.color || '#444444' }}>
-                  <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span className="font-bold text-rose-600">CN</span>
                   {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                     <div
                       key={d}
+                      style={{
+                        backgroundColor: d === displayDayNum ? highlightColor : 'transparent',
+                        color: d === displayDayNum ? '#ffffff' : (p.color || '#444444'),
+                      }}
                       className={`h-6 flex items-center justify-center rounded-full ${
-                        d === displayDayNum ? 'bg-rose-600 text-white font-bold shadow-md ring-2 ring-rose-200' : ''
+                        d === displayDayNum ? 'font-bold shadow-md ring-2 ring-rose-200' : ''
                       }`}
                     >
                       {d}
