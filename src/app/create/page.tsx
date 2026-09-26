@@ -36,6 +36,28 @@ function CreateInvitationContent() {
   const [activeLyricsSong, setActiveLyricsSong] = useState<WeddingSong | null>(null);
   const [showSelectedLyrics, setShowSelectedLyrics] = useState<boolean>(false);
 
+  useEffect(() => {
+    const handlePause = () => {
+      if (previewAudio) {
+        previewAudio.pause();
+        setIsPlayingPreview(false);
+        setCurrentPlayingUrl(null);
+      }
+    };
+    const onVisibility = () => {
+      if (document.hidden) handlePause();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', handlePause);
+    window.addEventListener('beforeunload', handlePause);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', handlePause);
+      window.removeEventListener('beforeunload', handlePause);
+      handlePause();
+    };
+  }, [previewAudio]);
+
   const isAudioPlaying = (url?: string | null) => {
     if (!url || !isPlayingPreview || !currentPlayingUrl) return false;
     return (

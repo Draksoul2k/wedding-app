@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { WeddingInvitationData } from '@/types/wedding';
 import { TEMPLATES, TemplateLayoutType } from '@/constants/templates';
 import { FallingEffect } from './falling-effect';
@@ -11,7 +11,6 @@ import { TraditionalLayout } from './wedding-layouts/traditional-layout';
 import { EditorialMagazineLayout } from './wedding-layouts/editorial-magazine-layout';
 import { FullCardLayout } from './wedding-layouts/full-card-layout';
 import { BotanicalGardenLayout } from './wedding-layouts/botanical-garden-layout';
-import { AutoScrollController } from './auto-scroll-controller';
 import { FloatingWishesStream } from './floating-wishes-stream';
 
 interface WeddingViewProps {
@@ -27,9 +26,8 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(isLivePreview);
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [overrideLayout, setOverrideLayout] = useState<TemplateLayoutType | null>(null);
 
   const [wishes, setWishes] = useState<Array<{ name: string; content: string; time: string }>>([
     {
@@ -55,44 +53,76 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
   const envelopeGradient = template.envelopeGradient || 'from-red-600 to-rose-700';
   const seal = template.sealSymbol || '囍';
 
-  // Reset any manual layout override whenever the user switches templates
-  useEffect(() => {
-    setOverrideLayout(null);
-  }, [data.templateId]);
-
-  // Current layout determined by template or user override
-  const currentLayout: TemplateLayoutType = overrideLayout || template.layoutType || 'full_long_card';
+  // Current layout determined cleanly by template
+  const currentLayout: TemplateLayoutType = template.layoutType || 'full_long_card';
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const url = data.musicTrackUrl || '/audio/anh-nang-cua-anh.mp3';
-      const sound = new Audio(url);
-      sound.loop = true;
-      setAudio(sound);
-      return () => {
-        sound.pause();
-      };
-    }
+    if (typeof window === 'undefined') return;
+
+    const url = data.musicTrackUrl || '/audio/anh-nang-cua-anh.mp3';
+    const sound = new Audio(url);
+    sound.loop = true;
+    audioRef.current = sound;
+
+    // Critical fix for Facebook Messenger and mobile in-app webviews:
+    // When user leaves webview, taps 'X' in Messenger, switches apps, or the page is hidden,
+    // immediately pause and silence the audio so it never keeps playing in the background!
+    const stopAudio = () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        setIsPlayingMusic(false);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden || document.visibilityState === 'hidden') {
+        stopAudio();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', stopAudio);
+    window.addEventListener('beforeunload', stopAudio);
+    window.addEventListener('unload', stopAudio);
+    window.addEventListener('blur', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', stopAudio);
+      window.removeEventListener('beforeunload', stopAudio);
+      window.removeEventListener('unload', stopAudio);
+      window.removeEventListener('blur', handleVisibilityChange);
+
+      if (audioRef.current) {
+        try {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          audioRef.current.src = '';
+          audioRef.current.load();
+        } catch (e) {}
+        audioRef.current = null;
+      }
+      setIsPlayingMusic(false);
+    };
   }, [data.musicTrackUrl]);
 
   const toggleMusic = () => {
-    if (!audio) {
+    if (!audioRef.current) {
       if (typeof window !== 'undefined') {
         const url = data.musicTrackUrl || '/audio/anh-nang-cua-anh.mp3';
         const sound = new Audio(url);
         sound.loop = true;
-        setAudio(sound);
-        sound.play()
-          .then(() => setIsPlayingMusic(true))
-          .catch((e) => console.log('Playback prevented:', e));
+        audioRef.current = sound;
       }
-      return;
     }
+    const sound = audioRef.current;
+    if (!sound) return;
+
     if (isPlayingMusic) {
-      audio.pause();
+      sound.pause();
       setIsPlayingMusic(false);
     } else {
-      audio.play()
+      sound.play()
         .then(() => setIsPlayingMusic(true))
         .catch((e) => console.log('Playback prevented:', e));
     }
@@ -208,100 +238,6 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
 
       {/* Main Invitation Container */}
       <main className="max-w-md mx-auto shadow-2xl relative overflow-hidden bg-white">
-        {/* Dynamic Layout Switcher Bar */}
-        <div className="bg-stone-900 text-white px-3 py-2 flex flex-wrap items-center justify-between gap-1 text-[11px] font-sans border-b border-white/10 sticky top-0 z-30 backdrop-blur-md">
-          <div className="flex items-center gap-1.5 text-amber-300 font-medium">
-            <span>📐 Bố cục:</span>
-            <span className="font-bold text-white">
-              {currentLayout === 'cinelove_movie'
-                ? '🎬 Điện Ảnh'
-                : currentLayout === 'zenlove_minimal'
-                ? '🌿 Tối Giản'
-                : currentLayout === 'botanical_garden'
-                ? '🌸 Vườn Hoa'
-                : currentLayout === 'chungdoi_traditional'
-                ? '🏮 Truyền Thống'
-                : currentLayout === 'full_long_card'
-                ? '📜 Trải Dài'
-                : '📰 Tạp Chí Vogue'}
-            </span>
-          </div>
-
-          {/* Quick Layout Switch Buttons */}
-          <div className="flex items-center gap-1 flex-wrap">
-            <button
-              onClick={() => setOverrideLayout('cinelove_movie')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'cinelove_movie' ? 'bg-amber-400 text-black shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục Poster Điện ảnh"
-            >
-              🎬 Phim
-            </button>
-            <button
-              onClick={() => setOverrideLayout('zenlove_minimal')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'zenlove_minimal' ? 'bg-amber-400 text-black shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục Tối giản & Lịch tháng"
-            >
-              🌿 Tối Giản
-            </button>
-            <button
-              onClick={() => setOverrideLayout('botanical_garden')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'botanical_garden' ? 'bg-emerald-400 text-emerald-950 shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục Vườn hoa thảo mộc"
-            >
-              🌸 Hoa
-            </button>
-            <button
-              onClick={() => setOverrideLayout('chungdoi_traditional')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'chungdoi_traditional' ? 'bg-amber-400 text-black shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục Truyền thống Song Hỷ"
-            >
-              🏮 Hỷ
-            </button>
-            <button
-              onClick={() => setOverrideLayout('chungdoi_magazine')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'chungdoi_magazine' ? 'bg-amber-400 text-black shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục Tạp chí Thời trang"
-            >
-              📰 Vogue
-            </button>
-            <button
-              onClick={() => setOverrideLayout('full_long_card')}
-              className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                currentLayout === 'full_long_card' ? 'bg-rose-500 text-white shadow-xs font-bold' : 'bg-stone-800 text-stone-300 hover:bg-stone-700'
-              }`}
-              title="Bố cục trải dài kết hợp poster và thông tin chi tiết"
-            >
-              📜 Dài
-            </button>
-
-            {/* Quick Music Toggle in Header */}
-            {data.enableMusic && (
-              <button
-                type="button"
-                onClick={toggleMusic}
-                className={`ml-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-all ${
-                  isPlayingMusic
-                    ? 'bg-rose-600 text-white shadow-xs animate-pulse ring-2 ring-rose-400/40'
-                    : 'bg-stone-800 text-amber-300 hover:bg-stone-700'
-                }`}
-                title={isPlayingMusic ? 'Bấm để tắt nhạc' : 'Bấm để phát nhạc'}
-              >
-                <span>{isPlayingMusic ? '🔊 Nhạc: Bật' : '🔇 Nhạc: Tắt'}</span>
-              </button>
-            )}
-          </div>
-        </div>
-
         {/* Dynamic Multi-Layout Rendering Engine */}
         {currentLayout === 'cinelove_movie' && (
           <CinematicLayout
@@ -446,13 +382,6 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
         />
       )}
 
-      {/* ZenLove-Style Auto-Scroll Controller */}
-      {isOpen && !isLivePreview && (
-        <AutoScrollController
-          activeColor={activeColor}
-          defaultActive={false}
-        />
-      )}
 
       {/* Floating Interactive Music Disc Player */}
       {data.enableMusic && (
