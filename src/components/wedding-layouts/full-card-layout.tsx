@@ -156,22 +156,30 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   // Template-specific Hero Layout Variant
   const heroVariant = React.useMemo(() => {
     const tid = template.id;
+    if (template.category === 'truyen_thong' || ['chibi_red', 'baroque_v2_darkred', 'cine-thiep-cuoi-47'].includes(tid)) {
+      return 'traditional';
+    }
+    if (['cine-thiep-cuoi-61', 'cine-thiep-cuoi-40', 'cine-thiep-cuoi-18'].includes(tid)) {
+      return 'countdown'; // ZenLove Image 2
+    }
     if (['cine-thiep-cuoi-39', 'cine-thiep-cuoi-46', 'cine-thiep-cuoi-16', 'cine-thiep-cuoi-36', 'cine-thiep-cuoi-38'].includes(tid)) {
-      return 'calendar'; // ZenLove Image 2
-    }
-    if (['cine-thiep-cuoi-61', 'cine-thiep-cuoi-40', 'cine-thiep-cuoi-47', 'cine-thiep-cuoi-18'].includes(tid)) {
-      return 'countdown'; // ZenLove Image 3
-    }
-    if (['cine-thiep-cuoi-1', 'cine-thiep-cuoi-44', 'cine-thiep-cuoi-41'].includes(tid)) {
-      return 'ticket'; // Cinema VIP Ticket Pass
+      return 'calendar'; // ZenLove Image 1
     }
     if (['cine-thiep-cuoi-2', 'cine-thiep-cuoi-114', 'cine-thiep-cuoi-5'].includes(tid)) {
       return 'magazine'; // Vogue Fashion Editorial
     }
+    if (['cine-thiep-cuoi-1', 'cine-thiep-cuoi-44', 'cine-thiep-cuoi-41'].includes(tid)) {
+      return 'ticket'; // Cinema VIP Ticket Pass
+    }
+    if (['cine-thiep-cuoi-23', 'cine-thiep-cuoi-42', 'cine-thiep-cuoi-17'].includes(tid)) {
+      return 'polaroid'; // Polaroid card taped
+    }
     const hash = tid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    const variants: ('calendar' | 'countdown' | 'ticket' | 'magazine')[] = ['calendar', 'countdown', 'ticket', 'magazine'];
+    const variants: ('calendar' | 'countdown' | 'polaroid' | 'magazine' | 'ticket' | 'traditional')[] = [
+      'calendar', 'countdown', 'polaroid', 'magazine', 'ticket', 'traditional'
+    ];
     return variants[hash % variants.length];
-  }, [template.id]);
+  }, [template.id, template.category]);
 
   // Google Calendar Link Generator
   const getGoogleCalendarUrl = () => {
@@ -189,6 +197,71 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
     if (c.mapUrl && c.mapUrl.trim()) return c.mapUrl;
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.venueName + ' ' + c.address)}`;
   };
+
+  // Helper for Cinelove Text Selection Box
+  const renderSelectionHandles = () => {
+    if (!onEditField) return null;
+    return (
+      <>
+        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-white rounded-md shadow-md border border-gray-200 px-2 py-0.5 flex items-center gap-1.5 text-[10px] text-gray-700 whitespace-nowrap z-30 pointer-events-auto">
+          <span className="hover:text-sky-600 cursor-pointer" title="Sao chép">📋</span>
+          <span className="text-gray-300">|</span>
+          <span className="hover:text-rose-600 cursor-pointer" title="Xóa">🗑️</span>
+          <span className="text-gray-300">|</span>
+          <span className="hover:text-gray-900 cursor-pointer" title="Tùy chọn">⋯</span>
+        </div>
+        <div className="absolute -top-1 -left-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
+        <div className="absolute -top-1 -right-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
+        <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
+        <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
+      </>
+    );
+  };
+
+  // Helper for Floating Wishes & Bottom Action Bar
+  const renderFloatingFooter = () => (
+    <div className="space-y-1.5 max-w-[320px] mx-auto pb-2 w-full">
+      <div className="flex flex-col gap-1 items-center">
+        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
+          <strong>Huy:</strong> Chúc hai bạn trăm năm hạnh phúc!
+        </div>
+        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
+          <strong>Chanh:</strong> Chúc mừng hạnh phúc trăm năm!
+        </div>
+        <div className="px-3 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm text-white text-[10px] shadow-sm max-w-full truncate">
+          <strong>Linh:</strong> ✨ Đồng tâm đồng lòng, xây đắp tổ ấm thịnh vượng!
+        </div>
+      </div>
+
+      {/* Floating Bottom Action Bar */}
+      <div className="pt-2 flex items-center justify-between gap-1.5 px-2">
+        <button
+          type="button"
+          onClick={() => setShowRsvpModal(true)}
+          className="flex-1 py-1.5 px-3 rounded-full bg-stone-900/85 hover:bg-stone-900 text-white text-xs font-semibold backdrop-blur-md shadow-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+        >
+          <span>💌</span>
+          <span>Gửi lời chúc...</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowGiftModal(true)}
+          className="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
+          title="Mừng cưới"
+        >
+          🎁
+        </button>
+        <button
+          type="button"
+          onClick={() => showToast('Đã gửi tim chúc mừng! ❤️')}
+          className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
+          title="Thả tim"
+        >
+          👍
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -224,162 +297,437 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           <img
             src={displayPhoto}
             alt={template.name}
-            className="w-full h-full object-cover object-top select-none"
+            className={`w-full h-full object-cover select-none transition-all duration-300 ${
+              data.heroPhotoPosition === 'bottom'
+                ? 'object-bottom'
+                : data.heroPhotoPosition === 'center'
+                ? 'object-center'
+                : 'object-top'
+            }`}
             loading="eager"
           />
         </motion.div>
 
-        {/* Ambient Overlay: Only subtle dark vignette for dark templates, NO cloudy white fog on light templates */}
+        {/* Ambient Vignette for depth */}
         {isDark && (
-          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/60 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/65 pointer-events-none" />
         )}
 
-        {/* Top Header: "Save The Date" in Flowing Calligraphy - Large & Elegant ZenLove Style */}
-        <div className="relative z-10 pt-8 px-6 text-center pointer-events-none">
-          <div
-            className="font-cursive text-4xl sm:text-5xl font-bold select-none drop-shadow-sm"
-            style={{
-              color: isDark ? '#ffffff' : (data.typography?.color || '#18181b'),
-              textShadow: isDark
-                ? '0 2px 10px rgba(0,0,0,0.8)'
-                : '0 1px 3px rgba(255,255,255,0.9), 0 0 1px #ffffff'
-            }}
-          >
-            Save The Date
-          </div>
-        </div>
-
-        {/* Centerpiece Area: Editable Typography (ZenLove Bold Script & Luxury Serif Styles) */}
-        <div className="relative z-20 px-6 py-4 text-center my-auto flex flex-col items-center justify-center">
-          <div
-            onClick={() => onEditField?.('couple')}
-            className={`group relative select-none transition-all duration-200 rounded-xl p-3 ${
-              onEditField
-                ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15'
-                : ''
-            }`}
-            title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
-          >
-            {/* Dynamic Rendering: ZenLove Calligraphy (Bold Script) vs ZenLove All-Caps Luxury Serif */}
-            <div
-              className={`relative px-4 py-2 transition-all ${
-                onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''
-              }`}
-              style={{
-                opacity: data.typography?.opacity ?? 1,
-                textAlign: (data.typography?.textAlign || 'center') as any,
-                textDecoration: (data.typography?.textDecoration || 'none') as any,
-                textTransform: (data.typography?.textTransform || 'none') as any,
-                fontStyle: (data.typography?.fontStyle || 'normal') as any,
-                fontWeight: data.typography?.fontWeight === 'normal' ? 400 : 700,
-                letterSpacing: `${data.typography?.letterSpacing || 0}px`
-              }}
-            >
-              {/* Cinelove Studio Selection Box Corners & Floating Toolbar */}
-              {onEditField && (
-                <>
-                  {/* Floating Action Pill */}
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-white rounded-md shadow-md border border-gray-200 px-2 py-0.5 flex items-center gap-1.5 text-[10px] text-gray-700 whitespace-nowrap z-30 pointer-events-auto">
-                    <span className="hover:text-sky-600 cursor-pointer" title="Sao chép">📋</span>
-                    <span className="text-gray-300">|</span>
-                    <span className="hover:text-rose-600 cursor-pointer" title="Xóa">🗑️</span>
-                    <span className="text-gray-300">|</span>
-                    <span className="hover:text-gray-900 cursor-pointer" title="Tùy chọn">⋯</span>
-                  </div>
-
-                  {/* 4 Corner Resize Nodes */}
-                  <div className="absolute -top-1 -left-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
-                  <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
-                  <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-white border border-sky-500 rounded-full" />
-
-                  {/* Bottom Move & Rotate Handles */}
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-30 pointer-events-auto">
-                    <div className="w-4 h-4 rounded-full bg-white shadow-xs border border-gray-300 flex items-center justify-center text-[8px] text-gray-600 cursor-move" title="Di chuyển">✥</div>
-                    <div className="w-4 h-4 rounded-full bg-white shadow-xs border border-gray-300 flex items-center justify-center text-[8px] text-gray-600 cursor-grab" title="Xoay">🔄</div>
-                  </div>
-                </>
-              )}
-
-              {data.typography?.fontFamily === 'Playfair Display' || data.typography?.fontFamily === 'Lora' ? (
-                <div
-                  className="font-serif uppercase leading-tight"
-                  style={{
-                    fontSize: `${(data.typography?.fontSize || 42) - 4}px`,
-                    color: data.typography?.color || (isDark ? '#ffffff' : '#641b24'),
-                    textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
-                      ? '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)'
-                      : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
-                  }}
-                >
-                  <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
-                  <div className="text-xl opacity-80 my-1 font-serif italic normal-case">&amp;</div>
-                  <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
-                </div>
-              ) : (
-                <div
-                  className="font-cursive leading-tight"
-                  style={{
-                    fontSize: `${data.typography?.fontSize || 44}px`,
-                    color: data.typography?.color || (isDark ? '#ffffff' : '#18181b'),
-                    fontFamily: data.typography?.fontFamily
-                      ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
-                      : 'var(--font-charmonman), var(--font-cursive), cursive',
-                    textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
-                      ? '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)'
-                      : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
-                  }}
-                >
-                  <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
-                  <div className="text-2xl opacity-85 my-0.5 italic font-serif font-normal">&amp;</div>
-                  <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Wedding Solar Date */}
-          {targetDateStr && (
-            <div
-              onClick={() => onEditField?.('date')}
-              className={`mt-2 text-xs uppercase tracking-[0.25em] font-mono font-bold select-none transition-all ${
-                onEditField ? 'cursor-pointer hover:underline' : ''
-              }`}
-              style={{
-                color: data.typography?.color || (isDark ? '#f1f5f9' : '#374151'),
-                textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
-                  ? '0 1px 4px rgba(0,0,0,0.8)'
-                  : '0 1px 2px rgba(255,255,255,0.9), 0 0 1px #ffffff'
-              }}
-              title={onEditField ? 'Nhấp để chỉnh sửa ngày cưới' : undefined}
-            >
-              {targetDateStr.split('-').reverse().join(' . ')}
-            </div>
-          )}
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="relative z-10 pb-6 px-4 text-center space-y-2"
-        >
-          {/* Personalized Guest Greeting Badge if provided */}
-          {guestName && (
-            <div>
-              <div className="inline-block px-4 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-amber-200 text-xs font-serif shadow-lg">
-                Kính mời: <strong className="text-white text-xs tracking-wide">{guestName}</strong>
+        {/* ========================================================================= */}
+        {/* VARIANT 1: COUNTDOWN (Wine Burgundy 4-Box - Media 1790399931495)          */}
+        {/* ========================================================================= */}
+        {heroVariant === 'countdown' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            <div className="pt-6">
+              <div
+                className="font-cursive text-3xl sm:text-4xl font-bold select-none drop-shadow-xs"
+                style={{ color: data.typography?.color || '#641b24' }}
+              >
+                We get married!
               </div>
             </div>
-          )}
 
-          {/* Animated Scroll Down Indicator */}
-          <div className="flex flex-col items-center justify-center gap-1 text-white/90 animate-bounce">
-            <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-medium drop-shadow-md">
-              Vuốt xuống để mở thiệp
-            </span>
-            <span className="text-sm leading-none drop-shadow-md">↓</span>
+            {/* Couple Names in All-Caps Serif */}
+            <div className="my-auto py-2">
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none transition-all duration-200 rounded-xl p-2 inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15' : ''
+                }`}
+                title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
+              >
+                <div
+                  className={`relative px-4 py-1.5 transition-all ${
+                    onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''
+                  }`}
+                  style={{
+                    opacity: data.typography?.opacity ?? 1,
+                    textAlign: (data.typography?.textAlign || 'center') as any,
+                    textDecoration: (data.typography?.textDecoration || 'none') as any,
+                    textTransform: (data.typography?.textTransform || 'uppercase') as any,
+                    fontStyle: (data.typography?.fontStyle || 'normal') as any,
+                    fontWeight: data.typography?.fontWeight === 'normal' ? 400 : 700,
+                    letterSpacing: `${data.typography?.letterSpacing || 1}px`
+                  }}
+                >
+                  {renderSelectionHandles()}
+                  <div
+                    className="font-serif font-bold uppercase tracking-wider leading-tight"
+                    style={{
+                      fontSize: `${data.typography?.fontSize || 38}px`,
+                      color: data.typography?.color || '#641b24',
+                      textShadow: '0 1px 4px rgba(255,255,255,0.95), 0 0 2px #ffffff'
+                    }}
+                  >
+                    <div>{data.bride.shortName || data.bride.fullName || 'PHƯƠNG NGA'}</div>
+                    <div className="text-lg opacity-85 my-0.5 font-serif italic normal-case">&amp;</div>
+                    <div>{data.groom.shortName || data.groom.fullName || 'HOÀNG LONG'}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Solar Date */}
+              <div
+                onClick={() => onEditField?.('date')}
+                className="mt-1 text-sm font-serif font-semibold tracking-wider select-none cursor-pointer"
+                style={{ color: data.typography?.color || '#641b24' }}
+              >
+                {targetDateStr.split('-').reverse().join('.')}
+              </div>
+
+              <div
+                className="font-cursive text-lg sm:text-xl italic mt-1.5 select-none"
+                style={{ color: data.typography?.color || '#641b24' }}
+              >
+                We will be husband and wife in
+              </div>
+
+              {/* 4-Box Burgundy Glass Live Countdown */}
+              <div className="grid grid-cols-4 gap-2 max-w-[270px] mx-auto mt-2">
+                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.days}</span>
+                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">ngày</span>
+                </div>
+                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.hours}</span>
+                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">giờ</span>
+                </div>
+                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.minutes}</span>
+                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">phút</span>
+                </div>
+                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.seconds}</span>
+                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">giây</span>
+                </div>
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
           </div>
-        </motion.div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VARIANT 2: CALENDAR (Zenlove Monthly Strip - Media 1790399914508)          */}
+        {/* ========================================================================= */}
+        {heroVariant === 'calendar' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            <div className="pt-6">
+              <div
+                className="font-cursive text-4xl sm:text-5xl font-bold select-none drop-shadow-sm"
+                style={{
+                  color: isDark ? '#ffffff' : (data.typography?.color || '#18181b'),
+                  textShadow: isDark
+                    ? '0 2px 10px rgba(0,0,0,0.8)'
+                    : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
+                }}
+              >
+                Save The Date
+              </div>
+            </div>
+
+            {/* Couple Calligraphy Names */}
+            <div className="my-auto py-2">
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none transition-all duration-200 rounded-xl p-2 inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15' : ''
+                }`}
+                title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
+              >
+                <div
+                  className={`relative px-4 py-2 transition-all ${
+                    onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''
+                  }`}
+                  style={{
+                    opacity: data.typography?.opacity ?? 1,
+                    textAlign: (data.typography?.textAlign || 'center') as any,
+                    textDecoration: (data.typography?.textDecoration || 'none') as any,
+                    textTransform: (data.typography?.textTransform || 'none') as any,
+                    fontStyle: (data.typography?.fontStyle || 'normal') as any,
+                    fontWeight: data.typography?.fontWeight === 'normal' ? 400 : 700,
+                    letterSpacing: `${data.typography?.letterSpacing || 0}px`
+                  }}
+                >
+                  {renderSelectionHandles()}
+                  <div
+                    className="font-cursive leading-tight select-none"
+                    style={{
+                      fontSize: `${data.typography?.fontSize || 44}px`,
+                      color: data.typography?.color || (isDark ? '#ffffff' : '#18181b'),
+                      fontFamily: data.typography?.fontFamily
+                        ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
+                        : 'var(--font-charmonman), var(--font-cursive), cursive',
+                      textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
+                        ? '0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.9)'
+                        : '0 1px 4px rgba(255,255,255,0.95), 0 0 2px #ffffff'
+                    }}
+                  >
+                    <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
+                    <div className="text-2xl opacity-85 my-0.5 italic font-serif font-normal">&amp;</div>
+                    <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tagline & Monthly Calendar Grid */}
+              <div className="mt-1 select-none">
+                <div className="font-cursive text-xl text-stone-900 leading-tight">
+                  Our wedding day
+                </div>
+                <div className="font-cursive text-2xl text-stone-900 font-bold mb-1">
+                  Tháng {targetMonth}
+                </div>
+
+                {/* 7-column Calendar strip */}
+                <div className="max-w-[240px] mx-auto grid grid-cols-7 gap-1 text-[11px] font-mono text-stone-700">
+                  <span>1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                  <span>6</span>
+                  <span>7</span>
+                  <span>8</span>
+                  <span className="w-6 h-6 rounded-full border-2 border-rose-500 font-bold text-rose-600 flex items-center justify-center mx-auto shadow-xs">
+                    {targetDay}
+                  </span>
+                  <span>10</span>
+                  <span>11</span>
+                  <span>12</span>
+                  <span>13</span>
+                  <span>14</span>
+                </div>
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VARIANT 3: POLAROID (Taped Photo Card - Media 1790396363124)              */}
+        {/* ========================================================================= */}
+        {heroVariant === 'polaroid' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            <div className="pt-4 space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-stone-600 font-bold block">
+                WEDDING INVITATION
+              </span>
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
+                }`}
+              >
+                <div
+                  className={`px-3 py-0.5 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}
+                  style={{
+                    fontSize: `${data.typography?.fontSize || 36}px`,
+                    color: data.typography?.color || '#1c1917',
+                    fontWeight: 700,
+                    textShadow: '0 1px 4px rgba(255,255,255,0.95), 0 0 2px #ffffff'
+                  }}
+                >
+                  {renderSelectionHandles()}
+                  <span>{data.groom.shortName || 'Minh Trí'}</span>
+                  <span className="font-serif italic font-normal mx-2 text-stone-400">&amp;</span>
+                  <span>{data.bride.shortName || 'Thanh Hằng'}</span>
+                </div>
+              </div>
+              <p className="text-[11px] font-serif italic text-stone-600">
+                “Gặp gỡ là duyên, bên nhau là định mệnh”
+              </p>
+            </div>
+
+            {/* Realistic Polaroid Card with Top Masking Tape */}
+            <div className="my-auto relative max-w-[270px] mx-auto bg-white p-3 pt-5 pb-4 rounded-xl shadow-2xl border border-stone-200/90 rotate-[-1deg]">
+              {/* Masking Tape */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-amber-200/85 shadow-xs border-y border-amber-300/60 z-30" />
+              
+              {/* Photo Frame inside Polaroid */}
+              <div className="aspect-[4/5] w-full rounded-lg overflow-hidden bg-stone-100 shadow-inner">
+                <img
+                  src={displayPhoto}
+                  alt="Polaroid wedding photo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Bottom Inscription on Polaroid */}
+              <div className="mt-3 text-center space-y-0.5">
+                <div className="font-serif font-bold text-xs text-stone-800">
+                  {data.groom.fullName || 'Trần Minh Trí'} &amp; {data.bride.fullName || 'Lê Thanh Hằng'}
+                </div>
+                <div className="text-[10px] font-mono text-stone-500">
+                  {targetDateStr}
+                </div>
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VARIANT 4: MAGAZINE (Vogue Editorial High-Fashion)                       */}
+        {/* ========================================================================= */}
+        {heroVariant === 'magazine' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            {/* Vogue Masthead */}
+            <div className="pt-5 border-b border-white/30 pb-2">
+              <div className="font-serif text-4xl sm:text-5xl font-black tracking-[0.2em] text-white drop-shadow-md uppercase">
+                V O G U E
+              </div>
+              <div className="flex justify-between text-[9px] font-mono tracking-widest text-white/90 uppercase px-2 pt-1">
+                <span>WEDDING ISSUE</span>
+                <span>VOL. 2026</span>
+                <span>SPECIAL EDITION</span>
+              </div>
+            </div>
+
+            {/* Magazine Headline & Couple Names */}
+            <div className="my-auto py-2">
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
+                }`}
+              >
+                <div className={`px-4 py-2 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}>
+                  {renderSelectionHandles()}
+                  <div
+                    className="font-serif font-black uppercase tracking-wider leading-tight text-white drop-shadow-lg"
+                    style={{
+                      fontSize: `${data.typography?.fontSize || 38}px`,
+                      textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95)'
+                    }}
+                  >
+                    <div>{data.bride.shortName || 'BẢO TRÂM'}</div>
+                    <div className="text-sm font-sans tracking-[0.3em] font-normal opacity-85 my-1">LOVES</div>
+                    <div>{data.groom.shortName || 'TUẤN KHANG'}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2 text-xs font-serif italic text-white/95 drop-shadow-md">
+                “A True Love Story Never Ends”
+              </div>
+
+              {/* Barcode & Issue Info Badge */}
+              <div className="mt-3 inline-flex items-center gap-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20 text-white">
+                <span className="font-mono text-base tracking-widest">||| | |||| | ||</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider">{targetDateStr}</span>
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VARIANT 5: TICKET (Cinema VIP Pass / Boarding Pass)                       */}
+        {/* ========================================================================= */}
+        {heroVariant === 'ticket' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            {/* Cinema Header */}
+            <div className="pt-5">
+              <span className="px-3 py-1 rounded-full bg-amber-400 text-stone-950 text-[10px] font-mono font-bold tracking-widest uppercase shadow-md">
+                CINEMA VIP TICKET PASS
+              </span>
+            </div>
+
+            {/* Ticket Card Container with Perforated Edges */}
+            <div className="my-auto max-w-[280px] mx-auto bg-stone-900/85 backdrop-blur-md p-4 rounded-2xl border-2 border-dashed border-amber-300/70 text-white shadow-2xl">
+              <span className="text-[9px] font-mono tracking-widest text-amber-300 uppercase block mb-1">
+                PREMIERE SCREENING
+              </span>
+
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none inline-block w-full ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
+                }`}
+              >
+                <div className={`py-1 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}>
+                  {renderSelectionHandles()}
+                  <div className="font-serif font-black text-xl sm:text-2xl text-amber-300 tracking-wide uppercase">
+                    {data.groom.shortName || 'Tuấn Khang'} &amp; {data.bride.shortName || 'Bảo Trâm'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-dashed border-stone-600 my-2 pt-2 grid grid-cols-3 gap-1 text-[10px] font-mono text-stone-300">
+                <div>
+                  <span className="block text-[8px] text-stone-500 uppercase">NGÀY CHIẾU</span>
+                  <span className="font-bold text-amber-200">{targetDateStr}</span>
+                </div>
+                <div>
+                  <span className="block text-[8px] text-stone-500 uppercase">GIỜ G</span >
+                  <span className="font-bold text-amber-200">{mainCeremony?.time || '11:00'}</span>
+                </div>
+                <div>
+                  <span className="block text-[8px] text-stone-500 uppercase">VỊ TRÍ</span>
+                  <span className="font-bold text-amber-200">VIP 01-02</span>
+                </div>
+              </div>
+
+              <div className="mt-2 pt-2 border-t border-stone-700/60 font-mono text-sm tracking-[0.25em] text-stone-400">
+                |||| | ||||| || | |||| ||
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VARIANT 6: TRADITIONAL (Oriental Double Happiness 囍 Red & Gold)           */}
+        {/* ========================================================================= */}
+        {heroVariant === 'traditional' && (
+          <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
+            {/* Top Red Lanterns & Song Hỷ */}
+            <div className="pt-5 flex items-center justify-center gap-3">
+              <span className="text-xl">🏮</span>
+              <div className="px-4 py-1 rounded-full bg-red-900/90 border border-amber-300/80 text-amber-300 text-xs font-serif font-bold tracking-widest shadow-md">
+                囍 THIỆP HỒNG BÁO HỶ 囍
+              </div>
+              <span className="text-xl">🏮</span>
+            </div>
+
+            {/* Center Golden Medallion with Nested Names */}
+            <div className="my-auto py-2">
+              <div className="w-56 h-56 mx-auto rounded-full bg-red-950/80 backdrop-blur-md border-4 border-amber-400/90 shadow-2xl flex flex-col items-center justify-center p-3 relative">
+                <span className="text-amber-300 text-xl font-bold mb-1">囍</span>
+                
+                <div
+                  onClick={() => onEditField?.('couple')}
+                  className={`group relative select-none w-full ${
+                    onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
+                  }`}
+                >
+                  <div className={`px-2 py-0.5 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}>
+                    {renderSelectionHandles()}
+                    <div className="font-cursive text-amber-200 text-2xl font-bold leading-tight">
+                      <div>{data.groom.fullName || data.groom.shortName || 'Hoàng Hải'}</div>
+                      <div className="text-xs font-serif italic text-amber-300/80 my-0.5">và</div>
+                      <div>{data.bride.fullName || data.bride.shortName || 'Mỹ Châu'}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 text-[10px] font-mono text-amber-300/90 border-t border-amber-400/40 pt-1">
+                  {targetDateStr}
+                  {mainCeremony?.dateLunar && (
+                    <div className="text-[9px] text-amber-400/75">({mainCeremony.dateLunar})</div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {renderFloatingFooter()}
+          </div>
+        )}
       </div>
 
       {/* ========================================================================= */}

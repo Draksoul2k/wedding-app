@@ -8,6 +8,25 @@ import { POPULAR_WEDDING_SONGS, findSongByQuery, WeddingSong } from '@/constants
 import { WeddingInvitationData } from '@/types/wedding';
 import { WeddingView } from '@/components/wedding-view';
 
+const CURATED_STUDIO_PHOTOS = [
+  { id: 'p1', title: 'Rượu Vang Đỏ Thảm Đỏ', tag: 'Cinelove 61', url: '/templates/clean/clean_cine_thiep-cuoi-61.jpg' },
+  { id: 'p2', title: 'Studio Hoa Cưới Hàn Quốc', tag: 'Premiere 39', url: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg' },
+  { id: 'p3', title: 'Ánh Nhìn Ngọt Ngào', tag: 'Minimal 16', url: '/templates/clean/clean_cine_thiep-cuoi-16.jpg' },
+  { id: 'p4', title: 'Đen Trắng Điện Ảnh', tag: 'Classic 40', url: '/templates/clean/clean_cine_thiep-cuoi-40.jpeg' },
+  { id: 'p5', title: 'Tự Nhiên Ngoài Trời', tag: 'Outdoor 44', url: '/templates/clean/clean_cine_thiep-cuoi-44.jpg' },
+  { id: 'p6', title: 'Châu Âu Hoàng Gia', tag: 'Royal 46', url: '/templates/clean/clean_cine_thiep-cuoi-46.jpg' },
+  { id: 'p7', title: 'Áo Dài Truyền Thống', tag: 'Tradition 47', url: '/templates/clean/clean_cine_thiep-cuoi-47.jpeg' },
+  { id: 'p8', title: 'Nụ Cười Rạng Rỡ', tag: 'Studio 36', url: '/templates/clean/clean_cine_thiep-cuoi-36.jpeg' },
+  { id: 'p9', title: 'Hoàng Hôn Lãng Mạn', tag: 'Sunset 38', url: '/templates/clean/clean_cine_thiep-cuoi-38.png' },
+  { id: 'p10', title: 'Poster Điện Ảnh', tag: 'Poster 01', url: '/templates/clean/clean_cine_thiep-cuoi-1.webp' },
+  { id: 'p11', title: 'Tạp Chí Vogue Fashion', tag: 'Vogue 02', url: '/templates/clean/clean_cine_thiep-cuoi-2.webp' },
+  { id: 'p12', title: 'Nghệ Thuật Đương Đại', tag: 'Modern 05', url: '/templates/clean/clean_cine_thiep-cuoi-5.webp' },
+  { id: 'p13', title: 'Thanh Lịch Tinh Khôi', tag: 'Pure 114', url: '/templates/clean/clean_cine_thiep-cuoi-114.png' },
+  { id: 'p14', title: 'Vintage Ấm Cúng', tag: 'Warmth 17', url: '/templates/clean/clean_cine_thiep-cuoi-17.jpeg' },
+  { id: 'p15', title: 'Thanh Xuân Hạnh Phúc', tag: 'Sweet 23', url: '/templates/clean/clean_cine_thiep-cuoi-23.jpeg' },
+  { id: 'p16', title: 'Hiện Đại Tone Xanh', tag: 'Blue Calm', url: '/templates/clean/clean_cine_thiep-cuoi-tone-xanh.png' },
+];
+
 function CreateInvitationContent() {
   const searchParams = useSearchParams();
   const templateParam = searchParams.get('template');
@@ -23,6 +42,7 @@ function CreateInvitationContent() {
   const [canvasZoom, setCanvasZoom] = useState<number>(1);
   const [isTypographyOpen, setIsTypographyOpen] = useState<boolean>(true);
   const [activeSlide, setActiveSlide] = useState<number>(1);
+  const [photoSubTab, setPhotoSubTab] = useState<'gallery' | 'upload' | 'adjust' | 'album'>('gallery');
 
   const [data, setData] = useState<WeddingInvitationData>(() => ({
     ...DEFAULT_WEDDING_DATA,
@@ -142,12 +162,81 @@ function CreateInvitationContent() {
   };
 
   const handleSelectTemplate = (tmpl: TemplateConfig) => {
+    // Template-specific design: Font, Colors, Transform, Default Names
+    let font = 'Aquarelle';
+    let color = '#111827';
+    let size = 42;
+    let transform = 'none';
+    let brideDefault = 'Thanh Hằng';
+    let groomDefault = 'Minh Trí';
+
+    if (tmpl.category === 'truyen_thong' || ['cine-thiep-cuoi-47', 'chibi_red', 'baroque_v2_darkred'].includes(tmpl.id)) {
+      font = 'Charmonman';
+      color = '#fef08a';
+      size = 30;
+      transform = 'none';
+      brideDefault = 'Mỹ Châu';
+      groomDefault = 'Hoàng Hải';
+    } else if (['cine-thiep-cuoi-61', 'cine-thiep-cuoi-40', 'cine-thiep-cuoi-18'].includes(tmpl.id)) {
+      font = 'Playfair Display';
+      color = '#641b24';
+      size = 38;
+      transform = 'uppercase';
+      brideDefault = 'Phương Nga';
+      groomDefault = 'Hoàng Long';
+    } else if (['cine-thiep-cuoi-2', 'cine-thiep-cuoi-114', 'cine-thiep-cuoi-5'].includes(tmpl.id)) {
+      font = 'Playfair Display';
+      color = '#ffffff';
+      size = 36;
+      transform = 'uppercase';
+      brideDefault = 'Bảo Trâm';
+      groomDefault = 'Tuấn Khang';
+    } else if (['cine-thiep-cuoi-1', 'cine-thiep-cuoi-44', 'cine-thiep-cuoi-41'].includes(tmpl.id)) {
+      font = 'Montserrat';
+      color = '#fbbf24';
+      size = 32;
+      transform = 'uppercase';
+      brideDefault = 'Bảo Trâm';
+      groomDefault = 'Tuấn Khang';
+    } else if (['cine-thiep-cuoi-23', 'cine-thiep-cuoi-42', 'cine-thiep-cuoi-17'].includes(tmpl.id)) {
+      font = 'Playfair Display';
+      color = '#1c1917';
+      size = 36;
+      transform = 'none';
+      brideDefault = 'Thanh Hằng';
+      groomDefault = 'Minh Trí';
+    } else if (['cine-thiep-cuoi-16', 'cine-thiep-cuoi-36', 'cine-thiep-cuoi-38'].includes(tmpl.id)) {
+      font = 'Charmonman';
+      color = '#18181b';
+      size = 44;
+      transform = 'none';
+      brideDefault = 'Mỹ Châu';
+      groomDefault = 'Hoàng Hải';
+    }
+
     setData((prev) => ({
       ...prev,
       templateId: tmpl.id,
       themeName: tmpl.name,
       primaryColor: tmpl.primaryColor,
       heroPhoto: prev.heroPhoto && !prev.heroPhoto.includes('/templates/cinelove') && !prev.heroPhoto.includes('/templates/motdoi') ? prev.heroPhoto : '',
+      typography: {
+        ...prev.typography,
+        fontFamily: font,
+        color: color,
+        fontSize: size,
+        textTransform: transform
+      },
+      bride: {
+        ...prev.bride,
+        shortName: (!prev.bride.shortName || ['Lan Anh', 'Thanh Hằng', 'Mỹ Châu', 'Phương Nga', 'Bảo Trâm'].includes(prev.bride.shortName)) ? brideDefault : prev.bride.shortName,
+        fullName: (!prev.bride.fullName || ['Lê Thị Lan Anh', 'Lê Thanh Hằng', 'Lê Mỹ Châu', 'Nguyễn Phương Nga', 'Trần Bảo Trâm'].includes(prev.bride.fullName)) ? brideDefault : prev.bride.fullName
+      },
+      groom: {
+        ...prev.groom,
+        shortName: (!prev.groom.shortName || ['Thanh Tùng', 'Minh Trí', 'Hoàng Hải', 'Hoàng Long', 'Tuấn Khang'].includes(prev.groom.shortName)) ? groomDefault : prev.groom.shortName,
+        fullName: (!prev.groom.fullName || ['Nguyễn Thanh Tùng', 'Trần Minh Trí', 'Vũ Hoàng Hải', 'Phạm Hoàng Long', 'Đặng Tuấn Khang'].includes(prev.groom.fullName)) ? groomDefault : prev.groom.fullName
+      },
       fallingEffect:
         tmpl.category === 'hoa_la'
           ? 'petals'
@@ -1630,142 +1719,341 @@ function CreateInvitationContent() {
               </div>
             )}
 
-            {/* STEP 4: ẢNH CƯỚI & ALBUM (CHUNGDOI STYLE) */}
+            {/* STEP 4: ẢNH CƯỚI & ALBUM (CINELOVE STUDIO STYLE) */}
             {activeStep === 4 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div>
-                  <h2 className="text-base font-bold text-gray-900">Ảnh Cưới & Album Kỷ Niệm</h2>
-                  <p className="text-xs text-gray-500">
-                    Tải ảnh từ điện thoại hoặc máy tính của bạn. Ảnh sẽ tự động đồng bộ ngay vào thiệp!
+                  <h2 className="text-base font-bold text-gray-900 flex items-center justify-between">
+                    <span>Quản Lý &amp; Chỉnh Sửa Ảnh</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 font-bold">
+                      Cinelove Media
+                    </span>
+                  </h2>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Thay ảnh bìa sắc nét, căn chỉnh góc mặt/váy cưới, và tạo album cưới lãng mạn.
                   </p>
                 </div>
 
-                {/* 1. Ảnh Bìa Chính (Hero Photo) */}
-                <div className="p-4 rounded-2xl bg-rose-50/50 border border-rose-200/80 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-rose-900 uppercase tracking-wider">
-                      🌟 1. Ảnh Bìa Thiệp Cưới (Hero Image)
-                    </span>
-                    {data.heroPhoto && (
-                      <span className="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">
-                        ✓ Đã có ảnh
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-gray-600">
-                    Bức ảnh đẹp nhất của cô dâu & chú rể, hiển thị trang trọng trên đầu thiệp trong khung vòm nghệ thuật.
-                  </p>
+                {/* Sub-tabs: Kho mẫu | Tải lên | Căn chỉnh | Album */}
+                <div className="flex items-center gap-1 p-1 bg-stone-100 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setPhotoSubTab('gallery')}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      photoSubTab === 'gallery'
+                        ? 'bg-white text-stone-900 shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    🎨 Kho mẫu ({CURATED_STUDIO_PHOTOS.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoSubTab('upload')}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      photoSubTab === 'upload'
+                        ? 'bg-white text-stone-900 shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    📁 Tải lên
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoSubTab('adjust')}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      photoSubTab === 'adjust'
+                        ? 'bg-white text-stone-900 shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    ✂️ Căn chỉnh
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoSubTab('album')}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      photoSubTab === 'album'
+                        ? 'bg-white text-stone-900 shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    📸 Album ({data.galleryImages.length})
+                  </button>
+                </div>
 
-                  <div className="flex items-center gap-4 pt-1">
-                    {/* Preview Thumbnail */}
-                    <div className="w-20 h-24 rounded-xl overflow-hidden bg-stone-200 border border-rose-200 shrink-0 relative shadow-sm">
-                      <img
-                        src={data.heroPhoto || TEMPLATES.find((t) => t.id === data.templateId)?.frameAsset}
-                        alt="Ảnh bìa"
-                        className="w-full h-full object-cover"
-                      />
+                {/* TAB 1: KHO ẢNH MẪU ĐẸP TUYỂN CHỌN */}
+                {photoSubTab === 'gallery' && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>Nhấp để thay ảnh bìa hoặc thêm vào album:</span>
                     </div>
 
-                    <div className="flex-1 space-y-2">
-                      <input
-                        type="file"
-                        ref={heroInputRef}
-                        accept="image/*"
-                        onChange={handleHeroUpload}
-                        className="hidden"
-                      />
+                    <div className="grid grid-cols-2 gap-2 max-h-[480px] overflow-y-auto pr-1">
+                      {CURATED_STUDIO_PHOTOS.map((item) => {
+                        const isCurrentHero = data.heroPhoto === item.url || (!data.heroPhoto && initialTemplate.frameAsset === item.url);
+                        return (
+                          <div
+                            key={item.id}
+                            className={`group relative rounded-xl overflow-hidden border-2 transition-all bg-stone-100 flex flex-col ${
+                              isCurrentHero ? 'border-sky-500 ring-2 ring-sky-300 shadow-md' : 'border-gray-200 hover:border-gray-400'
+                            }`}
+                          >
+                            <div className="aspect-[3/4] w-full overflow-hidden relative">
+                              <img
+                                src={item.url}
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                loading="lazy"
+                              />
+
+                              {isCurrentHero && (
+                                <div className="absolute top-1.5 left-1.5 bg-sky-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                                  <span>✓</span>
+                                  <span>Ảnh bìa</span>
+                                </div>
+                              )}
+
+                              <div className="absolute inset-0 bg-stone-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setData((prev) => ({ ...prev, heroPhoto: item.url }))}
+                                  className="w-full py-1.5 px-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold shadow-md cursor-pointer transition-transform hover:scale-105"
+                                >
+                                  ⭐ Đặt làm Ảnh Bìa
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setData((prev) => ({
+                                      ...prev,
+                                      galleryImages: prev.galleryImages.includes(item.url)
+                                        ? prev.galleryImages
+                                        : [...prev.galleryImages, item.url]
+                                    }))
+                                  }
+                                  className="w-full py-1 px-2 rounded-lg bg-white/90 hover:bg-white text-stone-900 text-[10px] font-semibold shadow-md cursor-pointer"
+                                >
+                                  ➕ Thêm vào Album
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="p-1.5 bg-white">
+                              <div className="text-[11px] font-semibold text-gray-800 truncate">{item.title}</div>
+                              <div className="text-[9px] font-mono text-gray-400">{item.tag}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: TẢI ẢNH TỪ THIẾT BỊ */}
+                {photoSubTab === 'upload' && (
+                  <div className="space-y-4">
+                    <input
+                      type="file"
+                      ref={heroInputRef}
+                      accept="image/*"
+                      onChange={handleHeroUpload}
+                      className="hidden"
+                    />
+                    <input
+                      type="file"
+                      ref={galleryInputRef}
+                      multiple
+                      accept="image/*"
+                      onChange={handleGalleryUpload}
+                      className="hidden"
+                    />
+
+                    {/* Drag and drop upload box */}
+                    <div
+                      onClick={() => heroInputRef.current?.click()}
+                      className="border-2 border-dashed border-rose-300 hover:border-rose-500 rounded-2xl p-6 bg-rose-50/40 hover:bg-rose-50/80 transition-all text-center cursor-pointer space-y-2 group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl group-hover:scale-110 transition-transform">
+                        📤
+                      </div>
+                      <div className="font-bold text-xs text-rose-950">
+                        Bấm để tải ảnh cô dâu &amp; chú rể
+                      </div>
+                      <p className="text-[11px] text-gray-500 max-w-xs mx-auto">
+                        Hỗ trợ PNG, JPG, WEBP. Khuyên dùng ảnh chụp dọc (tỉ lệ 9:16 hoặc 3:4) để hiển thị đẹp nhất.
+                      </p>
+                      <div className="pt-2">
+                        <span className="inline-block py-2 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm">
+                          Chọn ảnh từ máy tính / điện thoại
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => heroInputRef.current?.click()}
-                        className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-sm transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-2 px-3 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-xs font-bold text-gray-800 flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
                       >
-                        <span>📁 Tải ảnh từ thiết bị của bạn</span>
+                        <span>🌟 Đổi Ảnh Bìa</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => galleryInputRef.current?.click()}
+                        className="flex-1 py-2 px-3 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-xs font-bold text-amber-900 flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+                      >
+                        <span>➕ Thêm vào Album</span>
+                      </button>
+                    </div>
 
-                      <div className="flex gap-2">
+                    {data.heroPhoto && (
+                      <div className="p-3 bg-stone-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={data.heroPhoto}
+                            alt="Ảnh hiện tại"
+                            className="w-10 h-12 rounded-md object-cover border border-gray-300"
+                          />
+                          <div>
+                            <span className="text-[10px] uppercase font-bold text-gray-400 block">Ảnh bìa hiện tại</span>
+                            <span className="text-xs font-semibold text-gray-800">Đã tùy biến riêng</span>
+                          </div>
+                        </div>
                         <button
                           type="button"
-                          onClick={() =>
-                            setData({
-                              ...data,
-                              heroPhoto:
-                                'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&auto=format&fit=crop&q=80'
-                            })
-                          }
-                          className="flex-1 py-1.5 rounded-lg border border-gray-300 text-[10px] font-semibold text-gray-600 hover:bg-gray-100"
+                          onClick={() => setData((prev) => ({ ...prev, heroPhoto: '' }))}
+                          className="text-[10px] text-red-600 hover:underline font-semibold cursor-pointer"
                         >
-                          Dùng ảnh mẫu 1
+                          Khôi phục ảnh mẫu
                         </button>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setData({
-                              ...data,
-                              heroPhoto:
-                                'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&auto=format&fit=crop&q=80'
-                            })
-                          }
-                          className="flex-1 py-1.5 rounded-lg border border-gray-300 text-[10px] font-semibold text-gray-600 hover:bg-gray-100"
-                        >
-                          Dùng ảnh mẫu 2
-                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB 3: CĂN CHỈNH VỊ TRÍ & GÓC ẢNH */}
+                {photoSubTab === 'adjust' && (
+                  <div className="space-y-4">
+                    <div className="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
+                      <span className="text-xs font-bold text-gray-800 block uppercase tracking-wide">
+                        🎯 Vị trí tâm điểm ảnh bìa (Focal Point)
+                      </span>
+                      <p className="text-[11px] text-gray-500">
+                        Chọn vị trí để ảnh không bị mất khuôn mặt hoặc váy cưới khi hiển thị trên các màn hình điện thoại:
+                      </p>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'top', label: 'Căn Trên', sub: 'Lấy khuôn mặt', icon: '👤' },
+                          { id: 'center', label: 'Căn Giữa', sub: 'Toàn thân', icon: '🎯' },
+                          { id: 'bottom', label: 'Căn Dưới', sub: 'Lấy váy cưới', icon: '👗' },
+                        ].map((pos) => {
+                          const isSelected = (data.heroPhotoPosition || 'top') === pos.id;
+                          return (
+                            <button
+                              key={pos.id}
+                              type="button"
+                              onClick={() =>
+                                setData((prev) => ({
+                                  ...prev,
+                                  heroPhotoPosition: pos.id as any
+                                }))
+                              }
+                              className={`p-2.5 rounded-xl border-2 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                                isSelected
+                                  ? 'border-sky-500 bg-sky-50 text-sky-900 font-bold shadow-xs'
+                                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                              }`}
+                            >
+                              <span className="text-base">{pos.icon}</span>
+                              <span className="text-xs leading-tight">{pos.label}</span>
+                              <span className="text-[9px] text-gray-400 font-normal leading-tight">{pos.sub}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-semibold text-gray-700">Ảnh hiện tại</span>
+                        <span className="text-gray-400 text-[10px]">
+                          Vị trí: {data.heroPhotoPosition === 'bottom' ? 'Căn Dưới' : data.heroPhotoPosition === 'center' ? 'Căn Giữa' : 'Căn Trên'}
+                        </span>
+                      </div>
+                      <div className="aspect-[16/9] w-full rounded-xl overflow-hidden bg-stone-200 border border-gray-300">
+                        <img
+                          src={data.heroPhoto || initialTemplate.frameAsset}
+                          alt="Preview focal point"
+                          className={`w-full h-full object-cover transition-all duration-300 ${
+                            data.heroPhotoPosition === 'bottom'
+                              ? 'object-bottom'
+                              : data.heroPhotoPosition === 'center'
+                              ? 'object-center'
+                              : 'object-top'
+                          }`}
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* 2. Album Ảnh Cưới (Photo Gallery) */}
-                <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200/80 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
-                      📸 2. Album Ảnh Cưới Pre-Wedding ({data.galleryImages.length} ảnh)
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-gray-600 leading-relaxed">
-                    Tải lên không giới hạn ảnh cưới (5, 10, 20 ảnh tuỳ ý). Trên thiệp mời, ban đầu hệ thống sẽ xếp gọn 5 ảnh đẹp nhất và kèm nút <strong>[Xem thêm ảnh]</strong> để khách mời bấm mở rộng toàn bộ album.
-                  </p>
-
-                  <input
-                    type="file"
-                    ref={galleryInputRef}
-                    multiple
-                    accept="image/*"
-                    onChange={handleGalleryUpload}
-                    className="hidden"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => galleryInputRef.current?.click()}
-                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-stone-800 bg-white border border-amber-300 hover:bg-amber-100/50 shadow-xs transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>➕ Tải thêm nhiều ảnh vào album</span>
-                  </button>
-
-                  {/* Thumbnails Grid with Delete Button */}
-                  <div className="grid grid-cols-4 gap-2 pt-2">
-                    {data.galleryImages.map((imgUrl, idx) => (
-                      <div
-                        key={idx}
-                        className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-amber-200 bg-stone-200 shadow-2xs"
+                {/* TAB 4: ALBUM ẢNH CƯỚI PRE-WEDDING */}
+                {photoSubTab === 'album' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-800">
+                        Album kỷ niệm ({data.galleryImages.length} ảnh)
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => galleryInputRef.current?.click()}
+                        className="py-1 px-3 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-2xs cursor-pointer flex items-center gap-1"
                       >
-                        <img
-                          src={imgUrl}
-                          alt={`Thumbnail ${idx + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveGalleryImage(idx)}
-                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center shadow-md opacity-90 hover:opacity-100 hover:scale-110 transition-all"
-                          title="Xóa ảnh này"
-                        >
-                          ✕
-                        </button>
+                        <span>➕ Thêm ảnh</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-gray-500">
+                      Tải lên nhiều ảnh pre-wedding. Khách mời bấm [Xem thêm ảnh] để mở rộng toàn bộ album.
+                    </p>
+
+                    {data.galleryImages.length === 0 ? (
+                      <div
+                        onClick={() => galleryInputRef.current?.click()}
+                        className="p-8 border-2 border-dashed border-gray-200 rounded-2xl text-center cursor-pointer hover:border-gray-400"
+                      >
+                        <span className="text-2xl block mb-1">📸</span>
+                        <span className="text-xs text-gray-500 font-semibold">Chưa có ảnh trong album</span>
+                        <span className="text-[10px] text-gray-400 block mt-0.5">Bấm để tải ảnh vào album</span>
                       </div>
-                    ))}
+                    ) : (
+                      <div className="grid grid-cols-4 gap-2">
+                        {data.galleryImages.map((imgUrl, idx) => (
+                          <div
+                            key={idx}
+                            className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-gray-200 bg-stone-200 shadow-2xs"
+                          >
+                            <img
+                              src={imgUrl}
+                              alt={`Thumbnail ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveGalleryImage(idx)}
+                              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center shadow-md opacity-90 hover:opacity-100 hover:scale-110 transition-all cursor-pointer"
+                              title="Xóa ảnh này"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </div>
             )}
 
@@ -1985,7 +2273,11 @@ function CreateInvitationContent() {
             {/* Quick Replace Photo Button */}
             <button
               type="button"
-              onClick={() => setActiveDrawerTool('photos')}
+              onClick={() => {
+                setActiveDrawerTool('photos');
+                setActiveStep(4);
+                setPhotoSubTab('gallery');
+              }}
               className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700 flex items-center gap-1.5 shadow-xs whitespace-nowrap cursor-pointer shrink-0"
             >
               <span>Thay ảnh nhanh</span>

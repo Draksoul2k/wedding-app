@@ -70,6 +70,7 @@ export interface WeddingInvitationData {
 
   // Album ảnh
   heroPhoto: string;
+  heroPhotoPosition?: 'top' | 'center' | 'bottom';
   galleryImages: string[];
 
   // Tùy chọn hiển thị
