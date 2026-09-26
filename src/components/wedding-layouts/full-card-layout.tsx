@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { WeddingInvitationData } from '@/types/wedding';
 import { TemplateConfig } from '@/constants/templates';
 import { CountdownTimer } from './countdown-timer';
@@ -13,6 +13,7 @@ interface FullCardLayoutProps {
   template: TemplateConfig;
   activeColor: string;
   activeAccent: string;
+  guestName?: string;
   onOpenLightbox?: (index: number) => void;
   rsvpSent: boolean;
   onSendRSVP: (e: React.FormEvent) => void;
@@ -33,6 +34,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   template,
   activeColor,
   activeAccent,
+  guestName,
   onOpenLightbox,
   rsvpSent,
   onSendRSVP,
@@ -49,7 +51,8 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 }) => {
   const [showRsvpModal, setShowRsvpModal] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
-  const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
+  const [showOriginalArtModal, setShowOriginalArtModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-25';
@@ -64,7 +67,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 
   const dressCodeColors = data.dressCode?.colors || defaultColors;
 
-  // Dynamically determine dark vs light mode from template metadata
+  // Determine dark vs light theme
   const isDark =
     (template.bgTexture &&
       (template.bgTexture.toLowerCase().includes('0f0f10') ||
@@ -77,331 +80,526 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
     template.primaryColor === '#18181b';
 
   const containerBg = isDark ? '#0c0a09' : (template.bgTexture || '#faf8f5');
-  const cardBg = isDark ? '#1c1917' : (template.cardBg || '#ffffff');
-  const cardBorder = isDark ? 'border-stone-800' : 'border-stone-200/90 shadow-md';
+  const cardBg = isDark ? '#1a1816' : (template.cardBg || '#ffffff');
+  const cardBorder = isDark ? 'border-stone-800' : 'border-stone-200/90 shadow-lg';
   const textColor = isDark ? 'text-stone-100' : 'text-stone-800';
   const mutedTextColor = isDark ? 'text-stone-400' : 'text-stone-600';
   const headingColor = isDark ? 'text-white' : 'text-stone-900';
   const inputClass = isDark
-    ? 'w-full p-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white placeholder:text-stone-500 text-xs focus:outline-none focus:border-amber-400'
-    : 'w-full p-2.5 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 placeholder:text-stone-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400';
+    ? 'w-full p-3 rounded-2xl bg-stone-950 border border-stone-700 text-white placeholder:text-stone-500 text-xs focus:outline-none focus:border-amber-400'
+    : 'w-full p-3 rounded-2xl bg-stone-50 border border-stone-300 text-stone-900 placeholder:text-stone-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400';
 
-  const sectionMotion = {
-    initial: { opacity: 0, y: 32 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.15 },
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+  // Smooth kinetic scroll animation preset
+  const scrollReveal = {
+    initial: { opacity: 0, y: 36, scale: 0.97 },
+    whileInView: { opacity: 1, y: 0, scale: 1 },
+    viewport: { once: true, amount: 0.18 },
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
+  };
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  // Google Calendar Link Generator
+  const getGoogleCalendarUrl = () => {
+    const title = `Lễ Thành Hôn: ${data.groom.shortName} & ${data.bride.shortName}`;
+    const details = `Kính mời Quý Khách cùng gia đình tới chung vui cùng đôi uyên ương ${data.groom.fullName} & ${data.bride.fullName}.\nĐịa điểm: ${mainCeremony?.venueName || ''} - ${mainCeremony?.address || ''}`;
+    const location = `${mainCeremony?.venueName || ''}, ${mainCeremony?.address || ''}`;
+    const cleanDate = targetDateStr.replace(/-/g, '');
+    const startTime = `${cleanDate}T030000Z`;
+    const endTime = `${cleanDate}T080000Z`;
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+  };
+
+  // Google Maps Link Generator
+  const getMapsUrl = (c: { mapUrl?: string; venueName: string; address: string }) => {
+    if (c.mapUrl && c.mapUrl.trim()) return c.mapUrl;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.venueName + ' ' + c.address)}`;
   };
 
   return (
     <div
-      className={`min-h-screen relative font-sans ${textColor} selection:bg-amber-400 selection:text-black`}
+      className={`min-h-screen relative font-sans ${textColor} selection:bg-amber-400 selection:text-black overflow-x-hidden`}
       style={{ backgroundColor: containerBg }}
     >
-      {/* High-Resolution Full Length Artwork Card Header */}
-      <div
-        className="relative w-full max-w-md mx-auto shadow-2xl overflow-hidden border-b"
-        style={{
-          backgroundColor: isDark ? '#1c1917' : '#ffffff',
-          borderColor: isDark ? '#292524' : '#e7e5e4'
-        }}
-      >
-        {/* Authentic Original Design Frame */}
-        <div className="relative">
-          <motion.img
-            initial={{ scale: 1.04, opacity: 0.85 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.1, ease: 'easeOut' }}
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full bg-stone-900/90 text-white text-xs font-semibold shadow-2xl border border-stone-700 flex items-center gap-2 backdrop-blur-md"
+          >
+            <span>✨</span>
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* 1. CINEMATIC MOBILE HERO COVER (Fitted Cover with Kinetic Parallax Reveal) */}
+      {/* ========================================================================= */}
+      <div className="relative w-full max-w-md mx-auto h-[86vh] min-h-[520px] max-h-[700px] overflow-hidden shadow-2xl flex flex-col justify-between">
+        {/* Background Artwork Frame */}
+        <motion.div
+          initial={{ scale: 1.08 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img
             src={template.frameAsset}
             alt={template.name}
-            className="w-full h-auto block select-none shadow-inner"
+            className="w-full h-full object-cover object-top select-none filter brightness-[0.93]"
             loading="eager"
           />
-          {/* Subtle bottom gradient blending into next section */}
-          <div
-            className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
-            style={{
-              background: isDark
-                ? 'linear-gradient(to top, #0c0a09, transparent)'
-                : `linear-gradient(to top, ${containerBg}, transparent)`
-            }}
-          />
-        </div>
+        </motion.div>
 
-        {/* Personalized Couple Name Badge Floating Overlay at top */}
+        {/* Ambient Gradient Overlays for Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/85 pointer-events-none" />
+        <div
+          className="absolute inset-x-0 bottom-0 h-36 pointer-events-none"
+          style={{
+            background: isDark
+              ? 'linear-gradient(to top, #0c0a09, transparent)'
+              : `linear-gradient(to top, ${containerBg} 0%, transparent 100%)`
+          }}
+        />
+
+        {/* Top Header Badge */}
         <motion.div
-          initial={{ opacity: 0, y: -16 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="absolute top-4 left-1/2 -translate-x-1/2 w-[92%] text-center pointer-events-none z-10"
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="relative z-10 pt-5 px-4 text-center"
         >
-          <div
-            className="inline-block px-4 py-1.5 rounded-full backdrop-blur-md border shadow-2xl"
-            style={{
-              backgroundColor: isDark ? 'rgba(0,0,0,0.78)' : 'rgba(255,255,255,0.92)',
-              color: isDark ? '#ffffff' : '#1c1917',
-              borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'
-            }}
-          >
-            <span className="text-[11px] font-serif font-bold tracking-wider">
-              {data.groom.shortName} ❤️ {data.bride.shortName} • {mainCeremony?.dateSolar}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full backdrop-blur-md bg-black/40 border border-white/20 text-white/90 shadow-lg">
+            <span className="text-[10px] tracking-[0.3em] uppercase font-mono font-bold text-amber-300">
+              SAVE THE DATE
             </span>
+            <span className="text-white/40">•</span>
+            <span className="text-[10px] tracking-wider uppercase font-serif text-white/90">
+              LỄ THÀNH HÔN
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Centerpiece Hero Typography */}
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 px-6 text-center space-y-3"
+        >
+          {/* Couple Monogram Badge */}
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-md bg-white/15 border border-white/30 text-amber-200 text-lg shadow-xl mb-1">
+            💍
+          </div>
+
+          {/* Majestic Couple Names */}
+          <h1 className="text-3xl sm:text-4xl font-serif font-black tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] leading-tight">
+            {data.groom.shortName} <span className="font-light italic text-amber-300">&amp;</span> {data.bride.shortName}
+          </h1>
+
+          {/* Wedding Date in Solar & Lunar */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md bg-black/50 border border-amber-400/40 text-amber-200 shadow-xl">
+            <span className="text-xs font-mono font-bold tracking-widest uppercase">
+              {mainCeremony?.dateSolar}
+            </span>
+            {mainCeremony?.dateLunar && (
+              <>
+                <span className="opacity-40">•</span>
+                <span className="text-[11px] font-sans opacity-90">
+                  {mainCeremony?.dateLunar}
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Personalized Guest Greeting Badge */}
+          {guestName && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="mt-2"
+            >
+              <div className="inline-block px-4 py-1.5 rounded-xl bg-amber-400/20 backdrop-blur-md border border-amber-300/40 text-amber-100 text-xs font-serif shadow-lg">
+                Kính mời: <strong className="text-white text-sm tracking-wide">{guestName}</strong>
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Bottom Hero Actions & Bouncing Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="relative z-10 pb-6 px-4 text-center space-y-3"
+        >
+          {/* Button to view the full uncropped original graphic */}
+          <button
+            type="button"
+            onClick={() => setShowOriginalArtModal(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/25 text-white/90 transition-all active:scale-95 shadow-md"
+          >
+            <span>🖼️</span>
+            <span>Xem bức vẽ gốc toàn cảnh</span>
+          </button>
+
+          {/* Animated Scroll Down Indicator */}
+          <div className="flex flex-col items-center justify-center gap-1 text-white/80 animate-bounce pt-1">
+            <span className="text-[10px] tracking-[0.25em] uppercase font-mono font-medium">
+              Vuốt xuống để mở thiệp
+            </span>
+            <span className="text-sm leading-none">↓</span>
           </div>
         </motion.div>
       </div>
 
-      {/* Main Wedding Invitation Content Suite */}
-      <div
-        className="max-w-md mx-auto px-4 py-6 space-y-10"
-        style={{ backgroundColor: containerBg }}
-      >
-        {/* Section 1: Thư Ngỏ & Lời Yêu Thương */}
+      {/* ========================================================================= */}
+      {/* 2. MAIN WEDDING INVITATION CONTENT SECTIONS (Kinetic Reveal Upon Scroll)  */}
+      {/* ========================================================================= */}
+      <div className="max-w-md mx-auto px-4 py-8 space-y-12" style={{ backgroundColor: containerBg }}>
+
+        {/* Section 1: Thư Báo Hỷ & Lời Ngỏ Yêu Thương */}
         {data.loveStory && (
-          <motion.div
-            {...sectionMotion}
-            className={`p-6 rounded-3xl border text-center space-y-3 shadow-xl relative overflow-hidden ${cardBorder}`}
+          <motion.section
+            {...scrollReveal}
+            className={`p-6 sm:p-7 rounded-3xl border text-center space-y-3.5 shadow-2xl relative overflow-hidden ${cardBorder}`}
             style={{ backgroundColor: cardBg }}
           >
+            {/* Ambient Corner Glow */}
             <div
-              className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl pointer-events-none"
-              style={{ backgroundColor: activeColor + '15' }}
+              className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+              style={{ backgroundColor: activeColor + '25' }}
             />
-            <span
-              className="text-[10px] tracking-[0.3em] uppercase font-mono font-semibold"
-              style={{ color: activeAccent || activeColor }}
-            >
-              💌 THƯ BÁO HỶ
-            </span>
-            <h2 className={`text-xl font-serif font-bold ${headingColor}`}>
-              {data.loveStory.title || 'Hành Trình Tình Yêu'}
-            </h2>
-            <p className={`text-xs ${mutedTextColor} leading-relaxed italic max-w-xs mx-auto`}>
-              &ldquo;{data.loveStory.quotes || data.loveStory.content}&rdquo;
-            </p>
-            <p className={`text-[11px] ${mutedTextColor} leading-relaxed mt-2`}>
+
+            {/* Wax Seal Badge */}
+            <div className="inline-flex items-center justify-center w-11 h-11 rounded-full border shadow-md mx-auto mb-1"
+                 style={{ backgroundColor: activeColor + '18', borderColor: activeColor + '40', color: activeColor }}>
+              <span className="text-xl">💌</span>
+            </div>
+
+            <div className="space-y-1">
+              <span
+                className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold block"
+                style={{ color: activeAccent || activeColor }}
+              >
+                THƯ BÁO HỶ
+              </span>
+              <h2 className={`text-xl sm:text-2xl font-serif font-bold ${headingColor}`}>
+                {data.loveStory.title || 'Hành Trình Tình Yêu'}
+              </h2>
+            </div>
+
+            {data.loveStory.quotes && (
+              <p className={`text-xs ${mutedTextColor} leading-relaxed italic max-w-xs mx-auto font-serif px-2`}>
+                &ldquo;{data.loveStory.quotes}&rdquo;
+              </p>
+            )}
+
+            <p className={`text-[12px] ${textColor} leading-relaxed pt-1`}>
               {data.loveStory.content}
             </p>
-          </motion.div>
+
+            <div className="pt-2 flex justify-center items-center gap-2 text-stone-400">
+              <span className="w-8 h-px bg-stone-300 dark:bg-stone-700" />
+              <span className="text-xs" style={{ color: activeColor }}>✦ ✦ ✦</span>
+              <span className="w-8 h-px bg-stone-300 dark:bg-stone-700" />
+            </div>
+          </motion.section>
         )}
 
-        {/* Section 2: Đếm Ngược Ngày Trọng Đại */}
-        <motion.div {...sectionMotion} className="space-y-3">
-          <div className="text-center">
+        {/* Section 2: Đếm Ngược Ngày Chung Đôi */}
+        <motion.section {...scrollReveal} className="space-y-3.5 text-center">
+          <div className="space-y-1">
             <span
-              className="text-[10px] tracking-[0.3em] uppercase font-mono"
+              className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
               style={{ color: activeAccent || activeColor }}
             >
               COUNTDOWN
             </span>
-            <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
               Đếm Ngược Ngày Chung Đôi
             </h3>
           </div>
-          <CountdownTimer
-            targetDateStr={targetDateStr}
-            theme={isDark ? 'cinema' : 'pastel'}
-            activeColor={activeColor}
-          />
-        </motion.div>
+          <div className="shadow-xl rounded-3xl p-1">
+            <CountdownTimer
+              targetDateStr={targetDateStr}
+              theme={isDark ? 'cinema' : 'pastel'}
+              activeColor={activeColor}
+            />
+          </div>
+        </motion.section>
 
-        {/* Section 3: Lịch Tháng Đánh Dấu Ngày Cưới */}
-        <motion.div {...sectionMotion} className="space-y-3">
-          <div className="text-center">
+        {/* Section 3: Lịch Tháng & Thêm Vào Lịch Điện Thoại */}
+        <motion.section {...scrollReveal} className="space-y-3.5">
+          <div className="text-center space-y-1">
             <span
-              className="text-[10px] tracking-[0.3em] uppercase font-mono"
+              className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
               style={{ color: activeAccent || activeColor }}
             >
               CALENDAR
             </span>
-            <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
               Thời Gian Tổ Chức
             </h3>
           </div>
+
           <div
-            className={`rounded-3xl p-4 border shadow-xl ${cardBorder}`}
+            className={`rounded-3xl p-4 sm:p-5 border shadow-xl space-y-4 ${cardBorder}`}
             style={{ backgroundColor: cardBg }}
           >
             <MonthlyCalendar
               targetDateStr={targetDateStr}
               accentColor={activeColor || '#f59e0b'}
             />
-          </div>
-        </motion.div>
 
-        {/* Section 4: Gia Đình Hai Bên & Nhân Vật Chính */}
-        <motion.div {...sectionMotion} className="space-y-4">
-          <div className="text-center">
+            {/* Google Calendar Direct Add Button */}
+            <div className="pt-2 text-center">
+              <a
+                href={getGoogleCalendarUrl()}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold text-white shadow-lg active:scale-95 transition-all hover:brightness-110"
+                style={{ backgroundColor: activeColor }}
+              >
+                <span>📅</span>
+                <span>Thêm vào Google Calendar của bạn</span>
+              </a>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Section 4: Gia Đình Hai Bên & Cô Dâu Chú Rể */}
+        <motion.section {...scrollReveal} className="space-y-4">
+          <div className="text-center space-y-1">
             <span
-              className="text-[10px] tracking-[0.3em] uppercase font-mono"
+              className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
               style={{ color: activeAccent || activeColor }}
             >
               FAMILY & COUPLE
             </span>
-            <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
               Gia Đình & Nhân Vật Chính
             </h3>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-xs">
             {/* Nhà Trai */}
-            <div
-              className={`p-4 rounded-2xl border shadow-lg ${cardBorder}`}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className={`p-4 rounded-2xl border shadow-lg space-y-2 relative overflow-hidden ${cardBorder}`}
               style={{ backgroundColor: cardBg }}
             >
+              <div
+                className="w-1.5 h-6 rounded-full absolute top-4 left-0"
+                style={{ backgroundColor: activeColor }}
+              />
               <span
-                className="text-[10px] font-mono tracking-wider uppercase block mb-2 font-bold"
+                className="text-[10px] font-mono tracking-wider uppercase block font-bold"
                 style={{ color: activeAccent || activeColor }}
               >
                 [ NHÀ TRAI ]
               </span>
               <p className={`${mutedTextColor} text-[11px]`}>Bố: <strong className={headingColor}>{data.groom.fatherName}</strong></p>
-              <p className={`${mutedTextColor} text-[11px] mb-3`}>Mẹ: <strong className={headingColor}>{data.groom.motherName}</strong></p>
+              <p className={`${mutedTextColor} text-[11px] mb-2`}>Mẹ: <strong className={headingColor}>{data.groom.motherName}</strong></p>
               <div className="border-t border-stone-200/40 pt-2">
-                <span className="text-[10px] uppercase font-mono opacity-80" style={{ color: activeColor }}>{data.groom.birthOrder}</span>
-                <p className={`font-bold text-sm mt-0.5 ${headingColor}`}>{data.groom.fullName}</p>
+                <span className="text-[10px] uppercase font-mono opacity-80 block" style={{ color: activeColor }}>
+                  {data.groom.birthOrder}
+                </span>
+                <p className={`font-serif font-bold text-base mt-0.5 ${headingColor}`}>
+                  {data.groom.fullName}
+                </p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Nhà Gái */}
-            <div
-              className={`p-4 rounded-2xl border shadow-lg ${cardBorder}`}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className={`p-4 rounded-2xl border shadow-lg space-y-2 relative overflow-hidden ${cardBorder}`}
               style={{ backgroundColor: cardBg }}
             >
+              <div
+                className="w-1.5 h-6 rounded-full absolute top-4 right-0"
+                style={{ backgroundColor: activeColor }}
+              />
               <span
-                className="text-[10px] font-mono tracking-wider uppercase block mb-2 font-bold"
+                className="text-[10px] font-mono tracking-wider uppercase block font-bold"
                 style={{ color: activeAccent || activeColor }}
               >
                 [ NHÀ GÁI ]
               </span>
               <p className={`${mutedTextColor} text-[11px]`}>Bố: <strong className={headingColor}>{data.bride.fatherName}</strong></p>
-              <p className={`${mutedTextColor} text-[11px] mb-3`}>Mẹ: <strong className={headingColor}>{data.bride.motherName}</strong></p>
+              <p className={`${mutedTextColor} text-[11px] mb-2`}>Mẹ: <strong className={headingColor}>{data.bride.motherName}</strong></p>
               <div className="border-t border-stone-200/40 pt-2">
-                <span className="text-[10px] uppercase font-mono opacity-80" style={{ color: activeColor }}>{data.bride.birthOrder}</span>
-                <p className={`font-bold text-sm mt-0.5 ${headingColor}`}>{data.bride.fullName}</p>
+                <span className="text-[10px] uppercase font-mono opacity-80 block" style={{ color: activeColor }}>
+                  {data.bride.birthOrder}
+                </span>
+                <p className={`font-serif font-bold text-base mt-0.5 ${headingColor}`}>
+                  {data.bride.fullName}
+                </p>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Section 5: Lịch Trình Hôn Lễ (Ceremonies) */}
-        <motion.div {...sectionMotion} className="space-y-4">
-          <div className="text-center">
+        {/* Section 5: Lịch Trình Hôn Lễ (Itinerary / Timeline) */}
+        <motion.section {...scrollReveal} className="space-y-4">
+          <div className="text-center space-y-1">
             <span
-              className="text-[10px] tracking-[0.3em] uppercase font-mono"
+              className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
               style={{ color: activeAccent || activeColor }}
             >
               ITINERARY
             </span>
-            <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
               Lịch Trình Hôn Lễ
             </h3>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3.5">
             {data.ceremonies.map((c, i) => (
-              <div
+              <motion.div
                 key={c.id || i}
-                className={`p-4 rounded-2xl border shadow-xl space-y-2 transition-all ${cardBorder}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className={`p-5 rounded-2xl border shadow-xl space-y-3 transition-all ${cardBorder}`}
                 style={{ backgroundColor: cardBg }}
               >
-                <div className="flex items-center justify-between border-b border-stone-200/40 pb-2">
-                  <span
-                    className="font-mono text-xs font-bold uppercase tracking-wider"
-                    style={{ color: activeColor }}
-                  >
-                    💍 {c.title}
-                  </span>
-                  <span
-                    className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold"
-                    style={{
-                      backgroundColor: activeColor + '20',
-                      color: activeColor,
-                      borderColor: activeColor + '40'
-                    }}
-                  >
-                    {c.time}
-                  </span>
-                </div>
-                <div className={`text-xs space-y-1 ${mutedTextColor}`}>
-                  <p><strong>Ngày:</strong> {c.dateSolar} ({c.dateLunar})</p>
-                  <p><strong>Địa điểm:</strong> <span className={headingColor}>{c.venueName}</span></p>
-                  <p className="text-[11px] opacity-90">{c.address}</p>
-                </div>
-
-                {c.mapUrl && (
-                  <div className="pt-2">
-                    <a
-                      href={c.mapUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
+                <div className="flex items-center justify-between border-b border-stone-200/40 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">💍</span>
+                    <span
+                      className="font-serif text-sm font-bold tracking-wide"
                       style={{ color: activeColor }}
                     >
-                      <span>📍 Xem chỉ đường Google Maps</span>
-                      <span>→</span>
-                    </a>
+                      {c.title}
+                    </span>
                   </div>
-                )}
-              </div>
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-mono font-bold shadow-xs"
+                    style={{
+                      backgroundColor: activeColor + '18',
+                      color: activeColor,
+                      border: `1px solid ${activeColor}40`
+                    }}
+                  >
+                    ⏰ {c.time}
+                  </span>
+                </div>
+
+                <div className={`text-xs space-y-1.5 ${mutedTextColor}`}>
+                  <p>
+                    <strong className={headingColor}>Ngày tổ chức:</strong> {c.dateSolar} {c.dateLunar && `(${c.dateLunar})`}
+                  </p>
+                  <p>
+                    <strong className={headingColor}>Địa điểm:</strong> <span className={`font-semibold ${headingColor}`}>{c.venueName}</span>
+                  </p>
+                  <p className="text-[11px] leading-relaxed opacity-90">{c.address}</p>
+                </div>
+
+                {/* Direct Google Maps Direction Link */}
+                <div className="pt-2 border-t border-stone-200/30">
+                  <a
+                    href={getMapsUrl(c)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold hover:underline"
+                    style={{ color: activeColor }}
+                  >
+                    <span>📍 Xem chỉ đường trên Google Maps</span>
+                    <span>→</span>
+                  </a>
+                </div>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.section>
 
         {/* Section 6: Dress Code Gợi Ý Trang Phục */}
-        <motion.div
-          {...sectionMotion}
+        <motion.section
+          {...scrollReveal}
           className={`p-6 rounded-3xl border text-center space-y-4 shadow-xl ${cardBorder}`}
           style={{ backgroundColor: cardBg }}
         >
-          <span
-            className="text-[10px] tracking-[0.3em] uppercase font-mono font-semibold"
-            style={{ color: activeAccent || activeColor }}
-          >
-            DRESS CODE
-          </span>
-          <h3 className={`text-lg font-serif font-bold ${headingColor}`}>
-            {data.dressCode?.title || 'Trang Phục Gợi Ý'}
-          </h3>
+          <div className="space-y-1">
+            <span
+              className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
+              style={{ color: activeAccent || activeColor }}
+            >
+              DRESS CODE
+            </span>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
+              {data.dressCode?.title || 'Trang Phục Gợi Ý'}
+            </h3>
+          </div>
+
           <p className={`text-xs ${mutedTextColor} max-w-xs mx-auto leading-relaxed`}>
             {data.dressCode?.description || 'Để những bức ảnh kỷ niệm thêm phần đồng điệu và rạng rỡ, kính mong Quý Khách ưu tiên trang phục theo các gam màu sau:'}
           </p>
 
-          {/* Color Palettes Swatches */}
-          <div className="flex justify-center items-center gap-3 pt-2">
+          {/* Color Palettes Swatches with Entrance Animation */}
+          <div className="flex justify-center items-center gap-3 pt-2 flex-wrap">
             {dressCodeColors.map((color, idx) => (
-              <div key={idx} className="flex flex-col items-center gap-1.5">
+              <motion.div
+                key={idx}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                className="flex flex-col items-center gap-1.5"
+              >
                 <div
-                  className="w-10 h-10 rounded-full shadow-md border-2 border-stone-300 transition-transform hover:scale-110"
+                  className="w-11 h-11 rounded-full shadow-lg border-2 border-white/80 transition-transform active:scale-110 cursor-pointer"
                   style={{ backgroundColor: color.hex }}
                   title={color.name}
+                  onClick={() => showToast(`Tone màu: ${color.name}`)}
                 />
                 <span className={`text-[10px] font-medium ${mutedTextColor}`}>{color.name}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.section>
 
         {/* Section 7: Album Kỷ Niệm (Gallery) */}
         {data.galleryImages && data.galleryImages.length > 0 && (
-          <motion.div {...sectionMotion} className="space-y-4">
-            <div className="text-center">
+          <motion.section {...scrollReveal} className="space-y-4">
+            <div className="text-center space-y-1">
               <span
-                className="text-[10px] tracking-[0.3em] uppercase font-mono"
+                className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
                 style={{ color: activeAccent || activeColor }}
               >
                 GALLERY
               </span>
-              <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+              <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
                 Khoảnh Khắc Ngọt Ngào
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-3">
               {data.galleryImages.map((img, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: (i % 2) * 0.1 }}
                   onClick={() => onOpenLightbox && onOpenLightbox(i)}
-                  className={`aspect-[3/4] rounded-2xl overflow-hidden border cursor-pointer relative group shadow-md ${cardBorder}`}
+                  className={`aspect-[3/4] rounded-2xl overflow-hidden border cursor-pointer relative group shadow-lg ${cardBorder}`}
                   style={{ backgroundColor: isDark ? '#1c1917' : '#f5f5f4' }}
                 >
                   <img
@@ -411,33 +609,33 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-white text-xs font-semibold px-2 py-1 bg-black/60 rounded-full">
+                    <span className="text-white text-xs font-semibold px-2.5 py-1 bg-black/60 backdrop-blur-xs rounded-full">
                       🔍 Phóng to
                     </span>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </motion.div>
+          </motion.section>
         )}
 
-        {/* Section 8: Hộp Mừng Cưới VietQR Trực Tiếp */}
+        {/* Section 8: Hộp Mừng Cưới & VietQR Trực Tiếp */}
         {data.enableVietQR && (
-          <motion.div {...sectionMotion} className="space-y-4">
-            <div className="text-center">
+          <motion.section {...scrollReveal} className="space-y-4">
+            <div className="text-center space-y-1">
               <span
-                className="text-[10px] tracking-[0.3em] uppercase font-mono"
+                className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
                 style={{ color: activeAccent || activeColor }}
               >
                 WEDDING GIFT
               </span>
-              <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
-                Hộp Mừng Cưới & Chúc Phúc
+              <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
+                Hộp Mừng Cưới &amp; Chúc Phúc
               </h3>
             </div>
 
             <div
-              className={`p-4 rounded-3xl border shadow-2xl ${cardBorder}`}
+              className={`p-4 sm:p-5 rounded-3xl border shadow-2xl ${cardBorder}`}
               style={{ backgroundColor: cardBg }}
             >
               <VietQRGiftBox
@@ -446,24 +644,24 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                 primaryColor={activeColor || '#f59e0b'}
               />
             </div>
-          </motion.div>
+          </motion.section>
         )}
 
         {/* Section 9: Xác Nhận Tham Dự (RSVP) */}
         {data.enableRSVP && (
-          <motion.div
-            {...sectionMotion}
+          <motion.section
+            {...scrollReveal}
             className={`p-6 rounded-3xl border shadow-2xl space-y-4 ${cardBorder}`}
             style={{ backgroundColor: cardBg }}
           >
-            <div className="text-center">
+            <div className="text-center space-y-1">
               <span
-                className="text-[10px] tracking-[0.3em] uppercase font-mono"
+                className="text-[10px] tracking-[0.35em] uppercase font-mono font-bold"
                 style={{ color: activeColor }}
               >
                 RSVP INVITATION
               </span>
-              <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+              <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
                 Xác Nhận Tham Dự
               </h3>
               <p className={`text-xs ${mutedTextColor} mt-1`}>
@@ -472,11 +670,13 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             </div>
 
             {rsvpSent ? (
-              <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 text-center text-xs font-semibold">
-                ✓ Cảm ơn Quý Khách! Phản hồi của bạn đã được gửi thành công.
+              <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-center text-xs font-semibold space-y-1">
+                <span className="text-2xl block">🎉</span>
+                <p>Cảm ơn Quý Khách!</p>
+                <p className="font-normal opacity-90">Phản hồi của bạn đã được gia đình ghi nhận.</p>
               </div>
             ) : (
-              <form onSubmit={onSendRSVP} className="space-y-3 text-xs">
+              <form onSubmit={onSendRSVP} className="space-y-3.5 text-xs">
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -512,7 +712,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                 />
 
                 <div
-                  className={`flex items-center justify-between p-3 rounded-xl border ${
+                  className={`flex items-center justify-between p-3 rounded-2xl border ${
                     isDark ? 'bg-stone-950 border-stone-700' : 'bg-stone-50 border-stone-300'
                   }`}
                 >
@@ -544,35 +744,35 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition-all shadow-lg text-xs"
+                  className="w-full py-3.5 rounded-2xl font-bold text-white active:scale-95 transition-all shadow-lg text-xs hover:brightness-110"
                   style={{ backgroundColor: activeColor }}
                 >
                   Xác Nhận Tham Dự 💌
                 </button>
               </form>
             )}
-          </motion.div>
+          </motion.section>
         )}
 
         {/* Section 10: Sổ Lưu Bút & Lời Chúc (Guestbook) */}
-        <motion.div
-          {...sectionMotion}
+        <motion.section
+          {...scrollReveal}
           className={`p-6 rounded-3xl border space-y-5 shadow-2xl ${cardBorder}`}
           style={{ backgroundColor: cardBg }}
         >
-          <div className="text-center">
+          <div className="text-center space-y-1">
             <span
-              className="text-[10px] uppercase tracking-[0.3em] font-mono"
+              className="text-[10px] uppercase tracking-[0.35em] font-mono font-bold"
               style={{ color: activeAccent || activeColor }}
             >
               GUESTBOOK
             </span>
-            <h3 className={`text-lg font-serif font-bold mt-0.5 ${headingColor}`}>
+            <h3 className={`text-xl font-serif font-bold ${headingColor}`}>
               Gửi Lời Chúc Phúc
             </h3>
           </div>
 
-          <form onSubmit={onAddWish} className="space-y-2.5">
+          <form onSubmit={onAddWish} className="space-y-3">
             <input
               type="text"
               required
@@ -591,55 +791,60 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             />
             <button
               type="submit"
-              className="w-full py-2.5 rounded-xl text-xs font-bold text-white active:scale-95 transition-all shadow-md"
+              className="w-full py-3 rounded-2xl text-xs font-bold text-white active:scale-95 transition-all shadow-md hover:brightness-110"
               style={{ backgroundColor: activeColor }}
             >
               Gửi Lời Chúc Mừng 💌
             </button>
           </form>
 
-          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+          {/* List of heartfelt wishes */}
+          <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
             {wishes.map((w, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className={`p-3 rounded-xl border text-xs ${
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`p-3.5 rounded-2xl border text-xs shadow-xs ${
                   isDark ? 'bg-stone-950 border-stone-800' : 'bg-stone-50 border-stone-200'
                 }`}
               >
                 <div className="flex justify-between items-center mb-1">
-                  <strong style={{ color: activeColor }}>{w.name}</strong>
+                  <strong style={{ color: activeColor }} className="font-serif">{w.name}</strong>
                   <span className={`text-[10px] font-mono ${mutedTextColor}`}>{w.time}</span>
                 </div>
                 <p className={`${textColor} text-[11px] leading-relaxed`}>{w.content}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.section>
 
         {/* Thank You Note */}
         <motion.div
-          {...sectionMotion}
-          className={`text-center py-6 border-t border-stone-200/40 ${mutedTextColor} text-xs italic`}
+          {...scrollReveal}
+          className={`text-center py-8 border-t border-stone-200/40 ${mutedTextColor} text-xs italic space-y-2`}
         >
-          <p>{data.thankYouMessage}</p>
-          <p className={`mt-2 font-serif font-bold text-sm ${headingColor}`}>
+          <p className="max-w-xs mx-auto leading-relaxed">{data.thankYouMessage || 'Sự hiện diện của Quý Khách là niềm vinh hạnh lớn nhất cho gia đình chúng tôi!'}</p>
+          <p className={`font-serif font-bold text-base not-italic ${headingColor}`}>
             {data.groom.shortName} &amp; {data.bride.shortName}
           </p>
         </motion.div>
       </div>
 
-      {/* Bottom Sticky Action Bar */}
+      {/* ========================================================================= */}
+      {/* 3. BOTTOM STICKY ACTION BAR (Convenient for mobile users)                 */}
+      {/* ========================================================================= */}
       <div className="sticky bottom-4 left-0 right-0 px-4 z-40 max-w-md mx-auto">
         <div
           className="p-2 rounded-2xl backdrop-blur-md border shadow-2xl flex items-center justify-between gap-2"
           style={{
-            backgroundColor: isDark ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.92)',
+            backgroundColor: isDark ? 'rgba(0,0,0,0.88)' : 'rgba(255,255,255,0.92)',
             borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'
           }}
         >
           <button
             onClick={() => setShowRsvpModal(true)}
-            className="flex-1 py-2.5 rounded-xl font-bold text-xs text-white shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1.5"
+            className="flex-1 py-3 rounded-xl font-bold text-xs text-white shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1.5"
             style={{ backgroundColor: activeColor }}
           >
             <span>💌</span>
@@ -649,7 +854,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           {data.enableVietQR && (
             <button
               onClick={() => setShowGiftModal(true)}
-              className={`px-4 py-2.5 rounded-xl font-bold text-xs border shadow-lg active:scale-95 transition-all flex items-center gap-1 ${
+              className={`px-4 py-3 rounded-xl font-bold text-xs border shadow-lg active:scale-95 transition-all flex items-center gap-1.5 ${
                 isDark ? 'bg-stone-900 text-amber-300 border-amber-400/40' : 'bg-white text-stone-800 border-stone-300'
               }`}
             >
@@ -659,6 +864,42 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           )}
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* 4. MODALS (Original Art Lightbox, Quick RSVP, Quick VietQR)                */}
+      {/* ========================================================================= */}
+
+      {/* Original Artwork Full High-Res Modal */}
+      {showOriginalArtModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 overflow-y-auto"
+          onClick={() => setShowOriginalArtModal(false)}
+        >
+          <div className="flex justify-between items-center text-white pt-2 px-2">
+            <span className="text-xs font-mono text-amber-300 font-bold tracking-wider">
+              BỨC VẼ GỐC NGUYÊN BẢN
+            </span>
+            <button
+              onClick={() => setShowOriginalArtModal(false)}
+              className="text-stone-300 hover:text-white text-2xl font-bold p-2"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center my-4" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={template.frameAsset}
+              alt="Bức vẽ gốc"
+              className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl border border-stone-800"
+            />
+          </div>
+
+          <p className="text-center text-stone-400 text-xs pb-2">
+            Chạm bất kỳ đâu để đóng
+          </p>
+        </div>
+      )}
 
       {/* RSVP Quick Modal */}
       {showRsvpModal && (
@@ -679,7 +920,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             </h3>
 
             {rsvpSent ? (
-              <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-700 text-center text-xs font-medium">
+              <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-700 dark:text-emerald-300 text-center text-xs font-medium">
                 ✓ Cảm ơn bạn! Xác nhận đã được ghi nhận.
               </div>
             ) : (
@@ -725,7 +966,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                 />
 
                 <div
-                  className={`flex items-center justify-between p-2 rounded-xl border ${
+                  className={`flex items-center justify-between p-2.5 rounded-xl border ${
                     isDark ? 'bg-stone-950 border-stone-700' : 'bg-stone-50 border-stone-300'
                   }`}
                 >
@@ -757,7 +998,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl font-bold text-white active:scale-95 transition-all shadow-md"
+                  className="w-full py-3 rounded-xl font-bold text-white active:scale-95 transition-all shadow-md"
                   style={{ backgroundColor: activeColor }}
                 >
                   Gửi Phản Hồi Ngay 💌

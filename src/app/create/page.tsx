@@ -232,13 +232,25 @@ function CreateInvitationContent() {
     }));
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(`wedding_${data.slug}`, JSON.stringify(data));
       } catch (err) {
         console.warn('Storage limit warning, continuing with current state:', err);
       }
+
+      // Sync to API store so other phones and guests can view
+      try {
+        await fetch('/api/wedding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: data.slug, data })
+        });
+      } catch (e) {
+        console.warn('Could not sync to API:', e);
+      }
+
       const url = `${window.location.origin}/thiep/${data.slug}`;
       setPublishedUrl(url);
     }

@@ -152,49 +152,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
         </div>
       )}
 
-      {/* Floating Music Disc & Song Badge */}
-      {data.enableMusic && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2">
-          {isPlayingMusic && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-white/20 text-white text-[11px] shadow-2xl"
-            >
-              <div className="flex items-center gap-0.5 h-3">
-                <span className="w-0.5 h-3 bg-amber-400 animate-pulse" />
-                <span className="w-0.5 h-2 bg-amber-400 animate-pulse delay-75" />
-                <span className="w-0.5 h-3.5 bg-amber-400 animate-pulse delay-150" />
-              </div>
-              <span className="font-medium truncate max-w-[170px] text-amber-200">
-                {data.musicTitle || 'I Do - 911 (Wedding Song)'}
-              </span>
-            </motion.div>
-          )}
 
-          <button
-            onClick={toggleMusic}
-            className="flex items-center justify-center w-12 h-12 rounded-full shadow-2xl transition-transform hover:scale-110 active:scale-95 bg-black/85 backdrop-blur-md border border-amber-400/50 cursor-pointer relative"
-            title={isPlayingMusic ? `Tạm dừng nhạc: ${data.musicTitle || 'Ánh Nắng Của Anh'}` : 'Bật nhạc nền'}
-          >
-            <div
-              className={`w-9 h-9 rounded-full bg-gradient-to-tr from-stone-900 to-black border-2 flex items-center justify-center text-white text-xs ${
-                isPlayingMusic ? 'animate-spin' : ''
-              }`}
-              style={{ animationDuration: '4s', borderColor: activeAccent }}
-            >
-              🎵
-            </div>
-            {/* Play/Pause state mini badge */}
-            <span className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-mono font-black text-white shadow-md ${
-              isPlayingMusic ? 'bg-amber-500 animate-pulse' : 'bg-stone-700'
-            }`}>
-              {isPlayingMusic ? '❚❚' : '▶'}
-            </span>
-          </button>
-        </div>
-      )}
 
       {/* 3D Envelope Intro Screen */}
       <AnimatePresence>
@@ -461,6 +419,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
             template={template}
             activeColor={activeColor}
             activeAccent={activeAccent}
+            guestName={guestName}
             onOpenLightbox={(idx) => setLightboxIndex(idx)}
             rsvpSent={rsvpSent}
             onSendRSVP={handleSendRSVP}

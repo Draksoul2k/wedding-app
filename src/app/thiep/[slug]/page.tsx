@@ -17,23 +17,47 @@ function DynamicWeddingInvitationContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && slug) {
+    async function loadWeddingData() {
+      if (typeof window === 'undefined' || !slug) return;
+
+      let weddingData: WeddingInvitationData | null = null;
       const stored = localStorage.getItem(`wedding_${slug}`);
+
       if (stored) {
         try {
-          const parsed = JSON.parse(stored);
-          if (templateParam) {
-            const found = TEMPLATES.find((t) => t.id === templateParam);
-            if (found) {
-              parsed.templateId = found.id;
-              parsed.themeName = found.name;
-              parsed.primaryColor = found.primaryColor;
+          weddingData = JSON.parse(stored);
+        } catch (e) {
+          console.error('Failed to parse localStorage wedding data:', e);
+        }
+      }
+
+      if (!weddingData) {
+        try {
+          const res = await fetch(`/api/wedding?slug=${encodeURIComponent(slug)}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.found && json.data) {
+              weddingData = json.data;
+              try {
+                localStorage.setItem(`wedding_${slug}`, JSON.stringify(json.data));
+              } catch (err) {}
             }
           }
-          setData(parsed);
         } catch (e) {
-          console.error('Failed to parse saved wedding data:', e);
+          console.error('Failed to fetch wedding data from API:', e);
         }
+      }
+
+      if (weddingData) {
+        if (templateParam) {
+          const found = TEMPLATES.find((t) => t.id === templateParam);
+          if (found) {
+            weddingData.templateId = found.id;
+            weddingData.themeName = found.name;
+            weddingData.primaryColor = found.primaryColor;
+          }
+        }
+        setData(weddingData);
       } else {
         const found = templateParam ? TEMPLATES.find((t) => t.id === templateParam) : null;
         setData({
@@ -50,6 +74,8 @@ function DynamicWeddingInvitationContent() {
       }
       setLoading(false);
     }
+
+    loadWeddingData();
   }, [slug, templateParam]);
 
   if (loading) {
