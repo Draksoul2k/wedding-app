@@ -173,32 +173,21 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           }}
         />
 
-        {/* Top Header Badge */}
+        {/* Dynamic Cursive Calligraphy Couple Names positioned directly over the dress area */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative z-10 pt-4 px-4 text-center space-y-2"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10 my-auto px-4 text-center pointer-events-none flex flex-col items-center justify-center pt-28 sm:pt-36"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full backdrop-blur-md bg-black/50 border border-white/20 text-white/90 shadow-lg">
-            <span className="text-[10px] tracking-[0.3em] uppercase font-mono font-bold text-amber-300">
-              SAVE THE DATE
-            </span>
-            <span className="text-white/40">•</span>
-            <span className="text-[10px] tracking-wider uppercase font-serif text-white/90">
-              LỄ THÀNH HÔN
-            </span>
-          </div>
-
-          {/* Prominent Live Dynamic Couple Names Pill */}
-          <div>
-            <div className="inline-block px-4 py-1.5 rounded-2xl backdrop-blur-md bg-black/60 border border-amber-400/40 text-white shadow-xl">
-              <span className="text-sm sm:text-base font-serif font-black tracking-wider uppercase">
-                {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}{' '}
-                <span className="text-amber-300 font-light italic">&amp;</span>{' '}
-                {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
-              </span>
-            </div>
+          <div className="px-6 py-3 rounded-3xl bg-white/85 backdrop-blur-xs shadow-sm border border-white/60 max-w-[270px]">
+            <p className="font-serif italic text-2xl sm:text-3xl text-stone-900 leading-tight font-medium tracking-wide">
+              {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
+            </p>
+            <p className="font-serif italic text-stone-500 text-sm my-0.5">&amp;</p>
+            <p className="font-serif italic text-2xl sm:text-3xl text-stone-900 leading-tight font-medium tracking-wide">
+              {data.groom.shortName || data.groom.fullName || 'Chú Rể'}
+            </p>
           </div>
         </motion.div>
 
