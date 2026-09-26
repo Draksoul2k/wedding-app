@@ -40,7 +40,7 @@ function CreateInvitationContent() {
     templateId: initialTemplate.id,
     themeName: initialTemplate.name,
     primaryColor: initialTemplate.primaryColor,
-    heroPhoto: initialTemplate.frameAsset || ''
+    heroPhoto: DEFAULT_WEDDING_DATA.heroPhoto
   }));
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
@@ -225,7 +225,9 @@ function CreateInvitationContent() {
       templateId: tmpl.id,
       themeName: tmpl.name,
       primaryColor: tmpl.primaryColor,
-      heroPhoto: (prev.heroPhoto && !prev.heroPhoto.startsWith('/templates/') && !prev.heroPhoto.startsWith('http')) ? prev.heroPhoto : (tmpl.frameAsset || ''),
+      heroPhoto: (prev.heroPhoto && !prev.heroPhoto.includes('/long_') && !prev.heroPhoto.includes('clean_cine') && !prev.heroPhoto.includes('cinelove_') && !prev.heroPhoto.includes('thiep-cuoi-2'))
+        ? prev.heroPhoto
+        : DEFAULT_WEDDING_DATA.heroPhoto,
       typography: {
         ...prev.typography,
         fontFamily: font,

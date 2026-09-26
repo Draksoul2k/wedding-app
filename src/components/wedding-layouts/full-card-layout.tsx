@@ -59,7 +59,12 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-25';
 
-  const displayPhoto = data.heroPhoto || template.frameAsset;
+  const cleanFallbackPhoto = 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/Ny0yMDI0MDIwODEyMjE1OS1odGZncF8xNzY1NDc0MDU2Xzc3cg.jpg';
+  const displayPhoto = (data.heroPhoto && !data.heroPhoto.includes('clean_cine') && !data.heroPhoto.includes('cinelove_') && !data.heroPhoto.includes('/long_') && !data.heroPhoto.includes('thiep-cuoi-2'))
+    ? data.heroPhoto
+    : (template.frameAsset && !template.frameAsset.includes('clean_cine') && !template.frameAsset.includes('cinelove_') && !template.frameAsset.includes('/long_') && !template.frameAsset.includes('thiep-cuoi-2'))
+    ? template.frameAsset
+    : cleanFallbackPhoto;
 
   const defaultColors = [
     { name: 'Trắng Sữa', hex: '#FAF9F6' },
@@ -210,42 +215,33 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
     );
   };
 
-  // Helper for Floating Wishes & Bottom Action Bar
+  // Helper for Bottom Action Bar
   const renderFloatingFooter = () => (
-    <div className="space-y-1.5 max-w-[320px] mx-auto pb-2 w-full">
-      <div className="flex flex-col gap-1 items-center">
-        <div className="px-3 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] shadow-sm max-w-[90%] truncate">
-          ✨ <strong>Linh:</strong> Chúc hai bạn trăm năm hạnh phúc!
-        </div>
-      </div>
-
-      {/* Floating Bottom Action Bar */}
-      <div className="pt-2 flex items-center justify-between gap-1.5 px-2">
-        <button
-          type="button"
-          onClick={() => setShowRsvpModal(true)}
-          className="flex-1 py-1.5 px-3 rounded-full bg-stone-900/85 hover:bg-stone-900 text-white text-xs font-semibold backdrop-blur-md shadow-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-        >
-          <span>💌</span>
-          <span>Gửi lời chúc...</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowGiftModal(true)}
-          className="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
-          title="Mừng cưới"
-        >
-          🎁
-        </button>
-        <button
-          type="button"
-          onClick={() => showToast('Đã gửi tim chúc mừng! ❤️')}
-          className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
-          title="Thả tim"
-        >
-          👍
-        </button>
-      </div>
+    <div className="pt-2 flex items-center justify-between gap-1.5 px-4 max-w-[280px] mx-auto w-full">
+      <button
+        type="button"
+        onClick={() => setShowRsvpModal(true)}
+        className="flex-1 py-1.5 px-3 rounded-full bg-stone-900/85 hover:bg-stone-900 text-white text-xs font-semibold backdrop-blur-md shadow-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+      >
+        <span>💌</span>
+        <span>Gửi lời chúc...</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => setShowGiftModal(true)}
+        className="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
+        title="Mừng cưới"
+      >
+        🎁
+      </button>
+      <button
+        type="button"
+        onClick={() => showToast('Đã gửi tim chúc mừng! ❤️')}
+        className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs shadow-lg hover:scale-105 transition-all cursor-pointer"
+        title="Thả tim"
+      >
+        👍
+      </button>
     </div>
   );
 
@@ -300,91 +296,59 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
         )}
 
         {/* ========================================================================= */}
-        {/* VARIANT 1: COUNTDOWN (Wine Burgundy 4-Box - Media 1790399931495)          */}
+        {/* VARIANT 1: COUNTDOWN (Wine Burgundy)                                     */}
         {/* ========================================================================= */}
         {heroVariant === 'countdown' && (
           <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
             <div className="pt-6">
               <div
-                className="font-cursive text-3xl sm:text-4xl font-bold select-none drop-shadow-xs"
-                style={{ color: data.typography?.color || '#641b24' }}
+                className="font-cursive text-3xl sm:text-4xl font-bold select-none drop-shadow-md text-white"
+                style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}
               >
                 We get married!
               </div>
             </div>
 
-            {/* Couple Names in All-Caps Serif */}
-            <div className="my-auto py-2">
+            {/* Middle: Clean, unobstructed couple photo area */}
+            <div className="flex-1" />
+
+            {/* Bottom: Couple names, solar date, and countdown */}
+            <div className="pb-3 px-4 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 rounded-b-2xl text-white">
               <div
                 onClick={() => onEditField?.('couple')}
-                className={`group relative select-none transition-all duration-200 rounded-xl p-2 inline-block ${
-                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15' : ''
+                className={`group relative select-none inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-rose-400 rounded-lg' : ''
                 }`}
-                title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
               >
-                <div
-                  className={`relative px-4 py-1.5 transition-all ${
-                    onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''
-                  }`}
-                  style={{
-                    opacity: data.typography?.opacity ?? 1,
-                    textAlign: (data.typography?.textAlign || 'center') as any,
-                    textDecoration: (data.typography?.textDecoration || 'none') as any,
-                    textTransform: (data.typography?.textTransform || 'uppercase') as any,
-                    fontStyle: (data.typography?.fontStyle || 'normal') as any,
-                    fontWeight: data.typography?.fontWeight === 'normal' ? 400 : 700,
-                    letterSpacing: `${data.typography?.letterSpacing || 1}px`
-                  }}
-                >
+                <div className={`px-3 py-1 ${onEditField ? 'ring-1 ring-rose-400 rounded-sm' : ''}`}>
                   {renderSelectionHandles()}
-                  <div
-                    className="font-serif font-bold uppercase tracking-wider leading-tight"
-                    style={{
-                      fontSize: `${data.typography?.fontSize || 38}px`,
-                      color: data.typography?.color || '#641b24',
-                      textShadow: '0 1px 4px rgba(255,255,255,0.95), 0 0 2px #ffffff'
-                    }}
-                  >
-                    <div>{data.bride.shortName || data.bride.fullName || 'PHƯƠNG NGA'}</div>
-                    <div className="text-lg opacity-85 my-0.5 font-serif italic normal-case">&amp;</div>
-                    <div>{data.groom.shortName || data.groom.fullName || 'HOÀNG LONG'}</div>
+                  <div className="font-serif font-bold uppercase tracking-wider text-xl sm:text-2xl text-white drop-shadow-md">
+                    {data.groom.shortName || 'Gia Khang'} &amp; {data.bride.shortName || 'Thanh Trúc'}
                   </div>
                 </div>
               </div>
 
-              {/* Solar Date */}
-              <div
-                onClick={() => onEditField?.('date')}
-                className="mt-1 text-sm font-serif font-semibold tracking-wider select-none cursor-pointer"
-                style={{ color: data.typography?.color || '#641b24' }}
-              >
-                {targetDateStr.split('-').reverse().join('.')}
+              <div className="text-xs font-mono text-white/90 mt-1">
+                {targetDateStr}
               </div>
 
-              <div
-                className="font-cursive text-lg sm:text-xl italic mt-1.5 select-none"
-                style={{ color: data.typography?.color || '#641b24' }}
-              >
-                We will be husband and wife in
-              </div>
-
-              {/* 4-Box Burgundy Glass Live Countdown */}
-              <div className="grid grid-cols-4 gap-2 max-w-[270px] mx-auto mt-2">
-                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
-                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.days}</span>
-                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">ngày</span>
+              {/* 4-Box Glass Live Countdown */}
+              <div className="grid grid-cols-4 gap-2 max-w-[260px] mx-auto mt-2">
+                <div className="bg-black/60 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-sm leading-tight">{heroCountdown.days}</span>
+                  <span className="block text-[8px] uppercase font-sans tracking-tight opacity-90">ngày</span>
                 </div>
-                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
-                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.hours}</span>
-                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">giờ</span>
+                <div className="bg-black/60 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-sm leading-tight">{heroCountdown.hours}</span>
+                  <span className="block text-[8px] uppercase font-sans tracking-tight opacity-90">giờ</span>
                 </div>
-                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
-                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.minutes}</span>
-                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">phút</span>
+                <div className="bg-black/60 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-sm leading-tight">{heroCountdown.minutes}</span>
+                  <span className="block text-[8px] uppercase font-sans tracking-tight opacity-90">phút</span>
                 </div>
-                <div className="bg-[#641b24]/90 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
-                  <span className="block font-mono font-bold text-base leading-tight">{heroCountdown.seconds}</span>
-                  <span className="block text-[9px] uppercase font-sans tracking-tight opacity-90">giây</span>
+                <div className="bg-black/60 backdrop-blur-md rounded-xl p-1.5 text-white text-center shadow-md border border-white/20">
+                  <span className="block font-mono font-bold text-sm leading-tight">{heroCountdown.seconds}</span>
+                  <span className="block text-[8px] uppercase font-sans tracking-tight opacity-90">giây</span>
                 </div>
               </div>
             </div>
@@ -394,76 +358,41 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
         )}
 
         {/* ========================================================================= */}
-        {/* VARIANT 2: CALENDAR (Zenlove Monthly Strip - Media 1790399914508)          */}
+        {/* VARIANT 2: CALENDAR (Zenlove Monthly Strip)                               */}
         {/* ========================================================================= */}
         {heroVariant === 'calendar' && (
           <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
             <div className="pt-6">
               <div
-                className="font-cursive text-4xl sm:text-5xl font-bold select-none drop-shadow-sm"
-                style={{
-                  color: isDark ? '#ffffff' : (data.typography?.color || '#18181b'),
-                  textShadow: isDark
-                    ? '0 2px 10px rgba(0,0,0,0.8)'
-                    : '0 1px 3px rgba(255,255,255,0.95), 0 0 1px #ffffff'
-                }}
+                className="font-cursive text-4xl sm:text-5xl font-bold select-none drop-shadow-md text-white"
+                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.85)' }}
               >
                 Save The Date
               </div>
             </div>
 
-            {/* Couple Calligraphy Names */}
-            <div className="my-auto py-2">
+            {/* Middle: Clean, unobstructed photo area */}
+            <div className="flex-1" />
+
+            {/* Bottom: Couple names & date in bottom gradient */}
+            <div className="pb-3 px-4 bg-gradient-to-t from-black/85 via-black/45 to-transparent pt-6 rounded-b-2xl text-white">
               <div
                 onClick={() => onEditField?.('couple')}
-                className={`group relative select-none transition-all duration-200 rounded-xl p-2 inline-block ${
-                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400/70 hover:bg-sky-50/15' : ''
+                className={`group relative select-none inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
                 }`}
-                title={onEditField ? 'Nhấp để chỉnh sửa kiểu chữ và tên' : undefined}
               >
-                <div
-                  className={`relative px-4 py-2 transition-all ${
-                    onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''
-                  }`}
-                  style={{
-                    opacity: data.typography?.opacity ?? 1,
-                    textAlign: (data.typography?.textAlign || 'center') as any,
-                    textDecoration: (data.typography?.textDecoration || 'none') as any,
-                    textTransform: (data.typography?.textTransform || 'none') as any,
-                    fontStyle: (data.typography?.fontStyle || 'normal') as any,
-                    fontWeight: data.typography?.fontWeight === 'normal' ? 400 : 700,
-                    letterSpacing: `${data.typography?.letterSpacing || 0}px`
-                  }}
-                >
+                <div className={`px-4 py-1 ${onEditField ? 'ring-1 ring-sky-400 rounded-sm' : ''}`}>
                   {renderSelectionHandles()}
-                  <div
-                    className="font-cursive leading-tight select-none"
-                    style={{
-                      fontSize: `${data.typography?.fontSize || 44}px`,
-                      color: data.typography?.color || (isDark ? '#ffffff' : '#18181b'),
-                      fontFamily: data.typography?.fontFamily
-                        ? `'${data.typography.fontFamily}', var(--font-charmonman), var(--font-cursive), cursive`
-                        : 'var(--font-charmonman), var(--font-cursive), cursive',
-                      textShadow: (data.typography?.color === '#ffffff' || data.typography?.color === '#d4af37')
-                        ? '0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.9)'
-                        : '0 1px 4px rgba(255,255,255,0.95), 0 0 2px #ffffff'
-                    }}
-                  >
-                    <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
-                    <div className="text-2xl opacity-85 my-0.5 italic font-serif font-normal">&amp;</div>
-                    <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
+                  <div className="font-cursive text-2xl sm:text-3xl text-white drop-shadow-md leading-tight">
+                    {data.groom.shortName || 'Gia Khang'} &amp; {data.bride.shortName || 'Thanh Trúc'}
                   </div>
                 </div>
               </div>
 
-              {/* Solar Date subtitle */}
               <div
                 onClick={() => onEditField?.('date')}
-                className="mt-3 text-xs font-serif font-semibold tracking-widest uppercase select-none cursor-pointer"
-                style={{
-                  color: isDark ? '#e4e4e7' : (data.typography?.color || '#27272a'),
-                  textShadow: '0 1px 3px rgba(255,255,255,0.9)'
-                }}
+                className="mt-1 text-xs font-serif font-semibold tracking-widest uppercase select-none cursor-pointer text-amber-200"
               >
                 {targetDateStr.split('-').reverse().join(' · ')}
               </div>
@@ -540,7 +469,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
 
 
         {/* ========================================================================= */}
-        {/* VARIANT 5: TICKET (Cinema VIP Pass / Boarding Pass)                       */}
+        {/* VARIANT 5: TICKET (Cinema VIP Pass)                                       */}
         {/* ========================================================================= */}
         {heroVariant === 'ticket' && (
           <div className="relative z-20 flex-1 flex flex-col justify-between p-4 text-center">
@@ -551,12 +480,11 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
               </span>
             </div>
 
-            {/* Ticket Card Container with Perforated Edges */}
-            <div className="my-auto max-w-[280px] mx-auto bg-stone-900/85 backdrop-blur-md p-4 rounded-2xl border-2 border-dashed border-amber-300/70 text-white shadow-2xl">
-              <span className="text-[9px] font-mono tracking-widest text-amber-300 uppercase block mb-1">
-                PREMIERE SCREENING
-              </span>
+            {/* Middle: Clean photo area */}
+            <div className="flex-1" />
 
+            {/* Ticket Card Container at bottom */}
+            <div className="pb-3 px-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-6 rounded-b-2xl text-white">
               <div
                 onClick={() => onEditField?.('couple')}
                 className={`group relative select-none inline-block w-full ${
@@ -577,17 +505,13 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
                   <span className="font-bold text-amber-200">{targetDateStr}</span>
                 </div>
                 <div>
-                  <span className="block text-[8px] text-stone-500 uppercase">GIỜ G</span >
+                  <span className="block text-[8px] text-stone-500 uppercase">GIỜ G</span>
                   <span className="font-bold text-amber-200">{mainCeremony?.time || '11:00'}</span>
                 </div>
                 <div>
                   <span className="block text-[8px] text-stone-500 uppercase">VỊ TRÍ</span>
                   <span className="font-bold text-amber-200">VIP 01-02</span>
                 </div>
-              </div>
-
-              <div className="mt-2 pt-2 border-t border-stone-700/60 font-mono text-sm tracking-[0.25em] text-stone-400">
-                |||| | ||||| || | |||| ||
               </div>
             </div>
 
@@ -603,39 +527,33 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
             {/* Top Red Lanterns & Song Hỷ */}
             <div className="pt-5 flex items-center justify-center gap-3">
               <span className="text-xl">🏮</span>
-              <div className="px-4 py-1 rounded-full bg-red-900/90 border border-amber-300/80 text-amber-300 text-xs font-serif font-bold tracking-widest shadow-md">
+              <div className="px-4 py-1.5 rounded-full bg-red-950/80 backdrop-blur-md border border-amber-300/80 text-amber-300 text-xs font-serif font-bold tracking-widest shadow-md">
                 囍 THIỆP HỒNG BÁO HỶ 囍
               </div>
               <span className="text-xl">🏮</span>
             </div>
 
-            {/* Center Golden Medallion with Nested Names */}
-            <div className="my-auto py-2">
-              <div className="w-56 h-56 mx-auto rounded-full bg-red-950/80 backdrop-blur-md border-4 border-amber-400/90 shadow-2xl flex flex-col items-center justify-center p-3 relative">
-                <span className="text-amber-300 text-xl font-bold mb-1">囍</span>
-                
-                <div
-                  onClick={() => onEditField?.('couple')}
-                  className={`group relative select-none w-full ${
-                    onEditField ? 'cursor-pointer hover:ring-2 hover:ring-sky-400 rounded-lg' : ''
-                  }`}
-                >
-                  <div className={`px-2 py-0.5 ${onEditField ? 'ring-1 ring-sky-500 rounded-sm' : ''}`}>
-                    {renderSelectionHandles()}
-                    <div className="font-cursive text-amber-200 text-2xl font-bold leading-tight">
-                      <div>{data.groom.fullName || data.groom.shortName || 'Hoàng Hải'}</div>
-                      <div className="text-xs font-serif italic text-amber-300/80 my-0.5">và</div>
-                      <div>{data.bride.fullName || data.bride.shortName || 'Mỹ Châu'}</div>
-                    </div>
+            {/* Middle: Clean, unobscured photo area */}
+            <div className="flex-1" />
+
+            {/* Bottom: Elegant couple names & date banner that never covers faces */}
+            <div className="pb-3 px-4 bg-gradient-to-t from-red-950/90 via-red-950/40 to-transparent pt-6 rounded-b-2xl">
+              <div
+                onClick={() => onEditField?.('couple')}
+                className={`group relative select-none inline-block ${
+                  onEditField ? 'cursor-pointer hover:ring-2 hover:ring-amber-400 rounded-lg' : ''
+                }`}
+              >
+                <div className={`px-3 py-1 ${onEditField ? 'ring-1 ring-amber-400 rounded-sm' : ''}`}>
+                  {renderSelectionHandles()}
+                  <div className="font-serif font-bold text-amber-200 text-xl sm:text-2xl tracking-wide uppercase drop-shadow-md">
+                    {data.groom.fullName || data.groom.shortName || 'Gia Khang'} &amp; {data.bride.fullName || data.bride.shortName || 'Thanh Trúc'}
                   </div>
                 </div>
+              </div>
 
-                <div className="mt-2 text-[10px] font-mono text-amber-300/90 border-t border-amber-400/40 pt-1">
-                  {targetDateStr}
-                  {mainCeremony?.dateLunar && (
-                    <div className="text-[9px] text-amber-400/75">({mainCeremony.dateLunar})</div>
-                  )}
-                </div>
+              <div className="text-[11px] font-mono text-amber-300/90 mt-1">
+                {targetDateStr} {mainCeremony?.dateLunar && `(${mainCeremony.dateLunar})`}
               </div>
             </div>
 

@@ -92,7 +92,11 @@ export interface TemplateConfig {
   };
 }
 
-export const ALL_TEMPLATES: TemplateConfig[] = ZENLOVE_TEMPLATES.map(zenLoveToTemplateConfig);
+import { resolveCraftTemplateSlug } from './craft-templates/manifest';
+
+export const ALL_TEMPLATES: TemplateConfig[] = ZENLOVE_TEMPLATES
+  .filter((t) => t.targetPageType === 'CANVAS' || resolveCraftTemplateSlug(t.slug) || resolveCraftTemplateSlug(t.id))
+  .map(zenLoveToTemplateConfig);
 export const TEMPLATES: TemplateConfig[] = ALL_TEMPLATES;
 
 export function findTemplate(idOrSlug?: string | null): TemplateConfig {
@@ -139,15 +143,15 @@ export const VIETNAMESE_BANKS: BankConfig[] = [
 export const DEFAULT_WEDDING_DATA = {
   id: 'mau-thiep-demo',
   slug: 'thanh-hang-minh-tri',
-  templateId: 'sen-ngay-hy',
-  themeName: 'Sen Ngày Hỷ - ZenLove',
+  templateId: 'thiep-cuoi-2',
+  themeName: 'Thiệp Cưới Hiện Đại - Template 2',
   primaryColor: '#8a1528',
-  fontFamily: 'The Nautigal',
+  fontFamily: 'Viaoda Libre',
   musicTrackUrl: '/audio/anh-nang-cua-anh.mp3',
   musicTitle: 'Ánh Nắng Của Anh - Đức Phúc (Bản Có Lời)',
   fallingEffect: 'petals' as const,
   typography: {
-    fontFamily: 'The Nautigal',
+    fontFamily: 'Viaoda Libre',
     fontSize: 42,
     color: '#111827',
     fontWeight: 'bold',
@@ -239,7 +243,7 @@ export const DEFAULT_WEDDING_DATA = {
     }
   ],
 
-  heroPhoto: '',
+  heroPhoto: 'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/Ny0yMDI0MDIwODEyMjE1OS1odGZncF8xNzY1NDc0MDU2Xzc3cg.jpg',
   galleryImages: [
     'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&auto=format&fit=crop&q=80',
