@@ -50,6 +50,10 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const displayCardAsset = template.frameAsset;
   const displayPhoto = data.heroPhoto || null;
+  const isCenterCloudStyle =
+    template.id.includes('130') ||
+    template.id.includes('cine-thiep-cuoi-17') ||
+    (displayCardAsset && (displayCardAsset.includes('17') || displayCardAsset.includes('clean_cine') || displayCardAsset.includes('cinelove_thiep-cuoi-17')));
 
   return (
     <div className="bg-[#fff9f5] text-stone-900 min-h-screen font-serif selection:bg-red-200">
@@ -67,39 +71,84 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
             loading="eager"
           />
 
-          {/* Top Double Happiness Badge */}
-          <div
-            className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5 z-10"
-            style={{ backgroundColor: activeColor, borderColor: activeAccent }}
-          >
-            <span>囍</span>
-            <span>TRĂM NĂM HẠNH PHÚC</span>
-            <span>囍</span>
-          </div>
+          {/* Top Double Happiness Badge (only for traditional scroll templates that don't have it baked in) */}
+          {!isCenterCloudStyle && (
+            <div
+              className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 text-white px-5 py-1 rounded-full text-xs font-bold shadow-lg border flex items-center gap-1.5 z-10"
+              style={{ backgroundColor: activeColor, borderColor: activeAccent }}
+            >
+              <span>囍</span>
+              <span>TRĂM NĂM HẠNH PHÚC</span>
+              <span>囍</span>
+            </div>
+          )}
 
           {/* Live Editable Couple Name (Updates in real time when user edits bride/groom name in editor!) */}
-          <div
-            onClick={() => onEditField?.('couple')}
-            className={`absolute top-[12%] sm:top-[12.5%] left-0 right-0 text-center px-4 z-20 ${
-              onEditField ? 'cursor-pointer' : ''
-            }`}
-            title={onEditField ? 'Nhấp để sửa tên và kiểu chữ' : undefined}
-          >
+          {isCenterCloudStyle ? (
+            /* Center Cloud 3-Line Cursive Name Layout (Matches Media 1790418587623 exact) */
             <div
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-lg transition-all font-bold tracking-wider select-none drop-shadow-sm hover:ring-2 hover:ring-sky-400"
-              style={{
-                fontFamily: data.typography?.fontFamily || "'Viaoda Libre', serif",
-                color: data.typography?.color || '#b91c1c',
-                fontSize: `${Math.min(Math.max(data.typography?.fontSize || 22, 16), 28)}px`,
-                letterSpacing: `${data.typography?.letterSpacing || 1}px`,
-                textTransform: (data.typography?.textTransform || 'uppercase') as any
-              }}
+              onClick={() => onEditField?.('couple')}
+              className={`absolute top-[32%] sm:top-[34%] left-0 right-0 text-center px-4 z-20 ${
+                onEditField ? 'cursor-pointer' : ''
+              }`}
+              title={onEditField ? 'Nhấp để sửa tên và kiểu chữ' : undefined}
             >
-              <span>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</span>
-              <span className="font-normal opacity-85 lowercase text-[1.25em] -translate-y-0.5" style={{ fontFamily: "'The Nautigal', cursive" }}>&amp;</span>
-              <span>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</span>
+              <div
+                className={`inline-flex flex-col items-center justify-center transition-all select-none p-2 rounded-xl ${
+                  onEditField ? 'hover:ring-2 hover:ring-sky-400' : ''
+                }`}
+                style={{
+                  fontFamily: data.typography?.fontFamily
+                    ? `'${data.typography.fontFamily}', 'Aquarelle', 'Dancing Script', cursive`
+                    : "'Aquarelle', 'Dancing Script', cursive",
+                  color: data.typography?.color || '#641b24',
+                  fontSize: `${data.typography?.fontSize || 30}px`,
+                  opacity: data.typography?.opacity ?? 1,
+                  textAlign: (data.typography?.textAlign || 'center') as any,
+                  lineHeight: 1.18,
+                  textShadow: '0 1px 3px rgba(255,255,255,0.75)'
+                }}
+              >
+                <span className="block font-bold">
+                  {data.bride.shortName || data.bride.fullName || 'Cô Dâu'}
+                </span>
+                <span
+                  className="block my-0.5 text-[0.85em] font-normal opacity-90"
+                  style={{ fontFamily: "'The Nautigal', 'Dancing Script', cursive" }}
+                >
+                  &amp;
+                </span>
+                <span className="block font-bold">
+                  {data.groom.shortName || data.groom.fullName || 'Chú Rể'}
+                </span>
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Horizontal Plaque Name Layout for Traditional Templates (e.g. Hong Phong, Nhat Binh) */
+            <div
+              onClick={() => onEditField?.('couple')}
+              className={`absolute top-[12%] sm:top-[12.5%] left-0 right-0 text-center px-4 z-20 ${
+                onEditField ? 'cursor-pointer' : ''
+              }`}
+              title={onEditField ? 'Nhấp để sửa tên và kiểu chữ' : undefined}
+            >
+              <div
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-lg transition-all font-bold tracking-wider select-none drop-shadow-sm hover:ring-2 hover:ring-sky-400"
+                style={{
+                  fontFamily: data.typography?.fontFamily || "'Viaoda Libre', serif",
+                  color: data.typography?.color || '#b91c1c',
+                  fontSize: `${Math.min(Math.max(data.typography?.fontSize || 22, 16), 28)}px`,
+                  opacity: data.typography?.opacity ?? 1,
+                  letterSpacing: `${data.typography?.letterSpacing || 1}px`,
+                  textTransform: (data.typography?.textTransform || 'uppercase') as any
+                }}
+              >
+                <span>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</span>
+                <span className="font-normal opacity-85 lowercase text-[1.25em] -translate-y-0.5" style={{ fontFamily: "'The Nautigal', cursive" }}>&amp;</span>
+                <span>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Uploaded Photo Spotlight (if provided) */}

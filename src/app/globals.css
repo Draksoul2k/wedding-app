@@ -36,6 +36,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Aquarelle';
+  src: local('Dancing Script'), local('Alex Brush'), url('https://fonts.gstatic.com/s/dancingscript/v25/If2cXTr6YS-zF4S-kcSWSVi_sxjsohD9F50Ruu7BMSo3Rep8ltA.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

@@ -2469,6 +2469,9 @@ function CreateInvitationContent() {
                 >
                   <option value="Aquarelle">Aquarelle (Cinelove Thư pháp)</option>
                   <option value="Dancing Script">Dancing Script (Chữ ký mềm)</option>
+                  <option value="Viaoda Libre">Viaoda Libre (ZenLove Cổ điển)</option>
+                  <option value="The Nautigal">The Nautigal (Thư pháp nghệ thuật)</option>
+                  <option value="Cormorant Garamond">Cormorant Garamond (Lãng mạn)</option>
                   <option value="Playfair Display">Playfair Display (Hoàng gia)</option>
                   <option value="Lora">Lora (Vogue Thanh lịch)</option>
                   <option value="Pattaya">Pattaya (Bút lông mềm)</option>
