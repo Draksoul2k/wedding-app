@@ -48,13 +48,7 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-24';
-
-  // Default clean cinematic couple portrait if user has not uploaded a photo yet
-  const defaultCinematicPhoto = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80';
-  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
-  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
-    ? data.heroPhoto
-    : defaultCinematicPhoto;
+  const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
     <div className="bg-stone-950 text-stone-100 min-h-screen font-sans selection:bg-amber-400 selection:text-black">
@@ -68,13 +62,13 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
         </p>
       </div>
 
-      {/* Movie Poster Hero Section - Single Elegant Overlay Typography on Clean Photo */}
+      {/* Movie Poster Hero Section - Displays chosen template artwork with live typography overlay */}
       <div className="p-4 bg-gradient-to-b from-stone-950 via-black to-stone-950 text-center">
         <div className="relative max-w-[320px] mx-auto aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/40 bg-stone-900 group">
           <img
             src={displayPhoto}
-            alt="Wedding Poster"
-            className="w-full h-full object-cover select-none filter brightness-[0.88]"
+            alt={template.name}
+            className="w-full h-full object-cover object-top select-none filter brightness-[0.88]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/30 pointer-events-none" />
 
@@ -86,24 +80,24 @@ export const CinematicLayout: React.FC<CinematicLayoutProps> = ({
           </div>
 
           {/* Centerpiece Movie Poster Typography: LIVE DYNAMIC COUPLE NAMES */}
-          <div className="absolute inset-x-4 bottom-5 text-center space-y-1 pointer-events-none">
-            <span className="text-[9px] tracking-[0.3em] uppercase font-mono text-amber-400/90 font-bold block">
+          <div className="absolute inset-x-3 bottom-3 text-center space-y-1 pointer-events-none p-3 rounded-2xl bg-black/80 backdrop-blur-md border border-amber-400/30 shadow-2xl">
+            <span className="text-[9px] tracking-[0.3em] uppercase font-mono text-amber-400 font-bold block">
               LỄ THÀNH HÔN
             </span>
             <div className="flex flex-col items-center justify-center font-serif tracking-wider font-extrabold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] py-0.5">
-              <span className="text-2xl sm:text-3xl uppercase leading-tight">
+              <span className="text-xl sm:text-2xl uppercase leading-tight">
                 {data.groom.shortName || data.groom.fullName || 'CHÚ RỂ'}
               </span>
-              <div className="flex items-center justify-center gap-2.5 my-1">
-                <span className="w-8 h-px bg-amber-400/50" />
-                <span className="text-amber-300 font-serif italic text-base sm:text-lg font-light">&amp;</span>
-                <span className="w-8 h-px bg-amber-400/50" />
+              <div className="flex items-center justify-center gap-2 my-0.5">
+                <span className="w-6 h-px bg-amber-400/50" />
+                <span className="text-amber-300 font-serif italic text-sm font-light">&amp;</span>
+                <span className="w-6 h-px bg-amber-400/50" />
               </div>
-              <span className="text-2xl sm:text-3xl uppercase leading-tight">
+              <span className="text-xl sm:text-2xl uppercase leading-tight">
                 {data.bride.shortName || data.bride.fullName || 'CÔ DÂU'}
               </span>
             </div>
-            <p className="text-xs font-mono tracking-widest text-amber-200 drop-shadow-md pt-0.5">
+            <p className="text-[10px] font-mono tracking-widest text-amber-200 drop-shadow-md">
               {mainCeremony?.dateSolar || '2026-10-25'}
             </p>
           </div>

@@ -46,9 +46,8 @@ export const TraditionalLayout: React.FC<TraditionalLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
-  const displayCardAsset = !isCatalogScreenshot(template.frameAsset) ? template.frameAsset : '/templates/song_hy_red.webp';
-  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto) ? data.heroPhoto : null;
+  const displayCardAsset = template.frameAsset;
+  const displayPhoto = data.heroPhoto || null;
 
   return (
     <div className="bg-[#fff9f5] text-stone-900 min-h-screen font-serif selection:bg-red-200">

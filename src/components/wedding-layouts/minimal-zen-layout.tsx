@@ -46,11 +46,7 @@ export const MinimalZenLayout: React.FC<MinimalZenLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const defaultZenPhoto = 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&auto=format&fit=crop&q=80';
-  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
-  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
-    ? data.heroPhoto
-    : defaultZenPhoto;
+  const displayPhoto = data.heroPhoto || template.frameAsset;
 
   return (
     <div className="bg-[#fcfaf7] text-stone-800 min-h-screen font-sans selection:bg-stone-200">

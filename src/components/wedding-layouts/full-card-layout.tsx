@@ -57,11 +57,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-25';
 
-  const defaultFullCardPhoto = 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80';
-  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
-  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
-    ? data.heroPhoto
-    : (!isCatalogScreenshot(template.frameAsset) ? template.frameAsset : defaultFullCardPhoto);
+  const displayPhoto = data.heroPhoto || template.frameAsset;
 
   const defaultColors = [
     { name: 'Trắng Sữa', hex: '#FAF9F6' },

@@ -47,11 +47,7 @@ export const BotanicalGardenLayout: React.FC<BotanicalGardenLayoutProps> = ({
   onAddWish,
 }) => {
   const [showAllPhotos, setShowAllPhotos] = React.useState(false);
-  const isCatalogScreenshot = (url?: string) => Boolean(url && (url.includes('/templates/cinelove/') || url.includes('/templates/motdoi/')));
-  const defaultBotanicalPhoto = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&auto=format&fit=crop&q=80';
-  const displayPhoto = data.heroPhoto && !isCatalogScreenshot(data.heroPhoto)
-    ? data.heroPhoto
-    : defaultBotanicalPhoto;
+  const displayPhoto = data.heroPhoto || template.frameAsset;
   const mainCeremony = data.ceremonies[0];
   const targetDateStr = mainCeremony?.dateSolar || '2026-10-25';
 
