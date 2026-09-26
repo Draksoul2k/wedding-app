@@ -5,25 +5,24 @@
  */
 
 export const CLEAN_PHOTOS_VERTICAL = [
-  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&h=1200&q=85',
-  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&h=1200&q=85',
-  'https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=800&h=1200&q=85',
-  'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&h=1200&q=85',
-  'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&h=1200&q=85',
-  'https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&h=1200&q=85',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/Ny0yMDI0MDIwODEyMjE1OS1odGZncF8xNzY1NDc0MDU2Xzc3cg.jpg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/OC0yMDI0MDIwODEyMjE1OS1ib3F0bi0xXzE3NjU0NzUyNzNfMTEw.jpg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NC0yMDI0MDIwODEyMjE1OS1kbG1pMV8xNzY1NDc2MjI3X2J1aA.jpg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NS0yMDI0MDIwODEyMjE1OS10Z25yal8xNzY1NDc2MjI3XzVkYg.jpg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/MTAtMjAyNDAyMDgxMjIxNTktZGhrY18xNzY1NDc2MjI3X2Q2Yg.jpg',
+  'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761825944_6hw.jpeg',
 ];
 
 export const CLEAN_PHOTOS_HORIZONTAL = [
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&h=800&q=85',
-  'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?auto=format&fit=crop&w=1200&h=800&q=85',
-  'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&h=800&q=85',
-  'https://images.unsplash.com/photo-1587271407850-8d438ca9fdf2?auto=format&fit=crop&w=1200&h=800&q=85',
+  'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761825945_4bv.jpeg',
+  'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761892389_jiw.jpeg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NC0yMDI0MDIwODEyMjE1OS1kbG1pMV8xNzY1NDc2MjI3X2J1aA.jpg',
 ];
 
 export const CLEAN_PHOTOS_SQUARE = [
-  'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&h=800&q=85',
-  'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&h=800&q=85',
-  'https://images.unsplash.com/photo-1520333789090-1bc00e051c5f?auto=format&fit=crop&w=800&h=800&q=85',
+  'https://cdn-resource.zenlove.me/templates/0b732303-c263-4d95-bedf-65eee7f416dd/images/image_1761825944_6hw.jpeg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/OC0yMDI0MDIwODEyMjE1OS1ib3F0bi0xXzE3NjU0NzUyNzNfMTEw.jpg',
+  'https://cdn-resource.zenlove.me/templates/9efa3cd1-7346-4ec6-b1c2-0a8da3d1d09d/images/NS0yMDI0MDIwODEyMjE1OS10Z25yal8xNzY1NDc2MjI3XzVkYg.jpg',
 ];
 
 export function isWatermarkedAsset(keyOrUrl?: string | null): boolean {

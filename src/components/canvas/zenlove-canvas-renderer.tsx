@@ -41,8 +41,7 @@ const CarouselWidget: React.FC<{
 
   const currentItem = imgList[currentIndex] || imgList[0];
   const customPhoto = data.customPhotoNodes?.[`${id}_${currentIndex}`] || data.customPhotoNodes?.[id];
-  const isWm = isWatermarkedAsset(currentItem?.imageKey);
-  const imgSrc = customPhoto || (!isWm ? resolveZenLoveAsset(currentItem?.imageKey) : null) || getCleanWeddingPhoto(`${id}_${currentIndex}`, width, height);
+  const imgSrc = customPhoto || resolveZenLoveAsset(currentItem?.imageKey) || getCleanWeddingPhoto(`${id}_${currentIndex}`, width, height);
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-stone-100 shadow-sm">
@@ -78,6 +77,99 @@ const CarouselWidget: React.FC<{
   );
 };
 
+// 2. PHOTO GALLERY WIDGET (Interactive wedding album with featured photo & thumbnail strip)
+const PhotoGalleryWidget: React.FC<{
+  id: string;
+  photos: Array<{ id: string; imageKey: string; alt?: string }>;
+  data: WeddingInvitationData;
+  borderRadius?: number[];
+  width?: number;
+  height?: number;
+}> = ({ id, photos, data, borderRadius, width = 500, height = 450 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  if (!photos || photos.length === 0) return null;
+
+  const activeItem = photos[activeIndex] || photos[0];
+  const customActive = data.customPhotoNodes?.[`${id}_${activeIndex}`] || data.customPhotoNodes?.[id];
+  const activeSrc = customActive || resolveZenLoveAsset(activeItem?.imageKey) || getCleanWeddingPhoto(`${id}_${activeIndex}`, width, height);
+
+  return (
+    <div className="w-full h-full flex flex-col justify-between p-2 select-none">
+      {/* Featured Main Photo */}
+      <div className="w-full relative flex-1 min-h-[260px] rounded-xl overflow-hidden shadow-sm bg-stone-100 group">
+        <img
+          src={activeSrc}
+          alt={activeItem?.alt || 'Album ảnh cưới'}
+          className="w-full h-full object-cover block select-none pointer-events-none transition-all duration-500"
+          style={{ objectPosition: 'center center' }}
+          onError={(e) => {
+            e.currentTarget.src = getCleanWeddingPhoto(`${id}_${activeIndex}`, width, height);
+          }}
+        />
+
+        {/* Prev / Next Navigation Arrows */}
+        {photos.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs text-base font-bold transition-all cursor-pointer opacity-80 hover:opacity-100 z-10"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveIndex((prev) => (prev + 1) % photos.length);
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs text-base font-bold transition-all cursor-pointer opacity-80 hover:opacity-100 z-10"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Thumbnail Strip */}
+      {photos.length > 1 && (
+        <div className="flex gap-2 mt-2 overflow-x-auto pb-1 scrollbar-none justify-center">
+          {photos.slice(0, 8).map((item, idx) => {
+            const customThumb = data.customPhotoNodes?.[`${id}_${idx}`];
+            const thumbSrc = customThumb || resolveZenLoveAsset(item.imageKey) || getCleanWeddingPhoto(`${id}_${idx}`, 80, 80);
+            const isActive = idx === activeIndex;
+
+            return (
+              <button
+                key={item.id || idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveIndex(idx);
+                }}
+                className={`relative w-14 h-14 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                  isActive ? 'border-rose-600 scale-105 shadow-md' : 'border-stone-200 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={thumbSrc}
+                  alt={item.alt || 'Ảnh thu nhỏ'}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: 'center center' }}
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
   craftTree,
   data,
@@ -87,6 +179,7 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
   isInteractive = true,
 }) => {
   const [internalSelectedId, setInternalSelectedId] = useState<string | null>(null);
+  const [isGiftModalOpen, setIsGiftModalOpen] = useState<boolean>(false);
   const activeSelectedId = selectedNodeId !== undefined ? selectedNodeId : internalSelectedId;
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -116,12 +209,13 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
     return () => observer.disconnect();
   }, [canvasWidth]);
 
-  // 2. Extract and load all unique font families from text nodes
+  // 2. Extract and load all unique font families from all nodes
   const fontUrls = useMemo(() => {
     const urls = new Set<string>();
     for (const node of Object.values(craftTree)) {
-      if (node.type?.resolvedName === 'TextBox' && node.props?.fontFamily) {
-        const url = getFontCssUrl(node.props.fontFamily);
+      const fam = node.props?.fontFamily;
+      if (fam && typeof fam === 'string') {
+        const url = getFontCssUrl(fam);
         if (url) urls.add(url);
       }
     }
@@ -347,11 +441,71 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           }
 
           // 2. ZEN STOCK BOX (Stickers, Floral Flourishes, Calligraphy, Double Happiness)
+          // 2. ZEN STOCK BOX (Background Cards, Frames, Vector Shapes, Stickers, Floral Flourishes)
           if (type === 'ZenStockBox') {
             const rawImg = p.imgKey;
             const imgSrc = resolveZenLoveAsset(rawImg);
-            if (!imgSrc) return null;
+            const isSvg = p.zenStockType === 'svg' || (rawImg && rawImg.endsWith('.svg')) || (rawImg && rawImg.includes('shapeElements'));
+            const bgColor = p.svgColor || p.backgroundColor || p.color || 'transparent';
+            const isPlainRect = rawImg && rawImg.includes('mguzpb69ndhffzq0.svg');
 
+            if (isSvg) {
+              if (isPlainRect) {
+                // Solid rectangular background card (e.g. invitation section card, calendar card, rsvp card, gift card)
+                return (
+                  <div
+                    key={id}
+                    onClick={(e) => handleNodeClick(id, node, e)}
+                    style={{
+                      ...posStyle,
+                      backgroundColor: bgColor,
+                      borderRadius: Array.isArray(p.borderRadius)
+                        ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                        : undefined,
+                      border: p.borderSize
+                        ? `${p.borderSize}px ${p.borderStyle || 'solid'} ${p.borderColor || 'transparent'}`
+                        : undefined,
+                      boxShadow: p.hasBoxShadow && p.boxShadow
+                        ? `${p.boxShadow.offsetX || 0}px ${p.boxShadow.offsetY || 0}px ${p.boxShadow.blur || 10}px ${p.boxShadow.spread || 0}px ${p.boxShadow.color || 'rgba(0,0,0,0.1)'}`
+                        : undefined,
+                    }}
+                    className={`transition-all ${
+                      isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
+                    } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
+                  />
+                );
+              }
+
+              // Vector shapes (arches, scallops, borders, dividers) tinted with svgColor via CSS mask
+              return (
+                <div
+                  key={id}
+                  onClick={(e) => handleNodeClick(id, node, e)}
+                  style={{
+                    ...posStyle,
+                    backgroundColor: bgColor !== 'transparent' ? bgColor : '#465c3d',
+                    WebkitMaskImage: imgSrc ? `url(${imgSrc})` : undefined,
+                    maskImage: imgSrc ? `url(${imgSrc})` : undefined,
+                    WebkitMaskSize: '100% 100%',
+                    maskSize: '100% 100%',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    borderRadius: Array.isArray(p.borderRadius)
+                      ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                      : undefined,
+                    border: p.borderSize
+                      ? `${p.borderSize}px ${p.borderStyle || 'solid'} ${p.borderColor || 'transparent'}`
+                      : undefined,
+                  }}
+                  className={`transition-all ${
+                    isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
+                  } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
+                />
+              );
+            }
+
+            // Graphic raster elements: transparent PNG/WEBP florals, hearts, wax seals, stamps
+            if (!imgSrc) return null;
             return (
               <div
                 key={id}
@@ -381,20 +535,9 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             const width = typeof p.width === 'number' ? p.width : 500;
             const height = typeof p.height === 'number' ? p.height : 500;
             const isDecorative = isDecorativeAsset(rawImg);
-            const isWatermarked = isWatermarkedAsset(rawImg);
 
-            let imgSrc = customPhoto;
-            if (!imgSrc) {
-              if (isDecorative) {
-                // Genuine SVG, sticker, envelope, wax seal, frame
-                imgSrc = resolveZenLoveAsset(rawImg);
-              } else if (isWatermarked) {
-                // Watermarked demo couple photo: substitute with exact aspect ratio clean photo
-                imgSrc = getCleanWeddingPhoto(id, width, height);
-              } else {
-                imgSrc = resolveZenLoveAsset(rawImg) || getCleanWeddingPhoto(id, width, height);
-              }
-            }
+            // Always match the template thumbnail photo by default unless custom user photo is set
+            const imgSrc = customPhoto || resolveZenLoveAsset(rawImg) || getCleanWeddingPhoto(id, width, height);
 
             return (
               <div
@@ -408,6 +551,12 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                     : undefined,
                   padding: Array.isArray(p.padding)
                     ? `${p.padding[0]}px ${p.padding[1]}px ${p.padding[2]}px ${p.padding[3]}px`
+                    : undefined,
+                  border: p.borderSize
+                    ? `${p.borderSize}px ${p.borderStyle || 'solid'} ${p.borderColor || 'transparent'}`
+                    : undefined,
+                  boxShadow: p.hasBoxShadow && p.boxShadow
+                    ? `${p.boxShadow.offsetX || 0}px ${p.boxShadow.offsetY || 0}px ${p.boxShadow.blur || 10}px ${p.boxShadow.spread || 0}px ${p.boxShadow.color || 'rgba(0,0,0,0.1)'}`
                     : undefined,
                 }}
                 className={`overflow-hidden transition-all ${
@@ -471,14 +620,12 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 5. PHOTO GALLERY BOX (Wedding Gallery Grid)
+          // 5. PHOTO GALLERY BOX (Interactive Wedding Gallery with featured photo & thumbnails)
           if (type === 'PhotoGalleryBox') {
             const photos: Array<{ id: string; imageKey: string; alt?: string }> = p.photos || [];
             if (photos.length === 0) return null;
             const width = typeof p.width === 'number' ? p.width : 500;
             const height = typeof p.height === 'number' ? p.height : 450;
-            const itemWidth = Math.round(width / 2);
-            const itemHeight = Math.round(height / 2);
 
             return (
               <div
@@ -494,34 +641,21 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
                   isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
                 } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
               >
-                <div className="w-full h-full grid grid-cols-2 gap-2 p-1 overflow-hidden bg-transparent">
-                  {photos.slice(0, 4).map((item, idx) => {
-                    const customPhoto = data.customPhotoNodes?.[`${id}_${idx}`];
-                    const isWm = isWatermarkedAsset(item.imageKey);
-                    const imgSrc = customPhoto || (!isWm ? resolveZenLoveAsset(item.imageKey) : null) || getCleanWeddingPhoto(`${id}_${idx}`, itemWidth, itemHeight);
-
-                    return (
-                      <div key={item.id || idx} className="w-full h-full rounded-lg overflow-hidden bg-stone-100 shadow-xs relative">
-                        <img
-                          src={imgSrc}
-                          alt={item.alt || 'Ảnh cưới'}
-                          className="w-full h-full object-cover block select-none pointer-events-none hover:scale-105 transition-transform duration-500"
-                          style={{ objectPosition: 'center center' }}
-                          onError={(e) => {
-                            e.currentTarget.src = getCleanWeddingPhoto(`${id}_${idx}`, itemWidth, itemHeight);
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                <PhotoGalleryWidget
+                  id={id}
+                  photos={photos}
+                  data={data}
+                  borderRadius={p.borderRadius}
+                  width={width}
+                  height={height}
+                />
               </div>
             );
           }
 
           // 6. RSVP BOX V2 (Interactive attendance confirmation)
           if (type === 'RsvpBoxV2') {
-            const btnColor = p.buttonColor || data.primaryColor || '#8a1528';
+            const btnColor = p.buttonColor || data.primaryColor || '#465c3d';
             const textColor = p.color || '#1c1917';
             const title = p.titleText || 'Xác nhận tham dự';
 
@@ -662,36 +796,38 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             const displayYear = targetYear || '2026';
             const displayDayNum = parseInt(targetDay || '29', 10);
             const isNoStyle = p.calendarType === 'NO_STYLE';
-            const highlightColor = p.themeColor || data.primaryColor || '#8a1528';
+            const highlightColor = p.themeColor || data.primaryColor || '#ff5757';
+            const textColor = p.color || '#ffffff';
+            const fontFam = p.fontFamily || 'Lora Regular';
 
             return (
               <div
                 key={id}
-                style={posStyle}
-                className={`flex flex-col justify-between text-center ${
-                  isNoStyle ? 'p-1' : 'p-4 rounded-2xl'
-                }`}
+                style={{
+                  ...posStyle,
+                  fontFamily: fontFam ? `'${fontFam}', sans-serif` : undefined,
+                  backgroundColor: !isNoStyle ? (p.backgroundColor || '#ffffff') : 'transparent',
+                  borderRadius: !isNoStyle ? (Array.isArray(p.borderRadius) ? `${p.borderRadius[0]}px` : '16px') : undefined,
+                  boxShadow: !isNoStyle ? '0 10px 25px -5px rgba(0,0,0,0.08)' : undefined,
+                }}
+                className="flex flex-col justify-between text-center p-2"
               >
-                {!isNoStyle && (
-                  <>
-                    <div className="text-xs uppercase font-bold tracking-widest mb-2" style={{ color: p.color || highlightColor }}>
-                      Tháng {displayMonth} / {displayYear}
-                    </div>
-                    <div className="grid grid-cols-7 gap-1 text-[11px] font-mono opacity-85 mb-1" style={{ color: p.color || '#444444' }}>
-                      <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span className="font-bold text-rose-600">CN</span>
-                    </div>
-                  </>
-                )}
-                <div className="grid grid-cols-7 gap-1 text-[11px] font-mono opacity-85" style={{ color: p.color || '#444444' }}>
+                <div className="text-xs uppercase font-bold tracking-widest mb-1.5" style={{ color: textColor }}>
+                  Tháng {displayMonth}.{displayYear}
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-[11px] opacity-90 mb-1" style={{ color: textColor }}>
+                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span className="font-bold">Sun</span>
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-[11px] opacity-90" style={{ color: textColor }}>
                   {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
                     <div
                       key={d}
                       style={{
                         backgroundColor: d === displayDayNum ? highlightColor : 'transparent',
-                        color: d === displayDayNum ? '#ffffff' : (p.color || '#444444'),
+                        color: d === displayDayNum ? '#ffffff' : textColor,
                       }}
                       className={`h-6 flex items-center justify-center rounded-full ${
-                        d === displayDayNum ? 'font-bold shadow-md ring-2 ring-rose-200' : ''
+                        d === displayDayNum ? 'font-bold shadow-md ring-2 ring-white/30' : ''
                       }`}
                     >
                       {d}
@@ -755,37 +891,111 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
             );
           }
 
-          // 13. GIFT QR BOX
+          // 13. GIFT QR BOX (Hộp Quà Mừng Cưới Interactive Widget)
           if (type === 'GiftQrBox') {
+            const hasIcon = Boolean(p.imgKey);
+            const iconUrl = resolveZenLoveAsset(p.imgKey);
+
+            if (hasIcon && iconUrl) {
+              return (
+                <div
+                  key={id}
+                  onClick={(e) => {
+                    handleNodeClick(id, node, e);
+                    setIsGiftModalOpen(true);
+                  }}
+                  style={posStyle}
+                  className="flex items-center justify-center cursor-pointer group"
+                  title="Chạm để mở Hộp Quà Mừng Cưới"
+                >
+                  <img
+                    src={iconUrl}
+                    alt="Hộp quà mừng cưới"
+                    className="w-full h-full object-contain block select-none pointer-events-none group-hover:scale-110 transition-transform duration-300 drop-shadow-md"
+                  />
+                </div>
+              );
+            }
+
+            // Standalone QR code if no icon is specified
             const qrAccount = data.groom?.bank?.accountNumber || '0988889999';
             const qrBank = data.groom?.bank?.bankCode || 'MB';
             const qrUrl = `https://img.vietqr.io/image/${qrBank}-${qrAccount}-compact2.png?amount=0&addInfo=MungCuoi`;
             return (
               <div
                 key={id}
-                style={posStyle}
-                className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-stone-200 text-center"
+                onClick={() => setIsGiftModalOpen(true)}
+                style={{
+                  ...posStyle,
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px`
+                    : '12px',
+                }}
+                className="overflow-hidden cursor-pointer shadow-md bg-white p-2 flex items-center justify-center"
               >
-                <div className="w-28 h-28 p-1 bg-white rounded-xl shadow-xs border border-stone-200">
-                  <img src={qrUrl} alt="VietQR Mừng Cưới" className="w-full h-full object-contain" />
-                </div>
-                <span className="text-[10px] font-bold text-stone-800 mt-1.5 uppercase">
-                  Mừng Cưới Cặp Đôi
-                </span>
+                <img src={qrUrl} alt="VietQR Mừng Cưới" className="w-full h-full object-contain" />
               </div>
             );
           }
 
-          // 14. GUEST AUTO NAME (Hiển thị tên khách tự động)
+          // 14. GUEST AUTO NAME (Hiển thị tên khách tự động chuẩn phông & màu)
           if (type === 'GuestAutoName') {
+            const fontFam = p.fontFamily || 'Aquarelle';
+            const fontCol = p.color || data.primaryColor || '#465c3d';
+            const fontSz = p.fontSize ? `${p.fontSize}px` : '36px';
+            const text = (data as any).guestName || p.textDefault || 'Quý Khách';
+
             return (
               <div
                 key={id}
-                style={posStyle}
-                className="flex items-center justify-center font-bold text-stone-800"
+                onClick={(e) => handleNodeClick(id, node, e)}
+                style={{
+                  ...posStyle,
+                  fontFamily: fontFam ? `'${fontFam}', cursive, sans-serif` : undefined,
+                  fontSize: fontSz,
+                  color: fontCol,
+                  fontStyle: p.fontStyle || 'italic',
+                  fontWeight: p.fontWeight || 'normal',
+                  textAlign: (p.textAlign || 'center') as any,
+                  letterSpacing: p.letterSpacing ? `${p.letterSpacing}px` : undefined,
+                  lineHeight: p.lineHeight ? `${p.lineHeight}` : 1.4,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                className={isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''}
               >
-                <span>Kính mời: Quý Khách</span>
+                <span>{text}</span>
               </div>
+            );
+          }
+
+          // 15. CONTAINER / GROUP BOX (Sub-containers and grouped section cards)
+          if (type === 'Container' || type === 'GroupBox') {
+            return (
+              <div
+                key={id}
+                onClick={(e) => handleNodeClick(id, node, e)}
+                style={{
+                  ...posStyle,
+                  backgroundColor: p.backgroundColor || undefined,
+                  backgroundImage: p.backgroundImage ? `url(${resolveZenLoveAsset(p.backgroundImage)})` : undefined,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover',
+                  borderRadius: Array.isArray(p.borderRadius)
+                    ? `${p.borderRadius[0]}px ${p.borderRadius[1]}px ${p.borderRadius[2]}px ${p.borderRadius[3]}px`
+                    : undefined,
+                  border: p.borderSize
+                    ? `${p.borderSize}px ${p.borderStyle || 'solid'} ${p.borderColor || 'transparent'}`
+                    : undefined,
+                  boxShadow: p.hasBoxShadow && p.boxShadow
+                    ? `${p.boxShadow.offsetX || 0}px ${p.boxShadow.offsetY || 0}px ${p.boxShadow.blur || 10}px ${p.boxShadow.spread || 0}px ${p.boxShadow.color || 'rgba(0,0,0,0.1)'}`
+                    : undefined,
+                }}
+                className={`transition-all ${
+                  isInteractive ? 'cursor-pointer hover:outline hover:outline-1 hover:outline-sky-400' : ''
+                } ${isSelected ? 'ring-2 ring-sky-500' : ''}`}
+              />
             );
           }
 
@@ -793,6 +1003,65 @@ export const ZenLoveCanvasRenderer: React.FC<ZenLoveCanvasRendererProps> = ({
           return null;
         })}
       </div>
+
+      {/* Interactive Gift Modal Popup */}
+      {isGiftModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setIsGiftModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center border border-stone-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setIsGiftModalOpen(false)}
+              className="absolute top-3 right-3 text-stone-400 hover:text-stone-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center bg-stone-100 cursor-pointer transition-colors"
+            >
+              ✕
+            </button>
+            <div className="text-3xl mb-1">🎁</div>
+            <h3 className="font-serif font-bold text-lg text-stone-800 mb-1">Hộp Quà Mừng Cưới</h3>
+            <p className="text-xs text-stone-500 mb-4">Gửi quà mừng hoặc lời chúc phúc đến cô dâu & chú rể</p>
+
+            {/* QR Code */}
+            <div className="w-48 h-48 mx-auto p-2 bg-stone-50 rounded-xl border border-stone-200 shadow-inner flex items-center justify-center mb-4">
+              <img
+                src={`https://img.vietqr.io/image/${data.groom?.bank?.bankCode || 'MB'}-${data.groom?.bank?.accountNumber || '0988889999'}-compact2.png?amount=0&addInfo=MungCuoi`}
+                alt="VietQR Mừng Cưới"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            <div className="bg-stone-50 p-3 rounded-xl text-xs space-y-1.5 text-stone-700 text-left border border-stone-100 mb-4">
+              <div className="flex justify-between">
+                <span className="text-stone-500">Ngân hàng:</span>
+                <span className="font-bold">{data.groom?.bank?.bankName || 'MBBank (Quân Đội)'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Số tài khoản:</span>
+                <span className="font-mono font-bold text-rose-700">{data.groom?.bank?.accountNumber || '0988889999'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Chủ tài khoản:</span>
+                <span className="font-bold uppercase">{data.groom?.bank?.accountName || data.groom?.fullName || 'TRAN MINH TRI'}</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard?.writeText(data.groom?.bank?.accountNumber || '0988889999');
+                alert('Đã sao chép số tài khoản!');
+              }}
+              className="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+            >
+              📋 Sao chép số tài khoản
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
