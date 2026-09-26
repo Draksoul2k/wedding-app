@@ -16,12 +16,14 @@ interface WeddingViewProps {
   data: WeddingInvitationData;
   guestName?: string;
   isLivePreview?: boolean;
+  onEditField?: (field: 'couple' | 'date') => void;
 }
 
 export const WeddingView: React.FC<WeddingViewProps> = ({
   data,
   guestName = '',
   isLivePreview = false,
+  onEditField,
 }) => {
   const [isOpen, setIsOpen] = useState(isLivePreview);
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
@@ -298,6 +300,7 @@ export const WeddingView: React.FC<WeddingViewProps> = ({
             newWishContent={newWishContent}
             setNewWishContent={setNewWishContent}
             onAddWish={handleAddWish}
+            onEditField={onEditField}
           />
         )}
 

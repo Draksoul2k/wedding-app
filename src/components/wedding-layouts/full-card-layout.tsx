@@ -27,6 +27,7 @@ interface FullCardLayoutProps {
   newWishContent: string;
   setNewWishContent: (s: string) => void;
   onAddWish: (e: React.FormEvent) => void;
+  onEditField?: (field: 'couple' | 'date') => void;
 }
 
 export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
@@ -48,6 +49,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
   newWishContent,
   setNewWishContent,
   onAddWish,
+  onEditField,
 }) => {
   const [showRsvpModal, setShowRsvpModal] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
@@ -173,9 +175,66 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           }}
         />
 
+        {/* Top Header: "Save The Date" in Handwriting Calligraphy */}
+        <div className="relative z-10 pt-6 px-6 flex justify-between items-start pointer-events-none">
+          <div
+            className="font-['Dancing_Script',cursive] text-2xl sm:text-3xl font-normal tracking-wide select-none"
+            style={{
+              color: isDark ? '#ffffff' : '#1f2937',
+              textShadow: isDark ? '0 2px 8px rgba(0,0,0,0.8)' : '0 1px 3px rgba(255,255,255,0.7)'
+            }}
+          >
+            Save The Date
+          </div>
+        </div>
 
+        {/* Center / Lower-Third: Editable Typography (Cinelove Style Single Layer Calligraphy) */}
+        <div className="relative z-20 px-6 py-2 text-center my-auto flex flex-col items-center justify-center">
+          <div
+            onClick={() => onEditField?.('couple')}
+            className={`group select-none transition-all duration-200 rounded-2xl p-2.5 ${
+              onEditField ? 'cursor-pointer hover:bg-black/10 hover:ring-2 hover:ring-rose-400/60' : ''
+            }`}
+            title={onEditField ? 'Nhấp để chỉnh sửa tên cô dâu & chú rể' : undefined}
+          >
+            <div
+              className="font-['Dancing_Script',cursive] leading-tight text-center tracking-wide"
+              style={{
+                fontSize: '40px',
+                color: isDark ? '#ffffff' : (activeColor && activeColor !== '#ffffff' && activeColor !== '#faf7f2' ? activeColor : '#111827'),
+                textShadow: isDark
+                  ? '0 2px 10px rgba(0,0,0,0.85)'
+                  : '0 1px 2px rgba(255,255,255,0.8), 0 0 16px rgba(255,255,255,0.6)'
+              }}
+            >
+              <div>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</div>
+              <div className="text-2xl opacity-75 my-0.5 italic font-serif">&amp;</div>
+              <div>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</div>
+            </div>
+            {onEditField && (
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-black/70 text-white mt-1.5 inline-block shadow">
+                ✎ Nhấp để chỉnh sửa tên
+              </span>
+            )}
+          </div>
 
-        {/* Bottom Hero Actions & Bouncing Scroll Indicator (Artwork remains clean & unobstructed) */}
+          {/* Wedding Solar Date */}
+          {targetDateStr && (
+            <div
+              onClick={() => onEditField?.('date')}
+              className={`mt-1 text-xs uppercase tracking-[0.25em] font-mono font-semibold select-none transition-all ${
+                onEditField ? 'cursor-pointer hover:underline' : ''
+              }`}
+              style={{
+                color: isDark ? '#f1f5f9' : '#374151',
+                textShadow: isDark ? '0 1px 4px rgba(0,0,0,0.8)' : '0 1px 2px rgba(255,255,255,0.7)'
+              }}
+              title={onEditField ? 'Nhấp để chỉnh sửa ngày cưới' : undefined}
+            >
+              {targetDateStr.split('-').reverse().join(' . ')}
+            </div>
+          )}
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

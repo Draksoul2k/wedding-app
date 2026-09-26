@@ -47,7 +47,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#ffffff",
     "envelopeGradient": "from-amber-800 to-stone-900",
     "sealSymbol": "💍",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-61.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-61.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Our Love Begins thiết kế tông vàng đồng champagne và kem sang trọng, cuộn dọc sống động.",
     "tag": "Hot Trend",
     "isLongThumbnail": true
@@ -64,7 +64,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#ffffff",
     "envelopeGradient": "from-blue-900 to-slate-900",
     "sealSymbol": "✨",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-39.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-39.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Art Deco Sang Trọng 39 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Nổi bật",
     "isLongThumbnail": true
@@ -81,7 +81,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#ffffff",
     "envelopeGradient": "from-rose-700 to-pink-900",
     "sealSymbol": "💖",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-44.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-44.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Hollywood Lãng Mạn 44 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Đặc sắc",
     "isLongThumbnail": true
@@ -98,7 +98,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#ffffff",
     "envelopeGradient": "from-red-900 to-stone-900",
     "sealSymbol": "🌹",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-47.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-47.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Thảm Đỏ Premiere 47 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Mới 2026",
     "isLongThumbnail": true
@@ -115,7 +115,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-42.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-42.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Thanh Xuân Ngọt Ngào 42 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Yêu thích",
     "isLongThumbnail": true
@@ -132,7 +132,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-2.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-2.webp",
     "description": "Mẫu thiệp cưới điện ảnh Lookbook Tạp Chí 02 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Vogue",
     "isLongThumbnail": true
@@ -149,7 +149,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-38.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-38.png",
     "description": "Mẫu thiệp cưới điện ảnh Cổ Điển Thơ Mộng 38 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Vintage",
     "isLongThumbnail": true
@@ -166,7 +166,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-46.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-46.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Phim Tài Liệu Tình Yêu 46 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Classic",
     "isLongThumbnail": true
@@ -183,7 +183,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-1.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-1.webp",
     "description": "Mẫu thiệp cưới điện ảnh Golden Cinema 01 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "VIP",
     "isLongThumbnail": true
@@ -200,7 +200,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-36.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-36.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Nhật Ký Đôi Ta 36 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Thanh lịch",
     "isLongThumbnail": true
@@ -217,7 +217,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-114.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-114.png",
     "description": "Mẫu thiệp cưới điện ảnh Boarding Pass Độc Đáo 114 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Độc quyền",
     "isLongThumbnail": true
@@ -234,7 +234,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#ffffff",
     "envelopeGradient": "from-red-800 to-rose-900",
     "sealSymbol": "囍",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-40.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-40.jpeg",
     "description": "Mẫu thiệp cưới We Get Married với phong cách studio Hàn Quốc tinh khôi kết hợp sắc đỏ burgundy cổ điển.",
     "tag": "Filmstrip",
     "isLongThumbnail": true
@@ -251,7 +251,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-16.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-16.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Polaroid Kỷ Niệm 16 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Nhẹ nhàng",
     "isLongThumbnail": true
@@ -268,7 +268,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-48.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-48.png",
     "description": "Mẫu thiệp cưới điện ảnh Đêm Gala Trọng Đại 48 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Sang trọng",
     "isLongThumbnail": true
@@ -285,7 +285,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-19.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-19.jfif",
     "description": "Mẫu thiệp cưới điện ảnh Letterpress Tối Giản 19 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Mộc mạc",
     "isLongThumbnail": true
@@ -302,7 +302,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-56.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-56.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Indie Love Story 56 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Phim ngắn",
     "isLongThumbnail": true
@@ -319,7 +319,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-tone-xanh.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-tone-xanh.png",
     "description": "Mẫu thiệp cưới điện ảnh Tone Xanh Mint Tươi Mát thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Tone Mint",
     "isLongThumbnail": true
@@ -353,7 +353,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-5.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-5.webp",
     "description": "Mẫu thiệp cưới điện ảnh Movie Ticket Rạp Cưới 05 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Vé xem phim",
     "isLongThumbnail": true
@@ -370,7 +370,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-23.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-23.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Biển Xanh Lãng Mạn 23 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Biển xanh",
     "isLongThumbnail": true
@@ -387,7 +387,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-7.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-7.webp",
     "description": "Mẫu thiệp cưới điện ảnh Retro 90s Vibe 07 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Retro",
     "isLongThumbnail": true
@@ -404,7 +404,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-17.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-17.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Trắng Đen Vĩnh Cửu 17 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Monochrome",
     "isLongThumbnail": true
@@ -421,7 +421,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-8.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-8.webp",
     "description": "Mẫu thiệp cưới điện ảnh Giấc Mơ Tình Yêu 08 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Lãng mạn",
     "isLongThumbnail": true
@@ -438,7 +438,7 @@ export const TEMPLATES: TemplateConfig[] = [
     "cardBg": "#1c1917",
     "envelopeGradient": "from-stone-900 to-black",
     "sealSymbol": "🎬",
-    "frameAsset": "/templates/cinelove/cinelove_thiep-cuoi-49.webp",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-49.jpeg",
     "description": "Mẫu thiệp cưới điện ảnh Starlight Wedding 49 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Ngân hà",
     "isLongThumbnail": true

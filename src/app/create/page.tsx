@@ -1816,7 +1816,14 @@ function CreateInvitationContent() {
               ref={phoneScrollRef}
               className="flex-1 bg-white rounded-[38px] overflow-y-auto relative no-scrollbar"
             >
-              <WeddingView data={data} isLivePreview={true} />
+              <WeddingView
+                data={data}
+                isLivePreview={true}
+                onEditField={(field) => {
+                  if (field === 'couple') setActiveStep(2);
+                  if (field === 'date') setActiveStep(3);
+                }}
+              />
             </div>
           </div>
           <span className="text-[11px] text-gray-400 mt-3 font-medium">
