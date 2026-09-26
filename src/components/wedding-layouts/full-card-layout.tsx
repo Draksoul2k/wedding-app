@@ -108,6 +108,71 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
     setTimeout(() => setToastMessage(null), 2500);
   };
 
+  // Real-time Countdown calculation for Hero Showcase
+  const [heroCountdown, setHeroCountdown] = useState<{ days: number; hours: number; minutes: number; seconds: number }>({
+    days: 120,
+    hours: 14,
+    minutes: 28,
+    seconds: 45
+  });
+
+  React.useEffect(() => {
+    const calculateTime = () => {
+      const target = new Date(targetDateStr || '2026-10-24T11:00:00').getTime();
+      const now = new Date().getTime();
+      const diff = Math.max(0, target - now);
+      setHeroCountdown({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / 1000 / 60) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    calculateTime();
+    const interval = setInterval(calculateTime, 1000);
+    return () => clearInterval(interval);
+  }, [targetDateStr]);
+
+  // Mini Calendar calculation for Hero Showcase
+  let targetYear = 2026;
+  let targetMonth = 12;
+  let targetDay = 9;
+  try {
+    const parts = targetDateStr.split('-');
+    if (parts.length === 3) {
+      targetYear = parseInt(parts[0], 10);
+      targetMonth = parseInt(parts[1], 10);
+      targetDay = parseInt(parts[2], 10);
+    }
+  } catch (e) {}
+
+  const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
+  const firstDayIndex = new Date(targetYear, targetMonth - 1, 1).getDay();
+  const dayOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1; // 0 for Monday
+  const miniCalendarCells: (number | null)[] = [];
+  for (let i = 0; i < dayOffset; i++) miniCalendarCells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) miniCalendarCells.push(d);
+
+  // Template-specific Hero Layout Variant
+  const heroVariant = React.useMemo(() => {
+    const tid = template.id;
+    if (['cine-thiep-cuoi-39', 'cine-thiep-cuoi-46', 'cine-thiep-cuoi-16', 'cine-thiep-cuoi-36', 'cine-thiep-cuoi-38'].includes(tid)) {
+      return 'calendar'; // ZenLove Image 2
+    }
+    if (['cine-thiep-cuoi-61', 'cine-thiep-cuoi-40', 'cine-thiep-cuoi-47', 'cine-thiep-cuoi-18'].includes(tid)) {
+      return 'countdown'; // ZenLove Image 3
+    }
+    if (['cine-thiep-cuoi-1', 'cine-thiep-cuoi-44', 'cine-thiep-cuoi-41'].includes(tid)) {
+      return 'ticket'; // Cinema VIP Ticket Pass
+    }
+    if (['cine-thiep-cuoi-2', 'cine-thiep-cuoi-114', 'cine-thiep-cuoi-5'].includes(tid)) {
+      return 'magazine'; // Vogue Fashion Editorial
+    }
+    const hash = tid.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const variants: ('calendar' | 'countdown' | 'ticket' | 'magazine')[] = ['calendar', 'countdown', 'ticket', 'magazine'];
+    return variants[hash % variants.length];
+  }, [template.id]);
+
   // Google Calendar Link Generator
   const getGoogleCalendarUrl = () => {
     const title = `Lễ Thành Hôn: ${data.groom.shortName} & ${data.bride.shortName}`;
@@ -148,7 +213,7 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
       {/* ========================================================================= */}
       {/* 1. CINEMATIC MOBILE HERO COVER (Fitted Cover with Kinetic Parallax Reveal) */}
       {/* ========================================================================= */}
-      <div className="relative w-full max-w-md mx-auto h-[86vh] min-h-[520px] max-h-[700px] overflow-hidden shadow-2xl flex flex-col justify-between">
+      <div className="relative w-full max-w-md mx-auto h-[88vh] min-h-[580px] max-h-[760px] overflow-hidden shadow-2xl flex flex-col justify-between">
         {/* Background Artwork Frame */}
         <motion.div
           initial={{ scale: 1.08 }}
@@ -248,6 +313,111 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
               title={onEditField ? 'Nhấp để chỉnh sửa ngày cưới' : undefined}
             >
               {targetDateStr.split('-').reverse().join(' . ')}
+            </div>
+          )}
+
+          {/* Dynamic Template-Specific Hero Showcase: ZenLove Calendar / ZenLove Countdown / Cinema Ticket / Vogue Magazine */}
+          {heroVariant === 'calendar' && (
+            <div className="mt-3.5 max-w-[270px] mx-auto text-center pointer-events-none">
+              <div
+                className="font-cursive text-base drop-shadow-xs italic mb-1"
+                style={{ color: data.typography?.color || (isDark ? '#ffffff' : '#641b24') }}
+              >
+                Our wedding day
+              </div>
+              <div className="bg-white/85 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-stone-200/80 text-stone-800">
+                <div className="flex justify-between items-center text-[10px] font-bold border-b border-stone-200/60 pb-1 mb-1.5">
+                  <span className="uppercase tracking-wider font-mono text-stone-500">Lịch Cưới</span>
+                  <span className="font-serif text-rose-700 font-bold">Tháng {targetMonth} / {targetYear}</span>
+                </div>
+                <div className="grid grid-cols-7 gap-0.5 text-[9px] font-mono">
+                  {['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map((d) => (
+                    <span key={d} className="font-bold text-[8px] text-stone-400 py-0.5">{d}</span>
+                  ))}
+                  {miniCalendarCells.map((dayNum, i) => (
+                    <span
+                      key={i}
+                      className={`h-5 w-5 flex items-center justify-center rounded-full mx-auto font-medium ${
+                        dayNum === targetDay
+                          ? 'bg-rose-600 text-white font-bold shadow-xs scale-110'
+                          : dayNum ? 'text-stone-700' : ''
+                      }`}
+                    >
+                      {dayNum || ''}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {heroVariant === 'countdown' && (
+            <div className="mt-3.5 max-w-[270px] mx-auto text-center pointer-events-none space-y-1.5">
+              <div className="grid grid-cols-4 gap-1.5">
+                {[
+                  { val: heroCountdown.days, label: 'ngày' },
+                  { val: heroCountdown.hours, label: 'giờ' },
+                  { val: heroCountdown.minutes, label: 'phút' },
+                  { val: heroCountdown.seconds, label: 'giây' },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl py-1.5 px-1 text-center shadow-lg border backdrop-blur-md"
+                    style={{
+                      backgroundColor: '#5c1d24dd',
+                      borderColor: '#ffffff35',
+                      color: '#ffffff'
+                    }}
+                  >
+                    <span className="text-base font-mono font-bold block leading-tight">
+                      {String(item.val).padStart(2, '0')}
+                    </span>
+                    <span className="text-[9px] uppercase tracking-wider opacity-80 block">
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p
+                className="text-[10px] font-serif italic drop-shadow-xs px-2"
+                style={{ color: isDark ? '#ffffff' : '#374151' }}
+              >
+                &ldquo;Cùng nhau già đi là lời hứa đẹp nhất của thanh xuân.&rdquo;
+              </p>
+            </div>
+          )}
+
+          {heroVariant === 'ticket' && (
+            <div className="mt-3 max-w-[270px] mx-auto bg-black/80 backdrop-blur-md rounded-2xl p-2.5 border border-amber-400/40 text-amber-300 shadow-2xl pointer-events-none">
+              <div className="flex justify-between items-center text-[9px] font-mono tracking-widest uppercase border-b border-amber-400/30 pb-1 mb-1">
+                <span>★ VIP WEDDING PASS ★</span>
+                <span>ADMIT TWO</span>
+              </div>
+              <div className="text-[11px] font-serif text-white font-bold truncate">
+                {mainCeremony?.venueName || 'Khách Sạn Mường Thanh'}
+              </div>
+              <div className="text-[9px] font-mono text-amber-200/90 mt-0.5">
+                {targetDateStr} • {mainCeremony?.time || '11:30'}
+              </div>
+              <div className="mt-1 pt-1 border-t border-dashed border-amber-400/30 flex items-center justify-between text-[8px] font-mono text-stone-400">
+                <span className="tracking-tighter">||| |||| || ||||| ||</span>
+                <span className="text-amber-300 font-bold">SEAT: SWEETHEART</span>
+              </div>
+            </div>
+          )}
+
+          {heroVariant === 'magazine' && (
+            <div className="mt-3 max-w-[270px] mx-auto bg-stone-900/85 backdrop-blur-md rounded-2xl p-2.5 border border-white/20 text-white shadow-2xl text-left pointer-events-none">
+              <div className="flex items-center justify-between text-[8px] font-mono uppercase tracking-[0.25em] text-rose-300 border-b border-white/15 pb-1 mb-1">
+                <span>SPECIAL EDITION</span>
+                <span>VOL. 2026</span>
+              </div>
+              <h4 className="text-xs font-serif font-bold tracking-wide text-white">
+                Hành Trình Chung Đôi &amp; Lễ Đường
+              </h4>
+              <p className="text-[9px] text-stone-300 font-serif italic mt-0.5 line-clamp-1">
+                &ldquo;Gặp gỡ là duyên, bên nhau là định mệnh trọn đời.&rdquo;
+              </p>
             </div>
           )}
         </div>
