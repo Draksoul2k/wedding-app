@@ -36,6 +36,23 @@ export interface TemplateConfig {
 
 export const TEMPLATES: TemplateConfig[] = [
   {
+    "id": "cine-thiep-cuoi-39",
+    "name": "Điện Ảnh Premiere 39 (Cinelove)",
+    "category": "hien_dai",
+    "source": "cinelove",
+    "layoutType": "cinelove_movie",
+    "primaryColor": "#111827",
+    "accentColor": "#d4af37",
+    "bgTexture": "#faf7f2",
+    "cardBg": "#ffffff",
+    "envelopeGradient": "from-red-900 to-stone-900",
+    "sealSymbol": "💍",
+    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-39.jpeg",
+    "description": "Mẫu thiệp cưới điện ảnh Art Deco Premiere 39 phong cách thảm đỏ Cinelove, váy cưới trắng và phông rèm đỏ nhung lộng lẫy.",
+    "tag": "Hot Trend",
+    "isLongThumbnail": true
+  },
+  {
     "id": "cine-thiep-cuoi-61",
     "name": "Điện Ảnh Hiện Đại 01",
     "category": "hien_dai",
@@ -49,23 +66,6 @@ export const TEMPLATES: TemplateConfig[] = [
     "sealSymbol": "💍",
     "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-61.jpg",
     "description": "Mẫu thiệp cưới điện ảnh Our Love Begins thiết kế tông vàng đồng champagne và kem sang trọng, cuộn dọc sống động.",
-    "tag": "Hot Trend",
-    "isLongThumbnail": true
-  },
-  {
-    "id": "cine-thiep-cuoi-39",
-    "name": "Art Deco Hoàng Kim 02",
-    "category": "hien_dai",
-    "source": "cinelove",
-    "layoutType": "cinelove_movie",
-    "primaryColor": "#1e3a8a",
-    "accentColor": "#38bdf8",
-    "bgTexture": "#f0f9ff",
-    "cardBg": "#ffffff",
-    "envelopeGradient": "from-blue-900 to-slate-900",
-    "sealSymbol": "✨",
-    "frameAsset": "/templates/clean/clean_cine_thiep-cuoi-39.jpeg",
-    "description": "Mẫu thiệp cưới điện ảnh Art Deco Sang Trọng 39 thiết kế điện ảnh cao cấp, cuộn dọc sống động và trải nghiệm thảm đỏ sang trọng.",
     "tag": "Nổi bật",
     "isLongThumbnail": true
   },
@@ -1062,91 +1062,91 @@ export const VIETNAMESE_BANKS: BankConfig[] = [
 
 export const DEFAULT_WEDDING_DATA = {
   id: 'mau-thiep-demo',
-  slug: 'thanh-tung-lan-anh',
-  templateId: 'cine-thiep-cuoi-61',
-  themeName: 'Điện Ảnh Hiện Đại 01',
-  primaryColor: '#b48c56',
+  slug: 'thanh-hang-minh-tri',
+  templateId: 'cine-thiep-cuoi-39',
+  themeName: 'Điện Ảnh Premiere 39 (Cinelove)',
+  primaryColor: '#111827',
   fontFamily: 'Pattaya',
   musicTrackUrl: '/audio/anh-nang-cua-anh.mp3',
   musicTitle: 'Ánh Nắng Của Anh - Đức Phúc (Bản Có Lời)',
   fallingEffect: 'petals' as const,
 
   groom: {
-    fullName: 'Trần Thanh Tùng',
-    shortName: 'Thanh Tùng',
+    fullName: 'Trần Minh Trí',
+    shortName: 'Minh Trí',
     birthOrder: 'Trưởng Nam',
-    fatherName: 'Trần Quang Vinh',
-    motherName: 'Nguyễn Thị Tuyết',
-    address: '124 Hoàng Hoa Thám, Ba Đình, Hà Nội',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+    fatherName: 'Trần Anh Tài',
+    motherName: 'Phạm Thu Hương',
+    address: 'Phường Bãi Cháy, TP. Hạ Long, Tỉnh Quảng Ninh',
+    avatarUrl: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg',
     bank: {
       bankCode: 'MB',
       bankName: 'MBBank',
       accountNumber: '0988889999',
-      accountName: 'TRAN THANH TUNG',
-      qrUrl: 'https://img.vietqr.io/image/MB-0988889999-compact2.png?amount=0&addInfo=Mung+cuoi+Tung+Anh'
+      accountName: 'TRAN MINH TRI',
+      qrUrl: 'https://img.vietqr.io/image/MB-0988889999-compact2.png?amount=0&addInfo=Mung+cuoi+Tri+Hang'
     }
   },
 
   bride: {
-    fullName: 'Lê Lan Anh',
-    shortName: 'Lan Anh',
+    fullName: 'Lê Thanh Hằng',
+    shortName: 'Thanh Hằng',
     birthOrder: 'Ái Nữ',
-    fatherName: 'Lê Văn Hoàng',
-    motherName: 'Phạm Thu Hương',
-    address: '56 Nguyễn Đình Chiểu, Quận 3, TP. Hồ Chí Minh',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
+    fatherName: 'Lê Văn Hải',
+    motherName: 'Nguyễn Mai Thu',
+    address: 'Quận Ba Đình, TP. Hà Nội',
+    avatarUrl: '/templates/clean/clean_cine_thiep-cuoi-39.jpeg',
     bank: {
       bankCode: 'VCB',
       bankName: 'Vietcombank',
       accountNumber: '9988776655',
-      accountName: 'LE LAN ANH',
-      qrUrl: 'https://img.vietqr.io/image/VCB-9988776655-compact2.png?amount=0&addInfo=Mung+cuoi+Tung+Anh'
+      accountName: 'LE THANH HANG',
+      qrUrl: 'https://img.vietqr.io/image/VCB-9988776655-compact2.png?amount=0&addInfo=Mung+cuoi+Tri+Hang'
     }
   },
 
   loveStory: {
-    title: 'Hành Trình Tình Yêu',
-    content: 'Từ ánh nhìn đầu tiên dưới cơn mưa rào Hà Nội đến ngày ta nguyện chung đôi trên con đường hạnh phúc.',
-    quotes: '“Hôn nhân không phải là tìm một người hoàn hảo, mà là cùng nhau vun đắp một tình yêu vẹn nguyên.”'
+    title: 'OUR LOVE STORY',
+    content: 'Giữa muôn vạn gặp gỡ chúng mình may mắn tìm thấy nhau. Từ những ngày đầu bỡ ngỡ, qua bao vui buồn và thử thách, tình yêu vẫn lớn dần, hóa thành sự thấu hiểu và đồng hành. Hóa ra hạnh phúc chẳng phải điều xa xôi mà là có một người để cùng sẻ chia, cùng nắm tay đi hết chặng đường dài phía trước...',
+    quotes: '“Chúng mình gặp nhau giữa dòng đời”'
   },
 
   ceremonies: [
     {
       id: 'c1',
-      type: 'vu_quy' as const,
-      title: 'LỄ VU QUY (NHÀ GÁI)',
-      dateSolar: '2026-10-24',
-      dateLunar: '15 Tháng 9 Năm Bính Ngọ',
-      time: '09:00',
-      venueName: 'Tư gia Nhà Gái',
-      address: '56 Nguyễn Đình Chiểu, Phường Võ Thị Sáu, Quận 3, TP.HCM',
-      mapUrl: 'https://maps.google.com/?q=District+3+Ho+Chi+Minh',
-      note: 'Gia đình Nhà Gái hân hạnh đón tiếp'
+      type: 'thanh_hon' as const,
+      title: 'LỄ THÀNH HÔN',
+      dateSolar: '2025-12-09',
+      dateLunar: '20 Tháng 10 Năm Ất Tỵ',
+      time: '11:45',
+      venueName: 'Khách sạn Mường Thanh Luxury Quảng Ninh',
+      address: 'Phường Bãi Cháy, TP. Hạ Long, Tỉnh Quảng Ninh',
+      mapUrl: 'https://maps.google.com/?q=Muong+Thanh+Luxury+Quang+Ninh',
+      note: 'Rất hân hạnh được đón tiếp Quý Khách cùng gia đình'
     },
     {
       id: 'c2',
-      type: 'thanh_hon' as const,
-      title: 'LỄ THÀNH HÔN (NHÀ TRAI)',
-      dateSolar: '2026-10-25',
-      dateLunar: '16 Tháng 9 Năm Bính Ngọ',
-      time: '11:00',
-      venueName: 'Tư gia Nhà Trai',
-      address: '124 Hoàng Hoa Thám, Ba Đình, Hà Nội',
+      type: 'vu_quy' as const,
+      title: 'LỄ VU QUY (NHÀ GÁI)',
+      dateSolar: '2025-12-08',
+      dateLunar: '19 Tháng 10 Năm Ất Tỵ',
+      time: '09:00',
+      venueName: 'Tư gia Nhà Gái',
+      address: 'Quận Ba Đình, TP. Hà Nội',
       mapUrl: 'https://maps.google.com/?q=Ba+Dinh+Ha+Noi',
-      note: 'Gia đình Nhà Trai hân hạnh đón tiếp'
+      note: 'Gia đình Nhà Gái hân hạnh đón tiếp'
     },
     {
       id: 'c3',
       type: 'tiec_cuoi' as const,
       title: 'TIỆC CƯỚI CHUNG VUI',
-      dateSolar: '2026-10-25',
-      dateLunar: '16 Tháng 9 Năm Bính Ngọ',
-      time: '18:00',
-      venueName: 'Trung Tâm Tiệc Cưới Grand Palace',
-      address: '142/18 Cộng Hòa, Phường 4, Quận Tân Bình, TP.HCM',
-      mapUrl: 'https://maps.google.com/?q=Grand+Palace+Cong+Hoa',
-      note: 'Rất hân hạnh được đón tiếp Quý Khách'
+      dateSolar: '2025-12-09',
+      dateLunar: '20 Tháng 10 Năm Ất Tỵ',
+      time: '12:00',
+      venueName: 'Trung Tâm Tiệc Cưới Mường Thanh Luxury',
+      address: 'Phường Bãi Cháy, TP. Hạ Long, Tỉnh Quảng Ninh',
+      mapUrl: 'https://maps.google.com/?q=Muong+Thanh+Luxury+Quang+Ninh',
+      note: 'Khai tiệc mừng hạnh phúc'
     }
   ],
 

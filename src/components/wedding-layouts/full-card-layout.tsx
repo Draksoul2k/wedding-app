@@ -175,44 +175,44 @@ export const FullCardLayout: React.FC<FullCardLayoutProps> = ({
           }}
         />
 
-        {/* Top Header: "Save The Date" in Handwriting Calligraphy */}
-        <div className="relative z-10 pt-6 px-6 flex justify-between items-start pointer-events-none">
+        {/* Top Header: "Save The Date" in Flowing Calligraphy */}
+        <div className="relative z-10 pt-7 px-6 flex justify-between items-start pointer-events-none">
           <div
-            className="font-['Dancing_Script',cursive] text-2xl sm:text-3xl font-normal tracking-wide select-none"
+            className="font-cursive text-3xl sm:text-4xl font-normal tracking-wide select-none drop-shadow-xs"
             style={{
-              color: isDark ? '#ffffff' : '#1f2937',
-              textShadow: isDark ? '0 2px 8px rgba(0,0,0,0.8)' : '0 1px 3px rgba(255,255,255,0.7)'
+              color: isDark ? '#ffffff' : '#111827',
+              textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.9)' : '0 1px 3px rgba(255,255,255,0.8)'
             }}
           >
             Save The Date
           </div>
         </div>
 
-        {/* Center / Lower-Third: Editable Typography (Cinelove Style Single Layer Calligraphy) */}
-        <div className="relative z-20 px-6 py-2 text-center my-auto flex flex-col items-center justify-center">
+        {/* Lower-Third / Skirt Area: Editable Typography (Cinelove Style Calligraphy) */}
+        <div className="relative z-20 px-6 pt-2 pb-2 text-center mt-auto flex flex-col items-center justify-center">
           <div
             onClick={() => onEditField?.('couple')}
-            className={`group select-none transition-all duration-200 rounded-2xl p-2.5 ${
-              onEditField ? 'cursor-pointer hover:bg-black/10 hover:ring-2 hover:ring-rose-400/60' : ''
+            className={`group select-none transition-all duration-200 rounded-3xl p-3 ${
+              onEditField ? 'cursor-pointer hover:bg-black/5 hover:ring-2 hover:ring-rose-400/60' : ''
             }`}
             title={onEditField ? 'Nhấp để chỉnh sửa tên cô dâu & chú rể' : undefined}
           >
             <div
-              className="font-['Dancing_Script',cursive] leading-tight text-center tracking-wide"
+              className="font-cursive leading-tight text-center tracking-wide"
               style={{
-                fontSize: '40px',
-                color: isDark ? '#ffffff' : (activeColor && activeColor !== '#ffffff' && activeColor !== '#faf7f2' ? activeColor : '#111827'),
+                fontSize: '44px',
+                color: isDark ? '#ffffff' : '#111827',
                 textShadow: isDark
-                  ? '0 2px 10px rgba(0,0,0,0.85)'
-                  : '0 1px 2px rgba(255,255,255,0.8), 0 0 16px rgba(255,255,255,0.6)'
+                  ? '0 2px 12px rgba(0,0,0,0.9)'
+                  : '0 1px 3px rgba(255,255,255,0.9), 0 0 18px rgba(255,255,255,0.7)'
               }}
             >
-              <div>{data.bride.shortName || data.bride.fullName || 'Cô Dâu'}</div>
+              <div>{data.bride.shortName || data.bride.fullName || 'Thanh Hằng'}</div>
               <div className="text-2xl opacity-75 my-0.5 italic font-serif">&amp;</div>
-              <div>{data.groom.shortName || data.groom.fullName || 'Chú Rể'}</div>
+              <div>{data.groom.shortName || data.groom.fullName || 'Minh Trí'}</div>
             </div>
             {onEditField && (
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-black/70 text-white mt-1.5 inline-block shadow">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-sans font-semibold px-2.5 py-0.5 rounded-full bg-black/75 text-white mt-1.5 inline-block shadow-md">
                 ✎ Nhấp để chỉnh sửa tên
               </span>
             )}

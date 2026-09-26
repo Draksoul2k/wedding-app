@@ -628,11 +628,11 @@ function CreateInvitationContent() {
                                 : 'border-stone-200 hover:border-rose-300 bg-white hover:shadow-xs'
                             }`}
                           >
-                            <div className="h-44 sm:h-52 rounded-xl overflow-hidden bg-stone-900 mb-2 relative">
+                            <div className="h-44 sm:h-52 rounded-xl overflow-hidden bg-stone-100 mb-2 relative">
                               <img
                                 src={tmpl.frameAsset}
                                 alt={tmpl.name}
-                                className="w-full h-auto block select-none transition-transform duration-[3500ms] ease-in-out group-hover:-translate-y-[calc(100%-180px)]"
+                                className="w-full h-full object-cover object-top block select-none transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
                               />
                               {/* Source Tag Badge */}

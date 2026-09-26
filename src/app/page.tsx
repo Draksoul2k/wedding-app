@@ -198,12 +198,12 @@ export default function HomePage() {
                 {/* Image Container with Smooth CineLove Auto-Scroll & Click to Preview Modal */}
                 <div
                   onClick={() => setPreviewModalTemplate(template)}
-                  className="relative h-80 sm:h-84 overflow-hidden bg-stone-900 cursor-pointer"
+                  className="relative h-80 sm:h-84 overflow-hidden bg-stone-100 cursor-pointer"
                 >
                   <img
                     src={currentAsset}
                     alt={template.name}
-                    className="w-full h-auto block select-none transition-transform duration-[3800ms] ease-in-out group-hover:-translate-y-[calc(100%-320px)]"
+                    className="w-full h-full object-cover object-top block select-none transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                   />
 
